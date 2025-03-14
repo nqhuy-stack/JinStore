@@ -8,18 +8,13 @@ const __dirname = path.dirname(__filename);
 
 export default defineConfig({
   build: {
-    emptyOutDir: false, // Không xoá dist trước khi build
+    emptyOutDir: true, // Để đảm bảo thư mục dist sạch khi build
   },
   plugins: [react()],
-  esbuild: {
-    loader: 'jsx',
-    include: /src\/.*\.jsx?$/,
-    exclude: /node_modules/,
-  },
-  base: '/JinStore/',
+  base: '/JinStore/', // Đảm bảo tên repo đúng
   resolve: {
     alias: {
-      '~': path.resolve(__dirname, 'src'), // Trỏ đến src
+      '@': path.resolve(__dirname, 'src'), // Dùng @ thay vì ~
       '@assets': path.resolve(__dirname, 'src/assets'),
       '@components': path.resolve(__dirname, 'src/components'),
       '@pages': path.resolve(__dirname, 'src/pages'),
