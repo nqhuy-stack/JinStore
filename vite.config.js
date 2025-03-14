@@ -11,6 +11,11 @@ export default defineConfig({
     emptyOutDir: false, // Không xoá dist trước khi build
   },
   plugins: [react()],
+  esbuild: {
+    loader: 'jsx',
+    include: /src\/.*\.jsx?$/,
+    exclude: /node_modules/,
+  },
   base: '/JinStore/',
   resolve: {
     alias: {
