@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_URL;
+// const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = 'https://jinstore-api.onrender.com';
 
 // Đăng ký tài khoản
 export const registerUser = async (userData) => {
@@ -30,4 +31,4 @@ export const getCategories = async () => {
   } catch (error) {
     throw error.response?.data || 'Lỗi hệ thống!';
   }
-}
+};
