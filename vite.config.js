@@ -10,6 +10,14 @@ export default defineConfig({
   build: {
     emptyOutDir: false, // Không xoá dist trước khi build
   },
+  server: {
+    proxy: {
+      '/': {
+        target: 'https://jinstore-api.onrender.com/', // Thay bằng URL backend thật của bạn
+        changeOrigin: true,
+      },
+    },
+  },
   plugins: [react()],
   esbuild: {
     loader: 'jsx',
