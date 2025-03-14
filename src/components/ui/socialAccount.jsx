@@ -1,5 +1,5 @@
-import iconFacebookLogin from '@assets/icons/icon-facebook-login.svg';
-import iconGoogleLogin from '@assets/icons/icon-google-login.svg';
+import iconFacebookLogin from '@assets/icons/iconfacebooklogin.svg';
+import iconGoogleLogin from '@assets/icons/icongooglelogin.svg';
 
 function SocialAccount() {
   return (
