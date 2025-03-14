@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite';
 import { fileURLToPath } from 'url';
-import { copyFileSync } from 'fs';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 
@@ -11,15 +10,7 @@ export default defineConfig({
   build: {
     emptyOutDir: false, // Không xoá dist trước khi build
   },
-  plugins: [
-    react(),
-    {
-      name: 'copy-readme',
-      closeBundle() {
-        copyFileSync('dist/README.md', 'dist/README.md'); // Copy lại file README.md sau khi build
-      },
-    },
-  ],
+  plugins: [react()],
   base: '/JinStore/',
   resolve: {
     alias: {
