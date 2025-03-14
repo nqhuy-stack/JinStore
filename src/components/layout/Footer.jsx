@@ -12,7 +12,7 @@ import iconTelephone from '@assets/icons/icon-telephone.svg';
 import iconFacebook from '@assets/icons/icon-facebook.svg';
 import iconInstagram from '@assets/icons/icon-instagram.svg';
 import iconLinkedIn from '@assets/icons/icon-LinkedIn.svg';
-import iconX from '@assets/icons/icon-x.svg';
+import iconX from '@assets/icons/iconx.svg';
 
 import moneyKlarna from '@assets/images/payment/money-klarna.svg';
 import moneyPaypal from '@assets/images/payment/money-PayPal.svg';
