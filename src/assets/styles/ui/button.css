@@ -1,0 +1,15 @@
+.btn {
+  width: 100%;
+  border: none;
+  border-radius: 5px;
+  background-color: #634c9f;
+  color: #ffffff;
+  transition: 0.3s;
+  font-size: 1.4rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 42px;
+}
+.btn:hover {
+  background-color: #6a5acd;
+}/*# sourceMappingURL=button.css.map */

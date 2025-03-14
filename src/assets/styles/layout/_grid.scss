@@ -1,0 +1,49 @@
+// Row: sử dụng flexbox và margin âm
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: -12px;
+  margin-right: -12px;
+}
+
+// Cột chung
+.col {
+  padding-left: 12px;
+  padding-right: 12px;
+  flex: 1; // Tự động co giãn nếu không có kích thước cụ thể
+}
+
+// Hệ thống 12 cột
+@for $i from 1 through 12 {
+  .col-#{$i} {
+    flex: 0 0 calc(100% / 12 * $i);
+    max-width: calc(100% / 12 * $i);
+  }
+}
+
+// Responsive Breakpoints giống Bootstrap
+$breakpoints: (
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+);
+
+@each $breakpoint, $size in $breakpoints {
+  @media (min-width: $size) {
+    @for $i from 1 through 12 {
+      .col-#{$breakpoint}-#{$i} {
+        flex: 0 0 calc(100% / 12 * $i);
+        max-width: calc(100% / 12 * $i);
+      }
+    }
+  }
+}
+
+// Responsive mặc định cho mobile (cột chiếm 100%)
+@media (max-width: 575px) {
+  .col {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}

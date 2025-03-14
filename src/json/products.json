@@ -1,0 +1,95 @@
+{
+  "category": "Fruits & Vegetables",
+  "products": [
+    {
+      "id": 1,
+      "name": "Fresh Brown Coconut",
+      "image": "coconut.png",
+      "weight": "1 KG",
+      "price": 80.0,
+      "rating": 4.5,
+      "reviews": 34
+    },
+    {
+      "id": 2,
+      "name": "Fresh Cavendish Banana",
+      "image": "banana.png",
+      "weight": "1 KG",
+      "price": 80.0,
+      "rating": 4.7,
+      "reviews": 34
+    },
+    {
+      "id": 3,
+      "name": "Organic Green Lemon",
+      "image": "green_lemon.png",
+      "weight": "1 KG",
+      "price": 80.0,
+      "rating": 3.5,
+      "reviews": 34
+    },
+    {
+      "id": 4,
+      "name": "Green Lettuce",
+      "image": "lettuce.png",
+      "weight": "1 KG",
+      "price": 80.0,
+      "rating": 4.2,
+      "reviews": 34
+    },
+    {
+      "id": 5,
+      "name": "Green Capsicum",
+      "image": "capsicum.png",
+      "weight": "1 KG",
+      "price": 80.0,
+      "rating": 4.5,
+      "reviews": 34
+    },
+    {
+      "id": 6,
+      "name": "Fresh Organic Broccoli Crown",
+      "image": "broccoli.png",  
+      "weight": "1 KG",
+      "price": 80.0,
+      "rating": 4.3,
+      "reviews": 34
+    },
+    {
+      "id": 7,
+      "name": "Fresh Organic Kiwi",
+      "image": "kiwi.png",
+      "weight": "1 KG",
+      "price": 80.0,
+      "rating": 4.6,
+      "reviews": 34
+    },
+    {
+      "id": 8,
+      "name": "Organic Orange",
+      "image": "orange.png",
+      "weight": "1 KG",
+      "price": 80.0,
+      "rating": 4.8,
+      "reviews": 34
+    },
+    {
+      "id": 9,
+      "name": "Green Papaya",
+      "image": "green_papaya.png",
+      "weight": "1 KG",
+      "price": 80.0,
+      "rating": 4.2,
+      "reviews": 34
+    },
+    {
+      "id": 10,
+      "name": "Organic Fresh Strawberry",
+      "image": "strawberry.png",
+      "weight": "1 KG",
+      "price": 80.0,
+      "rating": 4.7,
+      "reviews": 34
+    }
+  ]
+}

@@ -1,0 +1,141 @@
+.login-container {
+  max-width: 480px;
+  margin: 50px auto;
+  padding: 20px;
+  /*     border: 1px solid #a5a5a5;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+  border-radius: 8px;
+  text-align: center;
+  background-color: white;
+
+  .login-form {
+    margin-bottom: 15px;
+    .login-field {
+      text-align: left;
+      margin-bottom: 15px;
+
+      label {
+        display: block; /* Đảm bảo label không bị dính vào input */
+        margin-bottom: 5px;
+        font-weight: 500;
+      }
+
+      input {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid #a5a5a5;
+        background: #fff;
+        box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
+        box-sizing: border-box; /* Fix lỗi kích thước input */
+      }
+    }
+
+    .login-checkbox-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 15px 0;
+
+      .login-checkbox-left {
+        input {
+          cursor: pointer;
+          margin-right: 5px;
+        }
+
+        .login-label {
+          cursor: pointer;
+        }
+      }
+
+      .login-link {
+        color: #6a5acd;
+        text-decoration: none;
+      }
+    }
+
+    .login-button {
+      width: 100%;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+  }
+
+  .login-heading {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  .login-subtext {
+    font-size: 1.3rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 19.5px; /* 150% */
+    color: $color-dark-text;
+    margin-bottom: 15px;
+  }
+
+  .social__login {
+    &-other {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    &-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 10px 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background: white;
+      width: 100%;
+      font-size: 1.4rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      &:hover {
+        background-color: #cccccc;
+      }
+      img {
+        width: 30px;
+        height: 100%;
+      }
+    }
+  }
+
+  .item-other {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px; // Khoảng cách giữa các phần tử bên trong
+    margin: 20px 0;
+
+    .line-left,
+    .line-right {
+      flex: 1;
+      height: 1px;
+      background-color: #ccc; // Màu của đường kẻ
+    }
+
+    .text-or {
+      font-weight: bold;
+      color: #555; // Màu chữ
+      text-transform: uppercase;
+    }
+  }
+}
+
+.register {
+  font-size: 16px;
+  color: gray;
+  margin-left: 10px;
+}
