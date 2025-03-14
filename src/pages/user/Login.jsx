@@ -2,7 +2,7 @@ import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
 import FormLogin from '@components/ui/FormLogin';
-import SocialAccount from '@components/ui/socialAccount';
+import SocialAccount from '@components/ui/SocialAccount';
 
 const Login = () => {
   return (
