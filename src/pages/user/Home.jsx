@@ -4,9 +4,9 @@ import { Fragment } from 'react';
 import CategoryList from '@components/ui/CategoryList';
 import { Link } from 'react-router-dom';
 
-import fullBanner from '@assets/images/banner/fullbanner.png';
-import moveRight from '@assets/icons/iconmoveright.svg';
-import moveRightDark from '@assets/icons/iconmoverightdark.svg';
+import fullBanner from '@assets/images/banner/full-banner.png';
+import moveRight from '@assets/icons/icon-move-right.svg';
+import moveRightDark from '@assets/icons/icon-move-right-dark.svg';
 
 function Home() {
   return (

@@ -12,13 +12,13 @@ import iconTelephone from '@assets/icons/icontelephone.svg';
 import iconFacebook from '@assets/icons/iconfacebook.svg';
 import iconInstagram from '@assets/icons/iconinstagram.svg';
 import iconLinkedIn from '@assets/icons/iconLinkedIn.svg';
-import iconX from '@assets/icons/iconx.svg';
+import iconX from '@assets/icons/icon-X.svg';
 
-import moneyKlarna from '@assets/images/payment/moneyKlarna.svg';
-import moneyPaypal from '@assets/images/payment/moneyPayPal.svg';
-import moneyVISA from '@assets/images/payment/moneyVISA.svg';
-import moneyMaster from '@assets/images/payment/moneyMaster.svg';
-import moneySkrill from '@assets/images/payment/moneySkrill.svg';
+import moneyKlarna from '@assets/images/payment/money-klarna.svg';
+import moneyPaypal from '@assets/images/payment/money-PayPal.svg';
+import moneyVISA from '@assets/images/payment/money-VISA.svg';
+import moneyMaster from '@assets/images/payment/money-Master.svg';
+import moneySkrill from '@assets/images/payment/money-Skrill.svg';
 // import { useState } from 'react';
 
 const Footer = () => {
