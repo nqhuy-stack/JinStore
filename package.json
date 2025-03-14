@@ -8,7 +8,9 @@
     "dev": "vite --open",
     "build": "vite build",
     "watch": "sass --watch src/assets/styles/main.scss : public/main.css",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "engines": {
     "node": ">=18.0.0"
