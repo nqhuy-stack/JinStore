@@ -3,11 +3,11 @@ import { Link } from 'react-router-dom';
 import Button from '@components/ui/Button';
 
 import logoFull from '@assets/images/logo/logo-full.svg';
-import iconLocation from '@assets/icons/icon-location.svg';
-import iconSearch from '@assets/icons/icon-search.svg';
-import iconCart from '@assets/icons/icon-cart.svg';
-import iconHeart from '@assets/icons/icon-heart.svg';
-import iconUser from '@assets/icons/icon-user.svg';
+import iconLocation from '@assets/icons/iconlocation.svg';
+import iconSearch from '@assets/icons/iconsearch.svg';
+import iconCart from '@assets/icons/iconcart.svg';
+import iconHeart from '@assets/icons/iconheart.svg';
+import iconUser from '@assets/icons/iconuser.svg';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -126,12 +126,12 @@ const Header = () => {
                 )}
               </div>
               <div className="header__wishlist">
-                <i className="icon-heart"></i>
-                <img src={iconHeart} alt="icon-heart" />
+                <i className="iconheart"></i>
+                <img src={iconHeart} alt="iconheart" />
                 <span className="header__count">0</span>
               </div>
               <div className="header__cart">
-                <img src={iconCart} alt="icon-cart-shopping" />
+                <img src={iconCart} alt="iconcart-shopping" />
                 <span className="header__count">0</span>
               </div>
             </div>

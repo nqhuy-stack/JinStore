@@ -7,12 +7,12 @@ import { getCategories } from '../../services/AuthService'; */
 import appStore from '@assets/images/logo/button-appstore.svg';
 import appGoogle from '@assets/images/logo/button-google.svg';
 
-import iconEmail from '@assets/icons/icon-email.svg';
-import iconTelephone from '@assets/icons/icon-telephone.svg';
-import iconFacebook from '@assets/icons/icon-facebook.svg';
-import iconInstagram from '@assets/icons/icon-instagram.svg';
-import iconLinkedIn from '@assets/icons/icon-LinkedIn.svg';
-import iconX from '@assets/icons/icon-x.svg';
+import iconEmail from '@assets/icons/iconemail.svg';
+import iconTelephone from '@assets/icons/icontelephone.svg';
+import iconFacebook from '@assets/icons/iconfacebook.svg';
+import iconInstagram from '@assets/icons/iconinstagram.svg';
+import iconLinkedIn from '@assets/icons/iconLinkedIn.svg';
+import iconX from '@assets/icons/icon-X.svg';
 
 import moneyKlarna from '@assets/images/payment/money-klarna.svg';
 import moneyPaypal from '@assets/images/payment/money-PayPal.svg';

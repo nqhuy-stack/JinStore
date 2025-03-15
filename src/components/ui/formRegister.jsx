@@ -1,6 +1,6 @@
 import { Fragment, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { registerUser } from '~/services/AuthService';
+import { registerUser } from '@services/AuthService';
 
 import Button from '@components/ui/Button';
 function FormRegister() {
