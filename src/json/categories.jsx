@@ -9,15 +9,15 @@ import meatFish from '@assets/images/categories/meats-seafood.png';
 import organic from '@assets/images/categories/biscuits-snacks.png';
 
 const jsonCategories = [
-  { id: 1, name: 'Baby & Pregnancy', img: babyCare },
-  { id: 2, name: 'Breads & Bakery', img: bakery },
-  { id: 3, name: 'Beverages', img: beverages },
-  { id: 4, name: 'Breakfast & Dairy', img: dairy },
-  { id: 5, name: 'Frozen Foods', img: frozenFoods },
-  { id: 6, name: 'Fruits & Vegetables', img: fruitsVegetables },
-  { id: 7, name: 'Grocery & Staples', img: grocery },
-  { id: 8, name: 'Meats & Seafood', img: meatFish },
-  { id: 9, name: 'Biscuits & Snacks', img: organic },
+  { id: 1, name: 'Baby & Pregnancy', image: babyCare },
+  { id: 2, name: 'Breads & Bakery', image: bakery },
+  { id: 3, name: 'Beverages', image: beverages },
+  { id: 4, name: 'Breakfast & Dairy', image: dairy },
+  { id: 5, name: 'Frozen Foods', image: frozenFoods },
+  { id: 6, name: 'Fruits & Vegetables', image: fruitsVegetables },
+  { id: 7, name: 'Grocery & Staples', image: grocery },
+  { id: 8, name: 'Meats & Seafood', image: meatFish },
+  { id: 9, name: 'Biscuits & Snacks', image: organic },
 ];
 
 export default jsonCategories;
