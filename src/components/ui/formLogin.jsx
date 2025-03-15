@@ -1,6 +1,6 @@
 import { Fragment, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { loginUser } from '@services/AuthService';
+import { loginUser } from '@services/AuthService.jsx';
 
 import Button from '@components/ui/Button';
 

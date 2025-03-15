@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import jsonCategories from '@json/categories';
+import jsonCategories from '@json/categories.jsx';
 
 /* import { useEffect } from 'react';
 import { getCategories } from '../../services/AuthService'; */

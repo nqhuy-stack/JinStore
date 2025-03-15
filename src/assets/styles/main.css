@@ -873,7 +873,7 @@ html {
   line-height: 42px;
   letter-spacing: 1px;
 }
-.home__categories {
+.home__section {
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -883,7 +883,7 @@ html {
   width: 100%;
   margin: 30px auto 50px;
 }
-.home__categories .categories__header {
+.home__section .section__title {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -891,7 +891,7 @@ html {
   flex-wrap: nowrap;
   width: 100%;
 }
-.home__categories .categories__header .title-categories {
+.home__section .section__title .title {
   color: #000000;
   font-size: 2.8rem;
   font-style: normal;
@@ -899,7 +899,7 @@ html {
   line-height: 28px;
   text-transform: capitalize;
 }
-.home__categories .categories__header .btn-viewAll {
+.home__section .section__title .btn-viewAll {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -914,10 +914,10 @@ html {
   border: 1px solid #e5e7eb;
   padding: 10px 16px 10px 12px;
 }
-.home__categories .categories__header .btn-viewAll:hover {
+.home__section .section__title .btn-viewAll:hover {
   background-color: #e5e7eb;
 }
-.home__categories .categories__header .btn-viewAll p {
+.home__section .section__title .btn-viewAll p {
   color: #000000;
   text-align: center;
   font-size: 1.2rem;
@@ -925,14 +925,14 @@ html {
   font-weight: 700;
   line-height: 10px; /* 83.333% */
 }
-.home__categories .categories__header .btn-viewAll img {
+.home__section .section__title .btn-viewAll img {
   width: 12px;
   height: 100%;
 }
-.home__categories .list-categories {
+.home__section .section__content {
   width: 100%;
 }
-.home__categories .list-categories ul {
+.home__section .section__content ul {
   display: flex;
   align-items: stretch;
   justify-content: space-between;
@@ -943,17 +943,17 @@ html {
   white-space: nowrap;
   scrollbar-width: thin;
 }
-.home__categories .list-categories ul::-webkit-scrollbar {
+.home__section .section__content ul::-webkit-scrollbar {
   height: 0px;
 }
-.home__categories .list-categories ul .item-categories {
+.home__section .section__content ul .item-categories {
   flex: 0 0 auto; /* Giữ kích thước cố định */
   width: 11.1111111111%;
   height: 200px;
   border: 1px solid #e5e7eb;
   border-spacing: none;
 }
-.home__categories .list-categories ul .item-categories .link-categories {
+.home__section .section__content ul .item-categories .link-categories {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -963,11 +963,11 @@ html {
   width: 100%;
   height: 100%;
 }
-.home__categories .list-categories ul .item-categories .link-categories:hover {
+.home__section .section__content ul .item-categories .link-categories:hover {
   background-color: #e5e7eb;
   transition: all 0.1s ease-in;
 }
-.home__categories .list-categories ul .item-categories .link-categories span {
+.home__section .section__content ul .item-categories .link-categories span {
   color: #000000;
   text-align: center;
   font-size: 1.3rem;
@@ -981,13 +981,13 @@ html {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.home__categories .list-categories ul .item-categories .link-categories img {
-  width: 100%;
+.home__section .section__content ul .item-categories .link-categories img {
+  width: 170px;
   height: 100%;
   -o-object-fit: contain;
      object-fit: contain;
 }
-.home__categories .list-categories ul .item-categories .link-categories img:hover {
+.home__section .section__content ul .item-categories .link-categories img:hover {
   transform: scale(1.1);
   transition: all 1s ease-in;
   transition: all 0.5s ease-out;

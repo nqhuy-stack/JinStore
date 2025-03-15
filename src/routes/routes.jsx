@@ -1,9 +1,9 @@
-import Home from '@pages/user/Home';
-import Login from '@pages/user/Login';
-import Register from '@pages/user/Register';
-import About from '@pages/user/About';
-import Contact from '@pages/user/Contact';
-import NotFound from '@pages/user/NotFound';
+import Home from '@pages/user/Home.jsx';
+import Login from '@pages/user/Login.jsx';
+import Register from '@pages/user/Register.jsx';
+import About from '@pages/user/About.jsx';
+import Contact from '@pages/user/Contact.jsx';
+import NotFound from '@pages/user/NotFound.jsx';
 const routes = [
   {
     path: '/',
