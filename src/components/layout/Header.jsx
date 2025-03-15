@@ -18,7 +18,7 @@ const Header = () => {
   useEffect(() => {
     const savedToken = localStorage.getItem('token');
     const savedName = localStorage.getItem('name');
-    const lastName = savedName.split(' ').pop(); // Lấy "Huy"
+    const lastName = savedName?.split(' ').pop() || ''; // Lấy "Huy"
     if (savedToken) {
       setToken(savedToken);
       setName(lastName);
