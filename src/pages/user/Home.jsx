@@ -8,7 +8,7 @@ import fullBanner from '@assets/images/banner/full-banner.png';
 import moveRight from '@assets/icons/icon-move-right.svg';
 import moveRightDark from '@assets/icons/icon-move-right-dark.svg';
 
-function Home() {
+function Home() { 
   return (
     <Fragment>
       <section>
@@ -26,17 +26,15 @@ function Home() {
               </Link>
             </div>
           </div>
-          <div className="home__categories">
-            <div className="categories__header">
-              <h1 className="title-categories">Browse by Categories</h1>
+          <div className="home__section">
+            <div className="section__title">
+              <h1 className="title">Browse by Categories</h1>
               <Link to={'/shop'} className="btn btn-viewAll">
                 <p>View All</p>
                 <img src={moveRightDark} alt="Move Right" />
               </Link>
             </div>
-            <nav className="list-categories">
-              <CategoryList />
-            </nav>
+            <CategoryList />
           </div>
 
           <div className="home__cashBack">

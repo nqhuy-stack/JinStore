@@ -1,4 +1,4 @@
-import Timer from '@components/function/Timer/Timer';
+import Timer from '@components/function/Timer/Timer.jsx';
 const Notification__bar = () => {
   return (
     <section className="global-notification">

@@ -2,9 +2,9 @@ import { Routes, Route } from 'react-router-dom';
 import { Fragment } from 'react';
 
 /* Page */
-import Header from '@components/layout/Header';
-import Footer from '@components/layout/Footer';
-import routes from '@routes/routes';
+import Header from '@components/layout/Header.jsx';
+import Footer from '@components/layout/Footer.jsx';
+import routes from '@routes/routes.jsx';
 
 const App = () => {
   return (
