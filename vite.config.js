@@ -16,7 +16,7 @@ export default defineConfig({
     {
       name: 'copy-readme',
       closeBundle() {
-        copyFileSync('dist/README.md', 'dist/README.md'); // Copy lại file README.md sau khi build
+        copyFileSync('README.md', 'dist/README.md'); // Copy lại file README.md sau khi build
       },
     },
   ],
