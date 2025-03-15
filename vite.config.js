@@ -23,13 +23,14 @@ export default defineConfig({
   base: '/JinStore/',
   resolve: {
     alias: {
-      '~': path.resolve(__dirname, 'src'), // Trỏ đến src
+      '@': path.resolve(__dirname, 'src'), // Trỏ đến src
       '@assets': path.resolve(__dirname, 'src/assets'),
       '@components': path.resolve(__dirname, 'src/components'),
       '@pages': path.resolve(__dirname, 'src/pages'),
       '@utils': path.resolve(__dirname, 'src/utils'),
       '@routes': path.resolve(__dirname, 'src/routes'),
       '@json': path.resolve(__dirname, 'src/json'),
+      '@services': path.resolve(__dirname, 'src/services'),
     },
   },
 });
