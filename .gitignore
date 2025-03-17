@@ -12,7 +12,7 @@ node_modules
 .vite/
 
 # Ignore build output folders
-.dist
+dist/
 dist-ssr
 
 # Ignore local environment files
