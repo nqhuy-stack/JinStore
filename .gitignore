@@ -8,10 +8,16 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+# Ignore Vite cache folder
 .vite/
-dist/
+
+# Ignore build output folders
+.dist
 dist-ssr
+
+# Ignore local environment files
 *.local
+
 
 # Editor directories and files
 .vscode/*
