@@ -1,6 +1,8 @@
 import { Fragment, useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Button from '@components/ui/Button.jsx';
+import { logOut } from '@services/AuthService.jsx';
+import { useDispatch, useSelector } from 'react-redux';
 
 import logoFull from '@assets/images/logo/logo-full.svg';
 import iconLocation from '@assets/icons/iconlocation.svg';
@@ -10,26 +12,13 @@ import iconHeart from '@assets/icons/iconheart.svg';
 import iconUser from '@assets/icons/iconuser.svg';
 
 const Header = () => {
+  const user = useSelector((state) => state.auth.login.currentUser);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
-  const [token, setToken] = useState(null);
-  const [name, setName] = useState(null);
 
-  // Kiểm tra token khi component render
-  useEffect(() => {
-    const savedToken = localStorage.getItem('token');
-    const savedName = localStorage.getItem('name');
-    const lastName = savedName?.split(' ').pop() || ''; // Lấy "Huy"
-    if (savedToken) {
-      setToken(savedToken);
-      setName(lastName);
-    }
-  }, []);
-
-  // Xử lý đăng xuất
   const handleLogout = () => {
-    localStorage.removeItem('token', 'name', 'registerEmail');
-    setToken(null); // Xoa token sau khi đăng xuat
-    setName(null); // Xoa name sau khi đăng xuat
+    logOut(dispatch, navigate);
   };
 
   // Đóng dropdown khi click ra ngoài
@@ -97,13 +86,13 @@ const Header = () => {
               <div className="header__account">
                 <Button onClick={() => setIsOpen(!isOpen)} className="header__account-btn">
                   <img src={iconUser} alt="Actor" />
-                  <strong>{token ? name : 'Account'}</strong>
+                  <strong>{user ? (user.fullname?.trim() ? user.fullname : user.username) : 'Account'}</strong>
                 </Button>
 
                 {/* Dropdown menu */}
                 {isOpen && (
                   <div className="dropdown-menu">
-                    {token ? (
+                    {user ? (
                       <>
                         <Link to="/info" onClick={() => setIsOpen(false)}>
                           Info User

@@ -1,52 +1,35 @@
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { loginUser } from '@services/AuthService.jsx';
+import { login } from '@services/AuthService.jsx';
+import { useDispatch } from 'react-redux';
 
 import Button from '@components/ui/Button';
 
 function FormLogin() {
-  const [formData, setFormData] = useState({ email: '', password: '' });
-  const [message, setMessage] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    const registerEmail = localStorage.getItem('email');
-    if (registerEmail) {
-      setFormData({ ...formData, email: registerEmail });
-    }
-  }, []);
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const user = {
+    username: username,
+    password: password,
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      const response = await loginUser(formData);
-      setMessage('Đăng nhập thành công!');
-      console.log(response.token);
-      console.log(response.user.name);
-      if (response.token) {
-        localStorage.setItem('token', response.token); // Lưu vào localStorage
-        localStorage.setItem('name', response.user.name); // Lưu vào localStorage
-        navigate('/', { replace: true });
-        window.location.reload(); // Reload trang
-      }
-    } catch (error) {
-      setMessage(error.message || 'Sai thông tin đăng nhập!');
-    }
+    await login(user, dispatch, navigate);
   };
+
   return (
     <Fragment>
       <form className="login-form" onSubmit={handleSubmit}>
         <div className="login-field">
-          <label>Username or email address *</label>
+          <label>Username*</label>
           <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            onChange={handleChange}
+            type="text"
+            name="username"
+            placeholder="Username"
+            onChange={(e) => setUsername(e.target.value)}
             required
             className="login-input"
           />
@@ -57,27 +40,26 @@ function FormLogin() {
             type="password"
             name="password"
             placeholder="Mật khẩu"
-            onChange={handleChange}
+            onChange={(e) => setPassword(e.target.value)}
             required
             className="login-input"
           />
         </div>
-        {/*       <div className="login-checkbox-container">
-        <div className="login-checkbox-left">
-          <input type="checkbox" checked={rememberMe} onChange={() => setRememberMe(!rememberMe)} id="remember-me" />
-          <label htmlFor="remember-me" className="login-label">
-            Remember me
-          </label>
-        </div>
-        <a href="#" className="login-link">
-          Lost your password?
-        </a>
-      </div> */}
+        {/* <div className="login-checkbox-container">
+          <div className="login-checkbox-left">
+            <input type="checkbox" checked={rememberMe} onChange={() => setRememberMe(!rememberMe)} id="remember-me" />
+            <label htmlFor="remember-me" className="login-label">
+              Remember me
+            </label>
+          </div>
+          <a href="#" className="login-link">
+            Lost your password?
+          </a>
+        </div> */}
         <Button type="submit" className="btn login-button">
           Login
         </Button>
       </form>
-      {message && <p>{message}</p>}
     </Fragment>
   );
 }
