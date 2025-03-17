@@ -1,41 +1,27 @@
 import { Fragment, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { registerUser } from '@services/AuthService.jsx';
+import { register } from '@services/AuthService.jsx';
 
 import Button from '@components/ui/Button';
 function FormRegister() {
-  const [formData, setFormData] = useState({ name: '', email: '', password: '', confirmPassword: '' });
-  const [message, setMessage] = useState('');
-  const navigate = useNavigate();
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (formData.password !== formData.confirmPassword) {
-      console.log(formData.password, formData.confirmPassword);
-      setMessage('Mật khẩu xác nhận không khớp!');
-      return;
-    }
-
-    try {
-      const response = await registerUser(formData);
-      setMessage(response.message);
-
-      // Lưu email vào localStorage để tự động điền vào Login
-      localStorage.setItem('email', formData.email);
-      localStorage.setItem('name', formData.name);
-
-      // Chuyển hướng sang trang đăng nhập sau 2 giây
-      setTimeout(() => {
-        navigate('/login');
-      }, 1000);
-    } catch (error) {
-      setMessage(error.message || 'Lỗi đăng ký!');
-    }
+    const user = {
+      username: username,
+      email: email,
+      password: password,
+      confirmPassword: confirmPassword,
+    };
+    await register(user, dispatch, navigate);
   };
 
   return (
@@ -45,9 +31,9 @@ function FormRegister() {
           <label>Username *</label>
           <input
             type="text"
-            name="name"
-            placeholder="Name"
-            onChange={handleChange}
+            name="username"
+            placeholder="Username"
+            onChange={(e) => setUsername(e.target.value)}
             required
             className="register-input"
           />
@@ -58,7 +44,7 @@ function FormRegister() {
             type="email"
             name="email"
             placeholder="Email"
-            onChange={handleChange}
+            onChange={(e) => setEmail(e.target.value)}
             required
             className="register-input"
           />
@@ -69,7 +55,7 @@ function FormRegister() {
             type="password"
             name="password"
             placeholder="password"
-            onChange={handleChange}
+            onChange={(e) => setPassword(e.target.value)}
             required
             className="register-input"
           />
@@ -80,7 +66,7 @@ function FormRegister() {
             type="password"
             name="confirmPassword"
             placeholder="Confirm password"
-            onChange={handleChange}
+            onChange={(e) => setConfirmPassword(e.target.value)}
             required
             className="register-input"
           />
@@ -94,7 +80,6 @@ function FormRegister() {
           Register
         </Button>
       </form>
-      {message && <p>{message}</p>}
     </Fragment>
   );
 }

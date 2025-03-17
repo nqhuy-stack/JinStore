@@ -1,8 +1,8 @@
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
-import SocialAccount from '@components/ui/socialAccount.jsx';
-import FormRegister from '@components/ui/formRegister.jsx';
+import SocialAccount from '@components/ui/SocialAccount.jsx';
+import FormRegister from '@components/ui/FormRegister.jsx';
 
 function Register() {
   return (
