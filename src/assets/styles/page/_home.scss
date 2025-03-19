@@ -122,49 +122,71 @@
       ul {
         @include flexbox(stretch, space-between, row, flex, nowrap);
         align-self: stretch;
-        overflow-x: hidden; /* Cho phép cuộn ngang */
+        overflow-x: auto; /* Allow horizontal scrolling */
         white-space: nowrap;
         scrollbar-width: thin;
+
         &::-webkit-scrollbar {
-          height: 0px;
+          height: 8px; /* Adjust height for visibility */
         }
+
         .item-categories {
-          flex: 0 0 auto; /* Giữ kích thước cố định */
-          @include size(calc(100% / 9), 200px);
-          border: 1px solid #e5e7eb;
+          @include size(calc(10% + 20px), calc($container/10 + 50px));
+          border: 1px solid rgb(243, 243, 243);
+          background-color: #ffffff;
           border-spacing: none;
+          position: relative;
+
+          &:hover {
+            border-color: rgba(0, 0, 0, 0.12);
+            border-width: 1px;
+            box-shadow: 0 0 0.8125rem 0 rgba(0, 0, 0, 0.05);
+            transform: translateZ(0);
+            z-index: 1;
+          }
+
           .link-categories {
-            @include flexbox(center, center, column, flex, nowrap);
-            overflow: hidden;
+            @include flexbox(center, flex-start, column, flex, nowrap);
             @include size(100%, 100%);
-            &:hover {
-              background-color: #e5e7eb;
-              transition: all 0.1s ease-in;
-            }
+            overflow: hidden;
+            padding: 15px 15px 0 15px;
+            position: relative;
 
             span {
-              color: $color-dark-text;
-              text-align: center;
-              font-size: 1.3rem;
-              font-style: normal;
-              font-weight: 500;
-              line-height: 15.6px; /* 120% */
+              position: absolute;
+              bottom: 0;
+              left: 0;
+              right: 0;
 
-              margin-bottom: 10px;
+              color: $color-dark-text;
+              font-size: 1.4rem;
+              font-weight: 600;
+              line-height: 1.5;
+              text-align: center;
+              padding: 0 15px;
+
               display: -webkit-box;
-              -webkit-line-clamp: 1; // Giới hạn số dòng hiển thị
+              -webkit-line-clamp: 2;
               -webkit-box-orient: vertical;
               overflow: hidden;
               text-overflow: ellipsis;
+              word-wrap: break-word;
+              white-space: normal;
+
+              width: 100%;
+              max-width: 100%;
+              /*               
+              min-height: 50px;
+              max-height: 50px; 
+              */
+              height: 50px;
             }
+
             img {
-              @include size(170px, 100%);
+              position: absolute;
+              top: 0;
+              @include size(90%, auto);
               object-fit: contain;
-              &:hover {
-                transform: scale(1.1);
-                transition: all 1s ease-in;
-                transition: all 0.5s ease-out;
-              }
             }
           }
         }
