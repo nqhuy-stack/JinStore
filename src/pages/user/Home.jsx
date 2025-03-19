@@ -2,11 +2,11 @@ import { Fragment } from 'react';
 
 // import Button from '@components/ui/Button';
 import CategoryList from '@components/ui/CategoryList.jsx';
+import ReusableSection from '@components/ui/ReusableSection.jsx';
 import { Link } from 'react-router-dom';
 
 import fullBanner from '@assets/images/banner/full-banner.png';
 import moveRight from '@assets/icons/icon-move-right.svg';
-import moveRightDark from '@assets/icons/icon-move-right-dark.svg';
 
 function Home() {
   return (
@@ -26,16 +26,13 @@ function Home() {
               </Link>
             </div>
           </div>
-          <div className="home__section">
-            <div className="section__title">
-              <h1 className="title">Browse by Categories</h1>
-              <Link to={'/shop'} className="btn btn-viewAll">
-                <p>View All</p>
-                <img src={moveRightDark} alt="Move Right" />
-              </Link>
-            </div>
+          <ReusableSection title="Browse by Categories" linkTo="shop">
             <CategoryList />
-          </div>
+          </ReusableSection>
+
+          <ReusableSection title="Fruits & Vegetables" linkTo="shop?category=Fruits & Vegetables">
+            
+          </ReusableSection>
 
           <div className="home__cashBack">
             <h1 className="cashBack-title">Get 10% Cashback! Min Order of 300.000</h1>
