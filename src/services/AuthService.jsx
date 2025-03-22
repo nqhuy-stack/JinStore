@@ -57,3 +57,18 @@ export const getCategories = async () => {
     throw error.response?.data || 'Lỗi hệ thống!';
   }
 };
+
+// Danh sách sản phẩm theo danh mục
+export const getProductsByCategory = async (idCategory) => {
+  if (!idCategory) {
+    throw new Error('idCategory không được để trống');
+  }
+
+  try {
+    const response = await axios.get(`${API_URL}/products/category/${idCategory}`);
+    const data = response.data;
+    return Array.isArray(data) ? data : [];
+  } catch (err) {
+    throw new Error(err.response?.data?.message || 'Lỗi khi lấy sản phẩm');
+  }
+};

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Button from '@components/ui/Button.jsx';
 import { logOut } from '@services/AuthService.jsx';
 import { useDispatch, useSelector } from 'react-redux';
+import jsonNavbar from '@json/navbar.jsx';
 
 import logoFull from '@assets/images/logo/logo-full.svg';
 import iconLocation from '@assets/icons/iconlocation.svg';
@@ -15,10 +16,18 @@ const Header = () => {
   const user = useSelector((state) => state.auth.login.currentUser);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const [isOpen, setIsOpen] = useState(false);
 
   const handleLogout = () => {
     logOut(dispatch, navigate);
+  };
+
+  const getInitials = (name) => {
+    if (!name || typeof name !== 'string') return ''; // Kiểm tra nếu name không hợp lệ
+    const words = name.trim().split(/\s+/); // Tách chuỗi thành mảng các từ
+    const initials = words.map((word) => word.charAt(0).toUpperCase()); // Lấy chữ cái đầu và viết hoa
+    return initials.join('.') + '.'; // Ghép lại với dấu chấm
   };
 
   // Đóng dropdown khi click ra ngoài
@@ -86,7 +95,13 @@ const Header = () => {
               <div className="header__account">
                 <Button onClick={() => setIsOpen(!isOpen)} className="header__account-btn">
                   <img src={iconUser} alt="Actor" />
-                  <strong>{user ? (user.fullname?.trim() ? user.fullname : user.username) : 'Account'}</strong>
+                  <strong>
+                    {user
+                      ? user.fullname.trim()
+                        ? getInitials(user.fullname)
+                        : getInitials(user.username)
+                      : 'Account'}
+                  </strong>
                 </Button>
 
                 {/* Dropdown menu */}
@@ -129,24 +144,11 @@ const Header = () => {
         <nav className="header__nav">
           <div className="header__nav-content">
             <ul className="header__menu">
-              <li>
-                <Link to="/">Home</Link>
-              </li>
-              <li /* className="dropdown" */>
-                <Link to="/shop">Shop</Link>
-              </li>
-              <li>
-                <Link to="/">Fruits & Vegetables</Link>
-              </li>
-              <li>
-                <Link to="/">Beverages</Link>
-              </li>
-              <li>
-                <Link to="/contact">Contact</Link>
-              </li>
-              <li>
-                <Link to="/">About us</Link>
-              </li>
+              {jsonNavbar.slice(0).map((item, i) => (
+                <li key={i}>
+                  <Link to={`${item.path}`}>{item.name}</Link>
+                </li>
+              ))}
             </ul>
           </div>
         </nav>
