@@ -4,11 +4,28 @@ import { Fragment } from 'react';
 import CategoryList from '@components/ui/CategoryList.jsx';
 import ReusableSection from '@components/ui/ReusableSection.jsx';
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { getCategories } from '@/services/AuthService';
+import ProductByCategory from '@/components/ui/ProductByCategory';
 
 import fullBanner from '@assets/images/banner/full-banner.png';
 import moveRight from '@assets/icons/icon-move-right.svg';
 
 function Home() {
+  const [category, setCategory] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const data = await getCategories(); // Goi API lay danh sach categories
+        setCategory(data);
+      } catch (error) {
+        console.error('Loi khi lay danh muc:', error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
   return (
     <Fragment>
       <section>
@@ -30,9 +47,11 @@ function Home() {
             <CategoryList />
           </ReusableSection>
 
-          <ReusableSection title="Fruits & Vegetables" linkTo="shop?category=Fruits & Vegetables">
-            
-          </ReusableSection>
+          {category.slice(0, 2).map((category) => (
+            <ReusableSection title={category.name} key={category._id} linkTo={`shop?category=${category.slug}`}>
+              <ProductByCategory idCategory={category._id} />
+            </ReusableSection>
+          ))}
 
           <div className="home__cashBack">
             <h1 className="cashBack-title">Get 10% Cashback! Min Order of 300.000</h1>
