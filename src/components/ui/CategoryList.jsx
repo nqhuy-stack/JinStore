@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getCategories } from '@/services/AuthService';
-import jsonCategories from '@json/categories.jsx';
 
 const CategoryList = () => {
   const [categories, setCategories] = useState([]);
@@ -23,28 +22,20 @@ const CategoryList = () => {
   return (
     <nav className="section__content">
       <ul>
-        {categories.length > 0
-          ? categories
-              .sort((a, b) => a.name.localeCompare(b.name))
-              .map(
-                ({ _id, name, description, image, status }) =>
-                  status === 'active' && (
-                    <li className="item-categories" key={_id}>
-                      <Link className="link-categories" to={`/shop?category=${encodeURIComponent(name)}`}>
-                        <img src={`${urlImage}${image}`} alt={`${name} : ${description}`} />
-                        <span>{name}</span>
-                      </Link>
-                    </li>
-                  ),
-              )
-          : jsonCategories.map(({ id, name, image }) => (
-              <li className="item-categories" key={id}>
-                <Link className="link-categories" to={`/shop?category=${encodeURIComponent(name)}`}>
-                  <img src={image} alt={name} />
-                  <h3>{name}</h3>
-                </Link>
-              </li>
-            ))}
+        {categories
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map(
+            ({ _id, name, description, image, parentId, status }) =>
+              status === 'active' &&
+              parentId === null && (
+                <li className="item-categories" key={_id}>
+                  <Link className="link-categories" to={`/shop?category=${encodeURIComponent(name)}`}>
+                    <img src={`${urlImage}${image}`} alt={`${name} : ${description}`} />
+                    <span>{name}</span>
+                  </Link>
+                </li>
+              ),
+          )}
       </ul>
     </nav>
   );
