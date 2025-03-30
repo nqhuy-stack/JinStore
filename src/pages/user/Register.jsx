@@ -9,21 +9,23 @@ function Register() {
     <Fragment>
       <section>
         <div className="register-container">
-          <h1 className="register-heading">Register</h1>
-          <p className="register-subtext">
-            There are many advantages to creating an account: the payment process is faster, shipment tracking is
-            possible and much more.
-          </p>
-          <FormRegister />
-          <div className="item-other">
-            <span className="line-left"></span>
-            <span className="text-or">OR</span>
-            <span className="line-right"></span>
+          <div className="form-describe">
+            <p>lorem</p>
           </div>
-          <SocialAccount />
-          <p>
-            Already have an account? <Link to="/login">Sign In</Link>
-          </p>
+          <div className="register-main">
+            <h1 className="register-heading">Register</h1>
+            <p className="register-subtext"></p>
+            <FormRegister />
+            <div className="item-other">
+              <span className="line-left"></span>
+              <span className="text-or">OR</span>
+              <span className="line-right"></span>
+            </div>
+            <SocialAccount />
+            <p>
+              Already have an account? <Link to="/login">Sign In</Link>
+            </p>
+          </div>
         </div>
       </section>
     </Fragment>

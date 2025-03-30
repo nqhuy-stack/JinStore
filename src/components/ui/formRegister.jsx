@@ -72,9 +72,9 @@ function FormRegister() {
           />
         </div>
         <p className="privacy-text">
-          Your personal data will be used to support your experience throughout this website, to manage access to your
-          account, and for other purposes described in our
-          <Link to="/privacy-policy"> privacy policy</Link>.
+          Dữ liệu cá nhân của bạn sẽ được sử dụng để hỗ trợ trải nghiệm của bạn trên trang web này, quản lý quyền truy
+          cập vào tài khoản của bạn và cho các mục đích khác được mô tả trong
+          <Link to="/privacy-policy"> chính sách bảo mật</Link> của chúng tôi.
         </p>
         <Button type="submit" className="btn register-button">
           Register

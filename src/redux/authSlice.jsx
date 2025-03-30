@@ -13,6 +13,16 @@ const authSlice = createSlice({
       error: false,
       success: false,
     },
+    resetPassword: {
+      isFetching: false,
+      error: false,
+      success: false,
+    },
+    otp: {
+      isFetching: false,
+      error: false,
+      success: false,
+    },
   },
   reducers: {
     loginStart: (state) => {
@@ -27,6 +37,18 @@ const authSlice = createSlice({
       state.login.isFetching = false;
       state.login.error = true;
     },
+    logoutSuccess: (state) => {
+      state.login.isFetching = false;
+      state.login.currentUser = null;
+      state.login.error = false;
+    },
+    logoutFailed: (state) => {
+      state.login.isFetching = false;
+      state.login.error = true;
+    },
+    logoutStart: (state) => {
+      state.login.isFetching = true;
+    },
     registerStart: (state) => {
       state.register.isFetching = true;
     },
@@ -40,17 +62,18 @@ const authSlice = createSlice({
       state.register.error = true;
       state.register.success = false;
     },
-    logoutSuccess: (state) => {
-      state.login.isFetching = false;
-      state.login.currentUser = null;
-      state.login.error = false;
+    resetPasswordStart: (state) => {
+      state.resetPassword.isFetching = true;
     },
-    logoutFailed: (state) => {
-      state.login.isFetching = false;
-      state.login.error = true;
+    resetPasswordSuccess: (state) => {
+      state.resetPassword.isFetching = false;
+      state.resetPassword.error = false;
+      state.resetPassword.success = true;
     },
-    logoutStart: (state) => {
-      state.login.isFetching = true;
+    resetPasswordFailed: (state) => {
+      state.resetPassword.isFetching = false;
+      state.resetPassword.error = true;
+      state.resetPassword.success = false;
     },
   },
 });
@@ -59,12 +82,18 @@ export const {
   loginStart,
   loginFailed,
   loginSuccess,
+
   registerStart,
   registerSuccess,
   registerFailed,
+
   logoutStart,
   logoutSuccess,
   logoutFailed,
+
+  resetPasswordStart,
+  resetPasswordSuccess,
+  resetPasswordFailed,
 } = authSlice.actions;
 
 export default authSlice.reducer;

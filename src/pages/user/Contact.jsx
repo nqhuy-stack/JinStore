@@ -1,17 +1,20 @@
-import { Fragment } from 'react';
+import { Fragment, useEffect } from 'react';
 import img_contact from '@assets/images/ui/contact-us.png';
 
 function Contact() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   return (
     <Fragment>
       <section>
-        <div className="contact">
+        <div className="container contact">
           <div className="contact__header">
-            <h3 className="content__title-suptext">Contact With Us</h3>
-            <h1 className="content__title">You can ask us questions</h1>
+            <h3 className="content__title-suptext">Liên hệ với chúng tôi</h3>
+            <h1 className="content__title">Chúng tôi cần câu hỏi từ các bạn.</h1>
             <p className="content__subtext">
-              Contact us for any questions and comments.
-              <br /> Or you can solve the problem faster through our contact offices.
+              Liên hệ với chúng tôi nếu quý vị có bất kỳ câu hỏi hoặc ý kiến nào. <br /> Hoặc quý vị có thể giải quyết
+              vấn đề nhanh chóng hơn thông qua các văn phòng liên hệ của chúng tôi.
             </p>
           </div>
           <div className="contact__content">
@@ -19,22 +22,22 @@ function Contact() {
               <img className="img-details" src={img_contact} alt="Contact with us" />
               <div className="details__office">
                 <div className="office__card">
-                  <p className="card-location">United States</p>
-                  <h3 className="card-name">United States Office</h3>
-                  <p className="card-address">205 Middle Road, 2nd Floor, New York</p>
-                  <p className="card-phone">+02 1234 567 88</p>
-                  <a href="mailto:info@example.com" className="card-email">
-                    info@example.com
+                  <p className="card-location">Phú Xuân</p>
+                  <h3 className="card-name">Văn phòng Quận Phú Xuân</h3>
+                  <p className="card-address">123 Hương Giang, Tầng 2, Thành phố Huế</p>
+                  <p className="card-phone">+84 234 567 890</p>
+                  <a href="mailto:phuxuan@example.com" className="card-email">
+                    phuxuan@example.com
                   </a>
                 </div>
 
                 <div className="office__card">
-                  <p className="card-location">Munich</p>
-                  <h3 className="card-name">Munich States Office</h3>
-                  <p className="card-address">205 Middle Road, 2nd Floor, New York</p>
-                  <p className="card-phone">+5 456 123 22</p>
-                  <a href="mailto:contact@example.com" className="card-email">
-                    contact@example.com
+                  <p className="card-location">Thuận Hóa</p>
+                  <h3 className="card-name">Văn phòng Quận Thuận Hóa</h3>
+                  <p className="card-address">456 Tố Hữu, Tầng 2, Thành phố Huế</p>
+                  <p className="card-phone">+84 234 123 456</p>
+                  <a href="mailto:thuanhoa@example.com" className="card-email">
+                    thuanhoa@example.com
                   </a>
                 </div>
               </div>

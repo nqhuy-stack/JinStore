@@ -11,6 +11,9 @@ export default defineConfig({
     emptyOutDir: false, // Không xoá dist trước khi build
   },
   plugins: [react()],
+  optimizeDeps: {
+    include: ['react-toastify'],
+  },
   base: '/JinStore/',
   resolve: {
     extensions: ['.js', '.jsx'],

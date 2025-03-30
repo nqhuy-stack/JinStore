@@ -1,7 +1,15 @@
 import '@assets/styles/ui/button.css';
-function Button({ onClick, children, type = 'button', className = 'btn', to }) {
+
+function Button({ onClick, children, type = 'button', className = 'btn', to, loading = false }) {
   return (
-    <button to={to} type={type} onClick={onClick} className={className}>
+    <button
+      type={type}
+      onClick={onClick}
+      className={`${className} ${loading ? 'btn-loading' : ''}`}
+      disabled={loading}
+      {...(to && { to })}
+    >
+      {loading && <span className="spinner"></span>}
       {children}
     </button>
   );

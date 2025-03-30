@@ -932,36 +932,28 @@ html {
 .home__section .section__content {
   width: 100%;
 }
-.home__section .section__content ul {
+.home__section .section__content.section__home-cate ul {
   display: flex;
   align-items: stretch;
   justify-content: space-between;
   flex-direction: row;
   flex-wrap: nowrap;
   align-self: stretch;
-  overflow-x: auto; /* Allow horizontal scrolling */
-  white-space: nowrap;
-  scrollbar-width: thin;
 }
-.home__section .section__content ul::-webkit-scrollbar {
-  height: 8px; /* Adjust height for visibility */
-}
-.home__section .section__content ul .item-categories {
+.home__section .section__content.section__home-cate ul .item-categories {
   width: calc(10% + 20px);
   height: 210px;
   border: 1px solid rgb(243, 243, 243);
   background-color: #ffffff;
-  border-spacing: none;
   position: relative;
 }
-.home__section .section__content ul .item-categories:hover {
+.home__section .section__content.section__home-cate ul .item-categories:hover {
   border-color: rgba(0, 0, 0, 0.12);
-  border-width: 1px;
   box-shadow: 0 0 0.8125rem 0 rgba(0, 0, 0, 0.05);
   transform: translateZ(0);
-  z-index: 1;
+  z-index: 2;
 }
-.home__section .section__content ul .item-categories .link-categories {
+.home__section .section__content.section__home-cate ul .item-categories .link-categories {
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -973,7 +965,7 @@ html {
   padding: 15px 15px 0 15px;
   position: relative;
 }
-.home__section .section__content ul .item-categories .link-categories span {
+.home__section .section__content.section__home-cate ul .item-categories .link-categories span {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -989,17 +981,9 @@ html {
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  word-wrap: break-word;
-  white-space: normal;
-  width: 100%;
-  max-width: 100%;
-  /*               
   min-height: 50px;
-  max-height: 50px; 
-  */
-  height: 50px;
 }
-.home__section .section__content ul .item-categories .link-categories img {
+.home__section .section__content.section__home-cate ul .item-categories .link-categories img {
   position: absolute;
   top: 0;
   width: 90%;
@@ -1205,54 +1189,71 @@ html {
 }
 
 .login-container {
-  max-width: 480px;
-  margin: 50px auto;
+  height: 100vh;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: #f3f4f6;
+}
+.login-container .login-main {
+  width: 480px;
+  height: -moz-fit-content;
+  height: fit-content;
   padding: 20px;
-  /*     border: 1px solid #a5a5a5;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+  margin: 50px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   text-align: center;
   background-color: white;
 }
-.login-container .login-form {
+.login-container .login-main .login-form {
   margin-bottom: 15px;
 }
-.login-container .login-form .login-field {
+.login-container .login-main .login-form .login-field {
   text-align: left;
   margin-bottom: 15px;
 }
-.login-container .login-form .login-field label {
+.login-container .login-main .login-form .login-field label {
   display: block; /* Đảm bảo label không bị dính vào input */
   margin-bottom: 5px;
   font-weight: 500;
 }
-.login-container .login-form .login-field input {
-  width: 100%;
-  padding: 12px;
-  border-radius: 8px;
+.login-container .login-main .login-form .login-field .field_input {
   border: 1px solid #a5a5a5;
-  background: #fff;
-  box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
-  box-sizing: border-box; /* Fix lỗi kích thước input */
-}
-.login-container .login-form .login-checkbox-container {
+  border-radius: 8px;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin: 15px 0;
+  flex-direction: row;
+  flex-wrap: nowrap;
 }
-.login-container .login-form .login-checkbox-container .login-checkbox-left input {
-  cursor: pointer;
-  margin-right: 5px;
+.login-container .login-main .login-form .login-field .field_input input {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  background: #fff;
+  box-sizing: border-box;
 }
-.login-container .login-form .login-checkbox-container .login-checkbox-left .login-label {
-  cursor: pointer;
+.login-container .login-main .login-form .login-field .field_input .see-password {
+  width: 16px;
+  height: 16px;
+  border: none;
+  padding: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-left: 1px solid #a5a5a5;
 }
-.login-container .login-form .login-checkbox-container .login-link {
-  color: #6a5acd;
-  text-decoration: none;
+.login-container .login-main .login-form .login-field .field_input .see-password .icon-eye {
+  font-size: 1.9rem;
+  margin: 0;
+  position: absolute;
 }
-.login-container .login-form .login-button {
+.login-container .login-main .login-form .login-button {
   width: 100%;
   color: #fff;
   border: none;
@@ -1262,12 +1263,23 @@ html {
   font-weight: bold;
   margin-top: 10px;
 }
-.login-container .login-heading {
+.login-container .login-main .login-form .login-resetPassword {
+  display: block;
+  width: 100%;
+  text-align: left;
+}
+.login-container .login-main .login-form .login-resetPassword a {
+  color: #634c9f;
+  text-decoration: underline;
+  line-height: normal;
+  font-weight: 500;
+}
+.login-container .login-main .login-heading {
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 10px;
 }
-.login-container .login-subtext {
+.login-container .login-main .login-subtext {
   font-size: 1.3rem;
   font-style: normal;
   font-weight: 400;
@@ -1275,14 +1287,14 @@ html {
   color: #000000;
   margin-bottom: 15px;
 }
-.login-container .social__login-other {
+.login-container .login-main .social__login-other {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   margin-bottom: 15px;
 }
-.login-container .social__login-btn {
+.login-container .login-main .social__login-btn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1296,27 +1308,27 @@ html {
   cursor: pointer;
   transition: all 0.3s ease;
 }
-.login-container .social__login-btn:hover {
+.login-container .login-main .social__login-btn:hover {
   background-color: #cccccc;
 }
-.login-container .social__login-btn img {
+.login-container .login-main .social__login-btn img {
   width: 30px;
   height: 100%;
 }
-.login-container .item-other {
+.login-container .login-main .item-other {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   margin: 20px 0;
 }
-.login-container .item-other .line-left,
-.login-container .item-other .line-right {
+.login-container .login-main .item-other .line-left,
+.login-container .login-main .item-other .line-right {
   flex: 1;
   height: 1px;
   background-color: #ccc;
 }
-.login-container .item-other .text-or {
+.login-container .login-main .item-other .text-or {
   font-weight: bold;
   color: #555;
   text-transform: uppercase;
@@ -1329,21 +1341,29 @@ html {
 }
 
 .register-container {
-  max-width: 480px;
-  margin: 50px auto;
+  height: 100vh;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: #f3f4f6;
+}
+.register-container .register-main {
+  width: 480px;
+  height: -moz-fit-content;
+  height: fit-content;
   padding: 20px;
-  /*     border: 1px solid #a5a5a5;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); */
+  margin: 50px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   text-align: center;
   background-color: white;
 }
-.register-container .register-heading {
+.register-container .register-main .register-heading {
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 10px;
 }
-.register-container .register-subtext {
+.register-container .register-main .register-subtext {
   font-size: 1.3rem;
   font-style: normal;
   font-weight: 400;
@@ -1351,10 +1371,10 @@ html {
   color: #000000;
   margin-bottom: 15px;
 }
-.register-container .register-form {
+.register-container .register-main .register-form {
   margin-bottom: 15px;
 }
-.register-container .register-form .privacy-text {
+.register-container .register-main .register-form .privacy-text {
   text-align: start;
   color: #000000;
   font-size: 1.3rem;
@@ -1363,20 +1383,20 @@ html {
   line-height: 19.5px;
   margin-bottom: 15px;
 }
-.register-container .register-form .privacy-text a {
+.register-container .register-main .register-form .privacy-text a {
   color: #6a5acd;
   text-decoration: none;
 }
-.register-container .register-field {
+.register-container .register-main .register-field {
   text-align: left;
   margin-bottom: 15px;
 }
-.register-container .register-field label {
+.register-container .register-main .register-field label {
   display: block;
   margin-bottom: 5px;
   font-weight: 500;
 }
-.register-container .register-field input {
+.register-container .register-main .register-field input {
   width: 100%;
   padding: 12px;
   border-radius: 8px;
@@ -1385,7 +1405,7 @@ html {
   box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
   box-sizing: border-box;
 }
-.register-container .register-button {
+.register-container .register-main .register-button {
   width: 100%;
   color: #fff;
   border: none;
@@ -1393,14 +1413,14 @@ html {
   cursor: pointer;
   font-size: 1.6rem;
 }
-.register-container .social__login-other {
+.register-container .register-main .social__login-other {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   margin-bottom: 15px;
 }
-.register-container .social__login-btn {
+.register-container .register-main .social__login-btn {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1414,27 +1434,27 @@ html {
   cursor: pointer;
   transition: all 0.3s ease;
 }
-.register-container .social__login-btn:hover {
+.register-container .register-main .social__login-btn:hover {
   background-color: #cccccc;
 }
-.register-container .social__login-btn img {
+.register-container .register-main .social__login-btn img {
   width: 30px;
   height: 100%;
 }
-.register-container .item-other {
+.register-container .register-main .item-other {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   margin: 20px 0;
 }
-.register-container .item-other .line-left,
-.register-container .item-other .line-right {
+.register-container .register-main .item-other .line-left,
+.register-container .register-main .item-other .line-right {
   flex: 1;
   height: 1px;
   background-color: #ccc;
 }
-.register-container .item-other .text-or {
+.register-container .register-main .item-other .text-or {
   font-weight: bold;
   color: #555;
   text-transform: uppercase;

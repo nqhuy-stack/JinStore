@@ -4,6 +4,8 @@ import Button from '@components/ui/Button.jsx';
 import { logOut } from '@services/AuthService.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import jsonNavbar from '@json/navbar.jsx';
+import { logoutSuccess } from '@/redux/authSlice.jsx';
+import { createAxios } from '@utils/createInstance.jsx';
 
 import logoFull from '@assets/images/logo/logo-full.svg';
 import iconLocation from '@assets/icons/iconlocation.svg';
@@ -14,13 +16,16 @@ import iconUser from '@assets/icons/iconuser.svg';
 
 const Header = () => {
   const user = useSelector((state) => state.auth.login.currentUser);
+  const id = user?._id;
+  const accessToken = user?.accessToken;
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const axiosJWT = createAxios(user, dispatch, logoutSuccess);
 
   const [isOpen, setIsOpen] = useState(false);
 
   const handleLogout = () => {
-    logOut(dispatch, navigate);
+    logOut(dispatch, id, navigate, accessToken, axiosJWT);
   };
 
   const getInitials = (name) => {
@@ -96,11 +101,7 @@ const Header = () => {
                 <Button onClick={() => setIsOpen(!isOpen)} className="header__account-btn">
                   <img src={iconUser} alt="Actor" />
                   <strong>
-                    {user
-                      ? user.fullname.trim()
-                        ? getInitials(user.fullname)
-                        : getInitials(user.username)
-                      : 'Account'}
+                    {user ? (user.fullname?.trim() ? getInitials(user.fullname) : user.username) : 'Account'}
                   </strong>
                 </Button>
 
