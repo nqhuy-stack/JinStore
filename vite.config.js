@@ -8,6 +8,9 @@ const __dirname = path.dirname(__filename);
 
 export default defineConfig({
   plugins: [react()],
+  optimizeDeps: {
+    include: ['react-toastify'],
+  },
   base: '/JinStore/',
   resolve: {
     extensions: ['.js', '.jsx'],

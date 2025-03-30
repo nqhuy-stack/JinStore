@@ -50,15 +50,15 @@ const Footer = () => {
             <div className="footer__contact-phone">
               <img src={iconTelephone} alt="Icon Telephone" />
               <p className="footer__contact-details">
-                <h5>Monday-Friday: 08am-9pm</h5>
-                <h1>0 800 300-353</h1>
+                <h5>Thứ 2 - Chủ nhật: 08am-9pm</h5>
+                <h1>0 832 766 413</h1>
               </p>
             </div>
             <div className="footer__contact-email">
               <img src={iconEmail} alt="Icon Email" />
               <p className="footer__contact-details">
                 <h5>Need help with your order?</h5>
-                <a href="mailto:info@example.com">info@example.com</a>
+                <a href="mailto:info@example.com">Jinstore@gmail.com</a>
               </p>
             </div>
           </div>

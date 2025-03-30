@@ -4,6 +4,6 @@ const jsonNavbar = [
   { id: 3, name: 'Ưu đãi' },
   { id: 4, name: 'Theo dõi đơn hàng' },
   { id: 5, name: 'Giỏ hàng' },
-  { id: 6, name: 'Liên hệ' },
+  { id: 6, name: 'Liên hệ', path: '/contact' },
 ];
 export default jsonNavbar;
