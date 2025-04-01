@@ -8,9 +8,16 @@
 @import './layout/layout';
 @import './layout/header';
 @import './layout/footer';
+@import './layout/modal';
+@import './layout/pagination';
 
 @import './page/home';
 @import './page/contact';
 @import './page/login';
 @import './page/register';
 @import './page/notfound';
+@import './page/admin';
+@import './page/modal';
+@import './page/productuser';
+@import './page/cart';
+@import './page/productdetails';

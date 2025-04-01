@@ -23,7 +23,13 @@ export const login = async (user, dispatch, navigate) => {
     toast.success('Đăng nhập thành công!', {
       autoClose: 500,
     });
-    navigate('/');
+
+    // Nếu là admin thì điều hướng vào trang admin, nếu không thì vào trang home
+    if (res.data.isAdmin) {
+      navigate('/admin');
+    } else {
+      navigate('/');
+    }
   } catch (err) {
     dispatch(loginFailed());
     throw alert(err.response?.data.message);
@@ -45,7 +51,7 @@ export const logOut = async (dispatch, id, navigate, accessToken, axiosJWT) => {
     );
 
     dispatch(logoutSuccess());
-    navigate('/login');
+    navigate('/'); // Điều hướng về trang home thay vì trang login
     toast.success('Đăng xuất thành công!', {
       autoClose: 1000,
     });
