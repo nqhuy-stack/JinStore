@@ -1193,7 +1193,7 @@ html {
   display: flex;
   justify-content: space-around;
   align-items: center;
-  background-color: #f3f4f6;
+  background-color: red;
 }
 .login-container .login-main {
   width: 480px;
