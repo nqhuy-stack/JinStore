@@ -43,10 +43,6 @@ const routes = [
     page: Contact,
   },
   {
-    path: '/notfound',
-    page: NotFound,
-  },
-  {
     path: '*', // Bắt tất cả các đường dẫn không khớp
     page: NotFound,
   },
