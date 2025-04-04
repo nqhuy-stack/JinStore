@@ -1,14 +1,16 @@
 .login-container {
-  height: 100vh;
+  margin: auto;
+  max-width: 1140px;
+  margin-top: 15rem;
   display: flex;
-  justify-content: space-around;
-  align-items: center;
-  background-color: #f3f4f6;
+  align-items: flex-start;
+  justify-items: center;
+
   .login-main {
+    margin-left: 10rem;
     width: 480px;
     height: fit-content;
     padding: 20px;
-    margin: 50px;
     // border: 1px solid #a5a5a5;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 8px;
@@ -16,7 +18,9 @@
     background-color: white;
     .login-form {
       margin-bottom: 15px;
+      width: 100%;
       .login-field {
+        width: 100%;
         text-align: left;
         margin-bottom: 15px;
 
@@ -31,6 +35,7 @@
           border-radius: 8px;
           overflow: hidden;
           @include flexbox(center, space-between, row, flex, nowrap);
+          width: 100%;
           input {
             width: 100%;
             padding: 12px;
@@ -97,38 +102,6 @@
       line-height: 19.5px; /* 150% */
       color: $color-dark-text;
       margin-bottom: 15px;
-    }
-
-    .social__login {
-      &-other {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        margin-bottom: 15px;
-      }
-
-      &-btn {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        padding: 10px 20px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        background: white;
-        width: 100%;
-        font-size: 1.4rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        &:hover {
-          background-color: #cccccc;
-        }
-        img {
-          width: 30px;
-          height: 100%;
-        }
-      }
     }
 
     .item-other {

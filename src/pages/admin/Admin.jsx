@@ -6,7 +6,7 @@ import { createAxios } from '@utils/createInstance.jsx';
 import logoFull from '@assets/images/logo/logo-full.svg';
 import { useState } from 'react';
 
-const AdminLayout = () => {
+const Admin = () => {
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -102,4 +102,4 @@ const AdminLayout = () => {
   );
 };
 
-export default AdminLayout;
+export default Admin;

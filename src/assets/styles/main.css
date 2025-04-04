@@ -30,6 +30,10 @@ button {
   cursor: pointer;
 }
 
+input {
+  width: 100%;
+}
+
 html {
   font-size: 62.5%;
   box-sizing: border-box;
@@ -931,6 +935,59 @@ html {
   }
 }
 
+.social__login-other {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+.social__login-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background: white;
+  width: 100%;
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.social__login-btn:hover {
+  background-color: #cccccc;
+}
+.social__login-btn img {
+  width: 30px;
+  height: 100%;
+}
+
+.form-describe {
+  flex: 1;
+  padding-right: 5rem;
+  max-width: 480px;
+}
+.form-describe__logo {
+  margin-bottom: 3rem;
+}
+.form-describe__logo img {
+  width: 200px;
+  height: auto;
+}
+.form-describe__title {
+  font-size: 3.2rem;
+  font-weight: 700;
+  color: #000000;
+  margin-bottom: 2rem;
+}
+.form-describe__text {
+  font-size: 1.6rem;
+  line-height: 1.6;
+  color: #000000;
+}
+
 .home {
   margin-top: 30px;
 }
@@ -1325,18 +1382,19 @@ html {
 }
 
 .login-container {
-  height: 100vh;
+  margin: auto;
+  max-width: 1140px;
+  margin-top: 15rem;
   display: flex;
-  justify-content: space-around;
-  align-items: center;
-  background-color: #f3f4f6;
+  align-items: flex-start;
+  justify-items: center;
 }
 .login-container .login-main {
+  margin-left: 10rem;
   width: 480px;
   height: -moz-fit-content;
   height: fit-content;
   padding: 20px;
-  margin: 50px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   text-align: center;
@@ -1344,8 +1402,10 @@ html {
 }
 .login-container .login-main .login-form {
   margin-bottom: 15px;
+  width: 100%;
 }
 .login-container .login-main .login-form .login-field {
+  width: 100%;
   text-align: left;
   margin-bottom: 15px;
 }
@@ -1363,6 +1423,7 @@ html {
   justify-content: space-between;
   flex-direction: row;
   flex-wrap: nowrap;
+  width: 100%;
 }
 .login-container .login-main .login-form .login-field .field_input input {
   width: 100%;
@@ -1423,34 +1484,6 @@ html {
   color: #000000;
   margin-bottom: 15px;
 }
-.login-container .login-main .social__login-other {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 15px;
-}
-.login-container .login-main .social__login-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 10px 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background: white;
-  width: 100%;
-  font-size: 1.4rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-.login-container .login-main .social__login-btn:hover {
-  background-color: #cccccc;
-}
-.login-container .login-main .social__login-btn img {
-  width: 30px;
-  height: 100%;
-}
 .login-container .login-main .item-other {
   display: flex;
   align-items: center;
@@ -1477,18 +1510,19 @@ html {
 }
 
 .register-container {
-  height: 100vh;
+  margin: auto;
+  max-width: 1140px;
+  margin-top: 15rem;
   display: flex;
-  justify-content: space-around;
-  align-items: center;
-  background-color: #f3f4f6;
+  align-items: flex-start;
+  justify-items: center;
 }
 .register-container .register-main {
+  margin-left: 10rem;
   width: 480px;
   height: -moz-fit-content;
   height: fit-content;
   padding: 20px;
-  margin: 50px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   text-align: center;
@@ -1509,6 +1543,7 @@ html {
 }
 .register-container .register-main .register-form {
   margin-bottom: 15px;
+  width: 100%;
 }
 .register-container .register-main .register-form .privacy-text {
   text-align: start;
@@ -1523,16 +1558,17 @@ html {
   color: #6a5acd;
   text-decoration: none;
 }
-.register-container .register-main .register-field {
+.register-container .register-main .register-form .register-field {
   text-align: left;
   margin-bottom: 15px;
+  width: 100%;
 }
-.register-container .register-main .register-field label {
+.register-container .register-main .register-form .register-field label {
   display: block;
   margin-bottom: 5px;
   font-weight: 500;
 }
-.register-container .register-main .register-field input {
+.register-container .register-main .register-form .register-field input {
   width: 100%;
   padding: 12px;
   border-radius: 8px;
@@ -1548,34 +1584,6 @@ html {
   border-radius: 4px;
   cursor: pointer;
   font-size: 1.6rem;
-}
-.register-container .register-main .social__login-other {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 15px;
-}
-.register-container .register-main .social__login-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 10px 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background: white;
-  width: 100%;
-  font-size: 1.4rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-.register-container .register-main .social__login-btn:hover {
-  background-color: #cccccc;
-}
-.register-container .register-main .social__login-btn img {
-  width: 30px;
-  height: 100%;
 }
 .register-container .register-main .item-other {
   display: flex;
@@ -2246,14 +2254,35 @@ html {
 .admin__section .admin__table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: auto;
+  table-layout: fixed;
 }
 .admin__section .admin__table th,
 .admin__section .admin__table td {
-  padding: 15px 20px;
+  padding: 5px 20px;
   border-bottom: 1px solid #ddd;
   font-size: 1.4rem;
   vertical-align: middle;
+}
+.admin__section .admin__table .th-name {
+  text-align: center;
+}
+.admin__section .admin__table .th-name,
+.admin__section .admin__table .td-name {
+  max-width: 400px;
+}
+.admin__section .admin__table .td-slug,
+.admin__section .admin__table .th-slug,
+.admin__section .admin__table .td-date,
+.admin__section .admin__table .th-date,
+.admin__section .admin__table .td-img,
+.admin__section .admin__table .th-img {
+  width: 20%;
+  text-align: center;
+}
+.admin__section .admin__table .td-option,
+.admin__section .admin__table .th-option {
+  width: 200px;
+  text-align: center;
 }
 .admin__section .admin__table th {
   background-color: #ffffff;
@@ -2262,6 +2291,18 @@ html {
   text-align: left;
   border-right: none;
   text-transform: uppercase;
+}
+.admin__section .admin__table .td-img {
+  width: 70px;
+  height: 70px;
+  text-align: center;
+}
+.admin__section .admin__table .td-img img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: contain;
+     object-fit: contain;
+  border: none;
 }
 .admin__section .admin__table td {
   color: #000000;

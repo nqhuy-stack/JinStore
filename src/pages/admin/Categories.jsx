@@ -1,8 +1,9 @@
-// File: src/pages/admin/Categories.jsx
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import Modal from '@components/ui/Modal';
 import Pagination from '@components/ui/Pagination';
+import { getCategories } from '@/services/CategoryService.jsx';
+import moment from 'moment';
 
 const Categories = () => {
   const navigate = useNavigate();
@@ -10,39 +11,34 @@ const Categories = () => {
 
   // Lấy dữ liệu category mới từ state (nếu có)
   const newCategory = location.state?.newCategory;
-
-  const [categories, setCategories] = useState([
-    {
-      id: 1,
-      name: 'Aata Buscut',
-      date: '26-12-2021',
-      image: 'https://via.placeholder.com/100',
-      icon: 'fas fa-carrot',
-      slug: 'buscut',
-    },
-    {
-      id: 2,
-      name: 'Cold Brew Coffee',
-      date: '21-05-2022',
-      image: 'https://via.placeholder.com/100',
-      icon: 'fas fa-coffee',
-      slug: 'coffee',
-    },
-    ...Array.from({ length: 48 }, (_, i) => ({
-      id: i + 3,
-      name: `Category ${i + 3}`,
-      date: '20-08-2022',
-      image: 'https://via.placeholder.com/100',
-      icon: 'fas fa-folder',
-      slug: `category-${i + 3}`,
-    })),
-  ]);
+  const [error, setError] = useState(null);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [categoryToDelete, setCategoryToDelete] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const urlImage = '../src/assets/images/categories/';
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setLoading(true);
+        const data = await getCategories();
+        setCategories(data);
+      } catch (error) {
+        setError('Không thể tải danh mục. Vui lòng thử lại sau.');
+        console.error('Lỗi khi lấy danh mục:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  if (error) return <div>{error}</div>;
 
   // Thêm category mới vào danh sách nếu có
   if (newCategory && !categories.some((cat) => cat.id === newCategory.id)) {
@@ -79,7 +75,7 @@ const Categories = () => {
   const filteredCategories = categories.filter((category) =>
     category.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
-
+  const formatDate = (isoDate) => moment(isoDate).format('DD/MM/YYYY HH:mm:ss');
   const totalItems = filteredCategories.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -89,7 +85,7 @@ const Categories = () => {
   return (
     <section className="admin__section">
       <div className="admin__section-header">
-        <h2 className="admin__section-title">All Category</h2>
+        <h2 className="admin__section-title">All Category ({categories.length})</h2>
         <button className="admin__add-button" onClick={handleAddCategory}>
           + Add New
         </button>
@@ -110,34 +106,30 @@ const Categories = () => {
             <table className="admin__table">
               <thead>
                 <tr>
-                  <th>Product Name</th>
-                  <th>Date</th>
-                  <th>Product Image</th>
-                  <th>Icon</th>
-                  <th>Slug</th>
-                  <th>Option</th>
+                  <th className="th-nam">Product Name</th>
+                  <th className="th-date">Date</th>
+                  <th className="th-img">Product Image</th>
+                  <th className="th-slug">Slug</th>
+                  <th className="th-option">Option</th>
                 </tr>
               </thead>
               <tbody>
                 {currentCategories.map((category) => (
-                  <tr key={category.id}>
-                    <td>{category.name}</td>
-                    <td>{category.date}</td>
-                    <td>
+                  <tr key={category._id}>
+                    <td className="td-name">{category.name}</td>
+                    <td className="td-date">{formatDate(category.createdAt)}</td>
+                    <td className="td-img">
                       <img
-                        src={category.image}
-                        alt={category.name}
+                        src={`${urlImage}${category.image}`}
+                        alt={`${category.name} : ${category.description}`}
                         className="admin__image-preview admin__image-preview--category"
                       />
                     </td>
-                    <td>
-                      <i className={category.icon}></i>
-                    </td>
-                    <td>{category.slug}</td>
-                    <td>
+                    <td className="td-slug">{category.slug}</td>
+                    <td className="td-option">
                       <button
                         className="admin__action-btn admin__action-btn--view"
-                        onClick={() => handleViewCategory(category.id)}
+                        onClick={() => handleViewCategory(category._id)}
                         disabled={loading}
                       >
                         <i className="fas fa-eye"></i>

@@ -9,7 +9,7 @@ import NotFound from '@pages/user/NotFound.jsx';
 // import Wishlist from '@pages/user/Wishlist';
 // import ProductList from '@/pages/user/ProductList';
 // import ProductDetails from '@/pages/user/ProductDetails';
-import AdminLayout from '@pages/admin/AdminLayout';
+import Admin from '@pages/admin/Admin';
 import Dashboard from '@pages/admin/Dashboard';
 import Products from '@pages/admin/Products';
 import AddProduct from '@pages/admin/AddProduct';
@@ -48,7 +48,7 @@ const routes = [
   },
   {
     path: '/admin',
-    page: AdminLayout,
+    page: Admin,
     isProtected: true,
     adminOnly: true,
     children: [

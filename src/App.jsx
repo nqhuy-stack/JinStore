@@ -1,7 +1,8 @@
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { Fragment } from 'react';
 import { useSelector } from 'react-redux';
-import { ToastContainer } from 'react-toastify';
+// import { ToastContainer } from 'react-toastify';
+import { Toaster } from 'react-hot-toast';
 import 'react-toastify/dist/ReactToastify.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
@@ -92,7 +93,7 @@ const App = () => {
           );
         })}
       </Routes>
-      <ToastContainer />
+      <Toaster position="top-right" reverseOrder={false} />
     </Fragment>
   );
 };

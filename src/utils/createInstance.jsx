@@ -1,10 +1,12 @@
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const refreshToken = async () => {
   try {
     const res = await axios.post(
-      '/auth/refresh',
+      `${API_URL}/auth/refresh`,
       {},
       {
         withCredentials: true,
