@@ -10,7 +10,8 @@ import {
   logoutFailed,
 } from '@/redux/authSlice.jsx';
 import axios from 'axios';
-import { toast } from 'react-toastify';
+// import { toast } from 'react-toastify';
+import { toast } from 'react-hot-toast';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -19,11 +20,18 @@ export const login = async (user, dispatch, navigate) => {
   dispatch(loginStart());
   try {
     const res = await axios.post(`${API_URL}/auth/login`, user, { withCredentials: true });
+
     dispatch(loginSuccess(res.data));
+
+    toast.dismiss();
     toast.success('Đăng nhập thành công!', {
-      autoClose: 500,
+      autoClose: 1,
     });
-    navigate('/');
+    if (res.data.isAdmin) {
+      navigate('/admin');
+    } else {
+      navigate('/');
+    }
   } catch (err) {
     dispatch(loginFailed());
     throw alert(err.response?.data.message);
@@ -34,6 +42,10 @@ export const login = async (user, dispatch, navigate) => {
 export const logOut = async (dispatch, id, navigate, accessToken, axiosJWT) => {
   dispatch(logoutStart());
   try {
+    // Xóa dữ liệu local trước
+    localStorage.removeItem('persist:root');
+
+    // Gọi API logout với credentials
     await axiosJWT.post(
       `${API_URL}/auth/logout`,
       { id },
@@ -41,14 +53,20 @@ export const logOut = async (dispatch, id, navigate, accessToken, axiosJWT) => {
         headers: {
           token: `Bearer ${accessToken}`,
         },
+        withCredentials: true,
       },
     );
 
+    // Dispatch action và thông báo
     dispatch(logoutSuccess());
-    navigate('/login');
+
+    toast.dismiss();
     toast.success('Đăng xuất thành công!', {
       autoClose: 1000,
     });
+
+    // Điều hướng về trang chủ
+    navigate('/');
   } catch (error) {
     console.error('Logout error:', error);
     dispatch(logoutFailed());
@@ -61,24 +79,16 @@ export const register = async (user, dispatch, navigate) => {
   try {
     await axios.post(`${API_URL}/auth/register`, user);
     dispatch(registerSuccess());
-    toast.success('Đăng ký thành công!');
-    navigate('/login');
+
+    toast.dismiss();
     toast.success('Đăng ký thành công!', {
       autoClose: 1000,
     });
+
+    navigate('/login');
   } catch (err) {
     dispatch(registerFailed('Something is wrong'));
     throw alert(err.response?.data.message);
-  }
-};
-
-//NOTE: Danh sách danh mục
-export const getCategories = async () => {
-  try {
-    const response = await axios.get(`${API_URL}/categories`);
-    return response.data;
-  } catch (error) {
-    throw error.response?.data || 'Lỗi hệ thống!';
   }
 };
 

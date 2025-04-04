@@ -110,12 +110,15 @@ const Header = () => {
                   <div className="dropdown-menu">
                     {user ? (
                       <>
+                        {user.isAdmin && (
+                          <Link to="/admin" onClick={() => setIsOpen(false)}>
+                            Admin Panel
+                          </Link>
+                        )}
                         <Link to="/info" onClick={() => setIsOpen(false)}>
                           Info User
                         </Link>
-                        <Link to="/login" onClick={handleLogout}>
-                          Logout
-                        </Link>
+                        <Link onClick={handleLogout}>Logout</Link>
                       </>
                     ) : (
                       <>

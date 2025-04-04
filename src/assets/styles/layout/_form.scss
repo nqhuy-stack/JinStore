@@ -1,0 +1,59 @@
+.social__login {
+  &-other {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 15px;
+  }
+
+  &-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 10px 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: white;
+    width: 100%;
+    font-size: 1.4rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    &:hover {
+      background-color: #cccccc;
+    }
+    img {
+      width: 30px;
+      height: 100%;
+    }
+  }
+}
+
+.form-describe {
+  flex: 1;
+  padding-right: 5rem;
+  max-width: 480px;
+
+  &__logo {
+    margin-bottom: 3rem;
+
+    img {
+      width: 200px;
+      height: auto;
+    }
+  }
+
+  &__title {
+    font-size: 3.2rem;
+    font-weight: 700;
+    color: $color-dark-text;
+    margin-bottom: 2rem;
+  }
+
+  &__text {
+    font-size: 1.6rem;
+    line-height: 1.6;
+    color: $color-dark-text;
+  }
+}

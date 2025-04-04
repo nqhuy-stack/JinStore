@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getCategories } from '@/services/AuthService.jsx';
+import { getCategories } from '@/services/CategoryService.jsx';
 
 const CategoryList = () => {
   const urlImage = './src/assets/images/categories/';
