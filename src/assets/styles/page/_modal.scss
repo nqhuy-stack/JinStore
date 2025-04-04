@@ -1,0 +1,112 @@
+// File: src/assets/styles/page/modal.scss
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5); // Nửa trong suốt, đồng bộ với admin
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  font-family: 'Poppins', sans-serif; // Đồng bộ font
+}
+
+.modal-content {
+  background: #ffffff; // Nền trắng giống admin__main
+  padding: 20px; // Padding giống admin__form
+  border-radius: 8px; // Bo góc giống admin__form
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); // Bóng giống admin__image-preview
+  animation: fadeIn 0.3s ease; // Hiệu ứng xuất hiện
+}
+
+.modal-title {
+  font-size: 1.8rem; // Nhỏ hơn admin__section-title (2rem) nhưng đủ nổi bật
+  font-weight: 600; // Đồng bộ với admin__section-title
+  color: #000000; // Màu chữ giống admin__section-title
+  margin-bottom: 10px;
+}
+
+.modal-message {
+  font-size: 1.4rem; // Kích thước chữ giống admin__form-field input
+  color: #6b7280; // Màu xám giống admin__table td
+  margin-bottom: 20px;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px; // Khoảng cách giống admin__form-row
+}
+
+.modal-btn {
+  padding: 8px 16px; // Padding nhỏ hơn admin__form-button một chút
+  border: none;
+  border-radius: 4px; // Bo góc giống admin__action-btn
+  font-size: 1.4rem; // Đồng bộ với admin__form-button
+  font-weight: 500; // Font-weight nhẹ hơn một chút
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    transform 0.2s ease; // Hiệu ứng giống admin__add-button
+
+  &--cancel {
+    background: #ccc; // Màu xám nhạt
+    color: #fff;
+    &:hover {
+      background: darken(#ccc, 10%);
+      transform: translateY(-2px); // Hiệu ứng nhấc lên giống admin__add-button
+    }
+    &:active {
+      transform: translateY(0); // Trở lại khi nhấn
+    }
+  }
+
+  &--confirm {
+    background: #ff4d4d; // Màu đỏ giống admin__logout và admin__action-btn--delete
+    color: #fff;
+    &:hover {
+      background: darken(#ff4d4d, 10%);
+      transform: translateY(-2px);
+    }
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}
+
+// Hiệu ứng fade in cho modal
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .modal-content {
+    width: 90%;
+    padding: 15px; // Giảm padding trên mobile
+  }
+
+  .modal-title {
+    font-size: 1.6rem; // Giảm kích thước chữ
+  }
+
+  .modal-message {
+    font-size: 1.3rem;
+  }
+
+  .modal-btn {
+    padding: 6px 12px; // Giảm kích thước nút
+    font-size: 1.3rem;
+  }
+}

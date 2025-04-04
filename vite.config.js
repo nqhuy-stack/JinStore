@@ -7,9 +7,6 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default defineConfig({
-  build: {
-    emptyOutDir: false, // Không xoá dist trước khi build
-  },
   plugins: [react()],
   optimizeDeps: {
     include: ['react-toastify'],

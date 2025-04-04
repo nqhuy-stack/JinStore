@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 
 import { useEffect, useState } from 'react';
-import { getCategories } from '@/services/AuthService';
+import { getCategories } from '@/services/CategoryService';
 import jsonNavbar from '@json/navbar.jsx';
 
 import appStore from '@assets/images/logo/button-appstore.svg';
