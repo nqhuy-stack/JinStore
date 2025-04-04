@@ -1386,8 +1386,11 @@ html {
   max-width: 1140px;
   margin-top: 15rem;
   display: flex;
+
   align-items: flex-start;
   justify-items: center;
+
+
 }
 .login-container .login-main {
   margin-left: 10rem;
