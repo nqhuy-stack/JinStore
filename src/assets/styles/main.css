@@ -1386,9 +1386,8 @@ html {
   max-width: 1140px;
   margin-top: 15rem;
   display: flex;
-  justify-content: space-around;
-  align-items: center;
-  background-color: #f3f4f6;
+  align-items: flex-start;
+  justify-items: center;
 }
 .login-container .login-main {
   margin-left: 10rem;
