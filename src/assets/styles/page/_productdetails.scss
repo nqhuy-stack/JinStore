@@ -348,6 +348,25 @@
     }
   }
 
+  &__stock-status {
+    margin: 1rem 0;
+    font-size: 1.4rem;
+
+    .in-stock {
+      color: #22c55e;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .out-of-stock {
+      color: #e74c3c;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+  }
+
   @media (max-width: 768px) {
     padding: 1rem;
 

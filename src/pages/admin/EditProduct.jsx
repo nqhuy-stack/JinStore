@@ -36,13 +36,18 @@ const EditProduct = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   useEffect(() => {
-    // Tìm sản phẩm theo ID (giả lập)
-    const foundProduct = initialProducts.find((p) => p.id === parseInt(id));
-    if (foundProduct) {
-      setProduct({ ...foundProduct });
-    } else {
-      setError('Product not found');
-    }
+    // Fetch sản phẩm từ API
+    const fetchProduct = async () => {
+      try {
+        // Giả lập API call
+        const mockProduct = { id, name: 'Premium Coffee Beans' };
+        setProduct(mockProduct);
+      } catch (error) {
+        console.error('Error fetching product:', error);
+      }
+    };
+
+    fetchProduct();
   }, [id]);
 
   const validateForm = () => {

@@ -4,7 +4,8 @@ import { logOut } from '@services/AuthService';
 import { logoutSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
 import logoFull from '@assets/images/logo/logo-full.svg';
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
+import Breadcrumb from '@components/common/Breadcrumb';
 
 const Admin = () => {
   const location = useLocation();
@@ -31,6 +32,48 @@ const Admin = () => {
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
+
+  // Tạo breadcrumb items dựa trên path hiện tại
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const breadcrumbItems = useMemo(() => {
+    const path = location.pathname;
+    let items = [{ text: 'Admin' }];
+
+    if (path === '/admin') {
+      return items;
+    }
+
+    // Xử lý các path khác nhau
+    if (path.includes('/admin/products')) {
+      items.push({ text: 'Products', link: '/admin/products' });
+
+      if (path.includes('/add')) {
+        items.push({ text: 'Add Product' });
+      } else if (path.includes('/edit/')) {
+        const id = path.split('/').pop();
+        items.push({ text: `Edit Product #${id}` });
+      }
+    } else if (path.includes('/admin/categories')) {
+      items.push({ text: 'Categories', link: '/admin/categories' });
+
+      if (path.includes('/add')) {
+        items.push({ text: 'Add Category' });
+      }
+    } else if (path.includes('/admin/orders')) {
+      items.push({ text: 'Orders', link: '/admin/orders' });
+
+      if (path.includes('/orders/')) {
+        const id = path.split('/').pop();
+        items.push({ text: `Order #${id}` });
+      }
+    } else if (path.includes('/admin/users')) {
+      items.push({ text: 'Users' });
+    } else if (path.includes('/admin/product-reviews')) {
+      items.push({ text: 'Product Reviews' });
+    }
+
+    return items;
+  }, [location.pathname]);
 
   return (
     <div className={`admin ${isMenuOpen ? 'menu-open' : 'menu-closed'}`}>
@@ -95,6 +138,12 @@ const Admin = () => {
           </ul>
         </aside>
         <main className="admin__main">
+          {/* Breadcrumb */}
+          <div className="admin__breadcrumb">
+            <Breadcrumb items={breadcrumbItems} />
+          </div>
+
+          {/* Main content */}
           <Outlet />
         </main>
       </div>

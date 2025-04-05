@@ -7,8 +7,8 @@ import NotFound from '@pages/user/NotFound.jsx';
 // import Shop from '@pages/user/Shop';
 // import Cart from '@pages/user/Cart';
 // import Wishlist from '@pages/user/Wishlist';
-// import ProductList from '@/pages/user/ProductList';
-// import ProductDetails from '@/pages/user/ProductDetails';
+import ProductList from '@/pages/user/ProductList';
+import ProductDetails from '@/pages/user/ProductDetails';
 import Admin from '@pages/admin/Admin';
 import Dashboard from '@pages/admin/Dashboard';
 import Products from '@pages/admin/Products';
@@ -20,7 +20,6 @@ import Users from '@pages/admin/Users';
 import Categories from '@pages/admin/Categories';
 import ProductReviews from '@pages/admin/ProductReviews';
 import AddCategory from '@/pages/admin/AddCategory';
-
 const routes = [
   {
     path: '/',
@@ -45,6 +44,14 @@ const routes = [
   {
     path: '*', // Bắt tất cả các đường dẫn không khớp
     page: NotFound,
+  },
+  {
+    path: '/product',
+    page: ProductList,
+  },
+  {
+    path: '/product/:id',
+    page: ProductDetails,
   },
   {
     path: '/admin',
