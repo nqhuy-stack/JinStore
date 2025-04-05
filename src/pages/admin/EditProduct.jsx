@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import Modal from '@components/ui/Modal';
+import Modal from '@components/common/Modal';
 
 const EditProduct = () => {
   const { id } = useParams(); // Lấy ID từ URL

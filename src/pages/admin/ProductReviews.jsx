@@ -1,6 +1,6 @@
 // File: src/pages/admin/ProductReviews.jsx
 import { useState } from 'react';
-import Pagination from '@components/ui/Pagination'; // Thêm import
+import Pagination from '@components/common/Pagination'; // Thêm import
 
 const ProductReviews = () => {
   const [reviews, setReviews] = useState([

@@ -4,7 +4,7 @@ import { login } from '@services/AuthService.jsx';
 import { useDispatch } from 'react-redux';
 import { LuEye, LuEyeClosed } from 'react-icons/lu';
 
-import Button from '@components/ui/Button';
+import Button from '@components/common/Button';
 
 function FormLogin() {
   const [usernameOrEmail, setUsernameOrEmail] = useState('');

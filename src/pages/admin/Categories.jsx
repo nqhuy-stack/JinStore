@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import Modal from '@components/ui/Modal';
-import Pagination from '@components/ui/Pagination';
+import Modal from '@components/common/Modal';
+import Pagination from '@components/common/Pagination';
 import { getCategories } from '@/services/CategoryService.jsx';
 import moment from 'moment';
 

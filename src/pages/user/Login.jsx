@@ -1,9 +1,9 @@
 import { Fragment, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-import FormLogin from '@components/ui/FormLogin.jsx';
-import SocialAccount from '@components/ui/SocialAccount.jsx';
-import FormDescribe from '@components/ui/formDescribe';
+import FormLogin from '@components/common/FormLogin.jsx';
+import SocialAccount from '@components/common/SocialAccount.jsx';
+import FormDescribe from '@components/common/formDescribe';
 
 const Login = () => {
   useEffect(() => {

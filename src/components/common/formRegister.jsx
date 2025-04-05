@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { register } from '@services/AuthService.jsx';
 
-import Button from '@components/ui/Button';
+import Button from '@components/common/Button';
 function FormRegister() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
