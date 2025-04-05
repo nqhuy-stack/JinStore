@@ -1,17 +1,54 @@
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
-import { Fragment } from 'react';
+import { Fragment, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-// import { ToastContainer } from 'react-toastify';
 import { Toaster } from 'react-hot-toast';
+import PropTypes from 'prop-types';
 import 'react-toastify/dist/ReactToastify.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
-/* Page */
+/* Components */
 import Header from '@components/layout/Header.jsx';
 import Footer from '@components/layout/Footer.jsx';
 import routes from '@routes/routes.jsx';
 
-// Layout cho các trang public/user
+/**
+ * Custom hook để xử lý refresh token
+ */
+const useRefreshToken = () => {
+  useEffect(() => { 
+    const getCookie = (name) => {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+      return null;
+    };
+
+    const checkAndCleanStorage = () => {
+      const refreshToken = getCookie('refreshToken');
+
+      if (!refreshToken) {
+        // Xóa tất cả dữ liệu trong localStorage
+        localStorage.clear();
+        console.log('Đã xóa toàn bộ dữ liệu trong localStorage vì không tìm thấy refreshToken');
+      } else {
+        console.log('refreshToken tồn tại, không cần xóa dữ liệu localStorage');
+      }
+    };
+
+    // Kiểm tra ngay khi component mount
+    checkAndCleanStorage();
+
+    // Thêm event listener để kiểm tra khi cookie thay đổi
+    const checkInterval = setInterval(checkAndCleanStorage, 60000); // Kiểm tra mỗi phút
+
+    // Cleanup khi component unmount
+    return () => clearInterval(checkInterval);
+  }, []); // Chỉ chạy một lần khi component mount
+};
+
+/**
+ * Layout component cho các trang public
+ */
 const PublicLayout = ({ children }) => (
   <Fragment>
     <Header />
@@ -20,7 +57,13 @@ const PublicLayout = ({ children }) => (
   </Fragment>
 );
 
-// Component bảo vệ route
+PublicLayout.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+
+/**
+ * Component bảo vệ route, kiểm tra quyền truy cập
+ */
 const ProtectedRoute = ({ children, isProtected, adminOnly }) => {
   const { currentUser } = useSelector((state) => state.auth.login);
 
@@ -37,61 +80,81 @@ const ProtectedRoute = ({ children, isProtected, adminOnly }) => {
   return children;
 };
 
+ProtectedRoute.propTypes = {
+  children: PropTypes.node.isRequired,
+  isProtected: PropTypes.bool,
+  adminOnly: PropTypes.bool,
+};
+
+ProtectedRoute.defaultProps = {
+  isProtected: false,
+  adminOnly: false,
+};
+
+/**
+ * Component chính của ứng dụng
+ */
 const App = () => {
   const location = useLocation();
   const isPublicPage = location.pathname === '/login' || location.pathname === '/register';
 
+  // Sử dụng custom hook để xử lý refresh token
+  useRefreshToken();
+
+  /**
+   * Render route cho admin
+   */
+  const renderAdminRoute = ({ path, page: Page, children, isProtected, adminOnly }, index) => (
+    <Route
+      key={index}
+      path={path}
+      element={
+        <ProtectedRoute isProtected={isProtected} adminOnly={adminOnly}>
+          <Page />
+        </ProtectedRoute>
+      }
+    >
+      {children?.map(({ path: subPath, page: SubPage }, subIndex) => (
+        <Route
+          key={subIndex}
+          path={subPath}
+          element={
+            <ProtectedRoute isProtected={isProtected} adminOnly={adminOnly}>
+              <SubPage />
+            </ProtectedRoute>
+          }
+        />
+      ))}
+    </Route>
+  );
+
+  /**
+   * Render route thông thường
+   */
+  const renderNormalRoute = ({ path, page: Page, isProtected, adminOnly }, index) => (
+    <Route
+      key={index}
+      path={path}
+      element={
+        <ProtectedRoute isProtected={isProtected} adminOnly={adminOnly}>
+          {isPublicPage ? (
+            <Page />
+          ) : (
+            <PublicLayout>
+              <Page />
+            </PublicLayout>
+          )}
+        </ProtectedRoute>
+      }
+    />
+  );
+
   return (
     <Fragment>
       <Routes>
-        {routes.map(({ path, page: Page, children, isProtected, adminOnly }, index) => {
-          // Route cho admin (có sub-routes)
-          if (path === '/admin') {
-            return (
-              <Route
-                key={index}
-                path={path}
-                element={
-                  <ProtectedRoute isProtected={isProtected} adminOnly={adminOnly}>
-                    <Page />
-                  </ProtectedRoute>
-                }
-              >
-                {children &&
-                  children.map(({ path: subPath, page: SubPage }, subIndex) => (
-                    <Route
-                      key={subIndex}
-                      path={subPath}
-                      element={
-                        <ProtectedRoute isProtected={isProtected} adminOnly={adminOnly}>
-                          <SubPage />
-                        </ProtectedRoute>
-                      }
-                    />
-                  ))}
-              </Route>
-            );
-          }
-
-          // Các route khác
-          return (
-            <Route
-              key={index}
-              path={path}
-              element={
-                <ProtectedRoute isProtected={isProtected} adminOnly={adminOnly}>
-                  {isPublicPage ? (
-                    <Page />
-                  ) : (
-                    <PublicLayout>
-                      <Page />
-                    </PublicLayout>
-                  )}
-                </ProtectedRoute>
-              }
-            />
-          );
-        })}
+        {routes.map((route, index) =>
+          route.path === '/admin' ? renderAdminRoute(route, index) : renderNormalRoute(route, index),
+        )}
       </Routes>
       <Toaster position="top-right" reverseOrder={false} />
     </Fragment>

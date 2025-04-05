@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 
 // import Button from '@components/ui/Button';
 import { getCategories } from '@/services/CategoryService';
-import ReusableSection from '@components/ui/ReusableSection.jsx';
-import CategoryList from '@components/ui/category/CateList.jsx';
-import ProductsCategoryList from '@/components/ui/products/ProdCateList.jsx';
+import ReusableSection from '@components/common/ReusableSection.jsx';
+import CategoryList from '@components/features/category/CateList.jsx';
+import ProductsCategoryList from '@/components/features/products/ProdCateList.jsx';
 
 import fullBanner from '@assets/images/banner/full-banner.png';
 import moveRight from '@assets/icons/icon-move-right.svg';

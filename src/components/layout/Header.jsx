@@ -1,6 +1,6 @@
 import { Fragment, useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import Button from '@components/ui/Button.jsx';
+import Button from '@components/common/Button.jsx';
 import { logOut } from '@services/AuthService.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import jsonNavbar from '@json/navbar.jsx';

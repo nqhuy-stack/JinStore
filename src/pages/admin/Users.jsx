@@ -1,8 +1,8 @@
 // File: src/pages/admin/Users.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Modal from '@components/ui/Modal';
-import Pagination from '@components/ui/Pagination'; // Thêm import
+import Modal from '@components/common/Modal';
+import Pagination from '@components/common/Pagination'; // Thêm import
 
 const Users = () => {
   const [users, setUsers] = useState([

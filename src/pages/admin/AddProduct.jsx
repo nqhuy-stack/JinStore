@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Modal from '@components/ui/Modal';
+import Modal from '@components/common/Modal';
 
 const AddProduct = () => {
   const [newProduct, setNewProduct] = useState({
