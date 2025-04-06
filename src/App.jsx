@@ -12,41 +12,6 @@ import Footer from '@components/layout/Footer.jsx';
 import routes from '@routes/routes.jsx';
 
 /**
- * Custom hook để xử lý refresh token
- */
-const useRefreshToken = () => {
-  useEffect(() => { 
-    const getCookie = (name) => {
-      const value = `; ${document.cookie}`;
-      const parts = value.split(`; ${name}=`);
-      if (parts.length === 2) return parts.pop().split(';').shift();
-      return null;
-    };
-
-    const checkAndCleanStorage = () => {
-      const refreshToken = getCookie('refreshToken');
-
-      if (!refreshToken) {
-        // Xóa tất cả dữ liệu trong localStorage
-        localStorage.clear();
-        console.log('Đã xóa toàn bộ dữ liệu trong localStorage vì không tìm thấy refreshToken');
-      } else {
-        console.log('refreshToken tồn tại, không cần xóa dữ liệu localStorage');
-      }
-    };
-
-    // Kiểm tra ngay khi component mount
-    checkAndCleanStorage();
-
-    // Thêm event listener để kiểm tra khi cookie thay đổi
-    const checkInterval = setInterval(checkAndCleanStorage, 60000); // Kiểm tra mỗi phút
-
-    // Cleanup khi component unmount
-    return () => clearInterval(checkInterval);
-  }, []); // Chỉ chạy một lần khi component mount
-};
-
-/**
  * Layout component cho các trang public
  */
 const PublicLayout = ({ children }) => (
@@ -97,9 +62,6 @@ ProtectedRoute.defaultProps = {
 const App = () => {
   const location = useLocation();
   const isPublicPage = location.pathname === '/login' || location.pathname === '/register';
-
-  // Sử dụng custom hook để xử lý refresh token
-  useRefreshToken();
 
   /**
    * Render route cho admin

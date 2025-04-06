@@ -24,8 +24,30 @@ export const addCategories = async (data, dispatch, accessToken, axiosJWT) => {
     toast.success('Đăng xuất thành công!', {
       autoClose: 500,
     });
-    
   } catch (err) {
     throw err.response?.data || 'Lỗi hệ thống!';
+  }
+};
+
+export const editStatus = async (id, status, accessToken, axiosJWT) => {
+  try {
+    await axiosJWT.patch(
+      `${API_URL}/categories/update/${id}`,
+      { status },
+      {
+        headers: {
+          token: `Bearer ${accessToken}`,
+        },
+      },
+    );
+    toast.dismiss();
+    toast.success('Thay đổi trạng thái thành công!', {
+      autoClose: 500,
+    });
+  } catch (err) {
+    toast.dismiss();
+    toast.error(err.response?.data, {
+      autoClose: 500,
+    });
   }
 };

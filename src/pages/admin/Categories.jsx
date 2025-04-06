@@ -1,11 +1,17 @@
+import moment from 'moment';
 import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
+
 import Modal from '@components/common/Modal';
 import Pagination from '@components/common/Pagination';
 import { getCategories } from '@/services/CategoryService.jsx';
-import moment from 'moment';
+import { editStatus } from '../../services/CategoryService';
+import { loginSuccess } from '@/redux/authSlice.jsx';
+import { createAxios } from '@utils/createInstance.jsx';
 
 const Categories = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -18,6 +24,11 @@ const Categories = () => {
   const [categoryToDelete, setCategoryToDelete] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+
+  const user = useSelector((state) => state.auth.login.currentUser);
+  const accessToken = user?.accessToken;
+  const axiosJWT = createAxios(user, dispatch, loginSuccess);
+
   const itemsPerPage = 10;
   const urlImage = '../src/assets/images/categories/';
 
@@ -45,8 +56,24 @@ const Categories = () => {
     setCategories((prev) => [...prev, newCategory]);
   }
 
-  const handleViewCategory = (id) => {
-    navigate(`/admin/categories/view/${id}`);
+  const handleViewCategory = async (id, status) => {
+    const newStatus = status === 'active' ? 'inactive' : 'active';
+    await editStatus(id, newStatus, accessToken, axiosJWT);
+    // Cập nhật state categories ngay lập tức
+    setCategories((prevCategories) =>
+      prevCategories.map((category) => (category._id === id ? { ...category, status: newStatus } : category)),
+    );
+
+    // Kiểm tra và cập nhật currentPage nếu cần
+    const updatedCategories = categories.map((category) =>
+      category._id === id ? { ...category, status: newStatus } : category,
+    );
+    const activeCategories = updatedCategories.filter((category) => category.status === 'active');
+    const newTotalPages = Math.ceil(activeCategories.length / itemsPerPage);
+
+    if (currentPage > newTotalPages) {
+      setCurrentPage(Math.max(1, newTotalPages));
+    }
   };
 
   const handleEditCategory = (id) => {
@@ -72,8 +99,8 @@ const Categories = () => {
     navigate('/admin/categories/add');
   };
 
-  const filteredCategories = categories.filter((category) =>
-    category.name.toLowerCase().includes(searchTerm.toLowerCase()),
+  const filteredCategories = categories.filter(
+    (category) => category.status === 'active' && category.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
   const formatDate = (isoDate) => moment(isoDate).format('DD/MM/YYYY HH:mm:ss');
   const totalItems = filteredCategories.length;
@@ -85,7 +112,9 @@ const Categories = () => {
   return (
     <section className="admin__section">
       <div className="admin__section-header">
-        <h2 className="admin__section-title">All Category ({categories.length})</h2>
+        <h2 className="admin__section-title">
+          All Category ({categories.filter((category) => category.status === 'active').length})
+        </h2>
         <button className="admin__add-button" onClick={handleAddCategory}>
           + Add New
         </button>
@@ -114,43 +143,46 @@ const Categories = () => {
                 </tr>
               </thead>
               <tbody>
-                {currentCategories.map((category) => (
-                  <tr key={category._id}>
-                    <td className="td-name">{category.name}</td>
-                    <td className="td-date">{formatDate(category.createdAt)}</td>
-                    <td className="td-img">
-                      <img
-                        src={`${urlImage}${category.image}`}
-                        alt={`${category.name} : ${category.description}`}
-                        className="admin__image-preview admin__image-preview--category"
-                      />
-                    </td>
-                    <td className="td-slug">{category.slug}</td>
-                    <td className="td-option">
-                      <button
-                        className="admin__action-btn admin__action-btn--view"
-                        onClick={() => handleViewCategory(category._id)}
-                        disabled={loading}
-                      >
-                        <i className="fas fa-eye"></i>
-                      </button>
-                      <button
-                        className="admin__action-btn admin__action-btn--edit"
-                        onClick={() => handleEditCategory(category.id)}
-                        disabled={loading}
-                      >
-                        <i className="fas fa-edit"></i>
-                      </button>
-                      <button
-                        className="admin__action-btn admin__action-btn--delete"
-                        onClick={() => handleDeleteCategory(category)}
-                        disabled={loading}
-                      >
-                        <i className="fas fa-trash"></i>
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {currentCategories.map(
+                  (category) =>
+                    category.status === 'active' && (
+                      <tr key={category._id}>
+                        <td className="td-name">{category.name}</td>
+                        <td className="td-date">{formatDate(category.createdAt)}</td>
+                        <td className="td-img">
+                          <img
+                            src={`${urlImage}${category.image}`}
+                            alt={`${category.name} : ${category.description}`}
+                            className="admin__image-preview admin__image-preview--category"
+                          />
+                        </td>
+                        <td className="td-slug">{category.slug}</td>
+                        <td className="td-option">
+                          <button
+                            className="admin__action-btn admin__action-btn--view"
+                            onClick={() => handleViewCategory(category._id, category.status)}
+                            disabled={loading}
+                          >
+                            <i className="fas fa-eye"></i>
+                          </button>
+                          <button
+                            className="admin__action-btn admin__action-btn--edit"
+                            onClick={() => handleEditCategory(category.id)}
+                            disabled={loading}
+                          >
+                            <i className="fas fa-edit"></i>
+                          </button>
+                          <button
+                            className="admin__action-btn admin__action-btn--delete"
+                            onClick={() => handleDeleteCategory(category)}
+                            disabled={loading}
+                          >
+                            <i className="fas fa-trash"></i>
+                          </button>
+                        </td>
+                      </tr>
+                    ),
+                )}
               </tbody>
             </table>
           </div>

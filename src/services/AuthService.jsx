@@ -45,17 +45,24 @@ export const logOut = async (dispatch, id, navigate, accessToken, axiosJWT) => {
     // Xóa dữ liệu local trước
     localStorage.removeItem('persist:root');
 
-    // Gọi API logout với credentials
-    await axiosJWT.post(
-      `${API_URL}/auth/logout`,
-      { id },
-      {
-        headers: {
-          token: `Bearer ${accessToken}`,
-        },
-        withCredentials: true,
-      },
-    );
+    // Chỉ gọi API logout nếu có id và accessToken
+    if (id && accessToken && axiosJWT) {
+      try {
+        await axiosJWT.post(
+          `${API_URL}/auth/logout`,
+          { id },
+          {
+            headers: {
+              token: `Bearer ${accessToken}`,
+            },
+            withCredentials: true,
+          },
+        );
+      } catch (error) {
+        console.error('Error calling logout API:', error);
+        // Tiếp tục xử lý logout dù API có lỗi
+      }
+    }
 
     // Dispatch action và thông báo
     dispatch(logoutSuccess());

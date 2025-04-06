@@ -5,6 +5,7 @@ import { register } from '@services/AuthService.jsx';
 
 import Button from '@components/common/Button';
 function FormRegister() {
+  const [fullname, setFullname] = useState('');
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -15,6 +16,7 @@ function FormRegister() {
   const navigate = useNavigate();
 
   const user = {
+    fullname: fullname,
     username: username,
     email: email,
     password: password,
@@ -36,6 +38,17 @@ function FormRegister() {
   return (
     <Fragment>
       <form className="register-form" onSubmit={handleSubmit}>
+        <div className="register-field">
+          <label>Fullname *</label>
+          <input
+            type="text"
+            name="fullname"
+            placeholder="Fullname"
+            onChange={(e) => setFullname(e.target.value)}
+            required
+            className="register-input"
+          />
+        </div>
         <div className="register-field">
           <label>Username *</label>
           <input
