@@ -5,8 +5,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 
 import Modal from '@components/common/Modal';
 import Pagination from '@components/common/Pagination';
-import { getCategories } from '@/services/CategoryService.jsx';
-import { editStatus } from '../../services/CategoryService';
+import { getCategoriesAll } from '@services/CategoryService.jsx';
+import { editStatus } from '@services/CategoryService';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
 
@@ -36,7 +36,7 @@ const Categories = () => {
     const fetchCategories = async () => {
       try {
         setLoading(true);
-        const data = await getCategories();
+        const data = await getCategoriesAll();
         setCategories(data);
       } catch (error) {
         setError('Không thể tải danh mục. Vui lòng thử lại sau.');
@@ -103,6 +103,8 @@ const Categories = () => {
     (category) => category.status === 'active' && category.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
   const formatDate = (isoDate) => moment(isoDate).format('DD/MM/YYYY HH:mm:ss');
+
+  //NOTE: Panigation
   const totalItems = filteredCategories.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -136,9 +138,11 @@ const Categories = () => {
               <thead>
                 <tr>
                   <th className="th-nam">Product Name</th>
+                  <th className="th-nam">Description</th>
                   <th className="th-date">Date</th>
-                  <th className="th-img">Product Image</th>
+                  <th className="th-img">Image</th>
                   <th className="th-slug">Slug</th>
+                  <th className="th-outstanding">Outstanding</th>
                   <th className="th-option">Option</th>
                 </tr>
               </thead>
@@ -148,6 +152,7 @@ const Categories = () => {
                     category.status === 'active' && (
                       <tr key={category._id}>
                         <td className="td-name">{category.name}</td>
+                        <td className="td-name">{category.description}</td>
                         <td className="td-date">{formatDate(category.createdAt)}</td>
                         <td className="td-img">
                           <img
@@ -157,6 +162,13 @@ const Categories = () => {
                           />
                         </td>
                         <td className="td-slug">{category.slug}</td>
+                        <td className="td-outstanding">
+                          <span
+                            className={`td__outstanding ${category.isOutstanding ? 'td__outstanding--true' : 'td__outstanding--false'}`}
+                          >
+                            {category.isOutstanding ? 'Nổi bật' : 'Bình thường'}
+                          </span>
+                        </td>
                         <td className="td-option">
                           <button
                             className="admin__action-btn admin__action-btn--view"
@@ -167,7 +179,7 @@ const Categories = () => {
                           </button>
                           <button
                             className="admin__action-btn admin__action-btn--edit"
-                            onClick={() => handleEditCategory(category.id)}
+                            onClick={() => handleEditCategory(category._id)}
                             disabled={loading}
                           >
                             <i className="fas fa-edit"></i>

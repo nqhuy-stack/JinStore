@@ -1,9 +1,10 @@
 import { Fragment, useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import Button from '@components/common/Button.jsx';
-import { logOut } from '@services/AuthService.jsx';
 import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
+
+import Button from '@components/common/Button.jsx';
 import jsonNavbar from '@json/navbar.jsx';
+import { logOut } from '@services/AuthService.jsx';
 import { logoutSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
 

@@ -520,14 +520,7 @@ $admin-transition: all 0.3s ease;
         }
 
         input[type='file'] {
-          padding: 5px 0;
-        }
-
-        .admin__image-preview {
-          display: block;
-          margin-top: 10px;
-          border: 1px solid #ddd;
-          border-radius: 4px;
+          padding: 5px;
         }
       }
 
@@ -578,6 +571,7 @@ $admin-transition: all 0.3s ease;
 
     // Hình ảnh preview
     .admin__image-preview {
+      margin-top: 10px;
       width: 100%;
       height: 8rem;
       object-fit: cover;
@@ -597,7 +591,7 @@ $admin-transition: all 0.3s ease;
       }
 
       &--category {
-        width: 60px;
+        width: fit-content;
         height: 60px;
         border: 1px solid #ddd;
       }
@@ -735,39 +729,19 @@ $admin-transition: all 0.3s ease;
     .admin__table {
       width: 100%;
       border-collapse: collapse;
-      table-layout: fixed;
+      table-layout: auto;
 
       th,
       td {
+        max-width: 400px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         padding: 5px 20px;
+        box-sizing: border-box;
         border-bottom: 1px solid #ddd;
         font-size: 1.4rem;
         vertical-align: middle;
-      }
-
-      .th-name {
-        text-align: center;
-      }
-
-      .th-name,
-      .td-name {
-        max-width: 400px;
-      }
-
-      .td-slug,
-      .th-slug,
-      .td-date,
-      .th-date,
-      .td-img,
-      .th-img {
-        width: 20%;
-        text-align: center;
-      }
-
-      .td-option,
-      .th-option {
-        width: 200px;
-        text-align: center;
       }
 
       th {
@@ -777,6 +751,34 @@ $admin-transition: all 0.3s ease;
         text-align: left;
         border-right: none;
         text-transform: uppercase;
+      }
+
+      .td-outstanding,
+      .th-outstanding,
+      .th-name,
+      .td-date,
+      .th-date,
+      .td-option,
+      .th-option,
+      .td-slug,
+      .th-slug,
+      .th-img {
+        text-align: center;
+      }
+
+      .td__outstanding {
+        padding: 5px 10px;
+        border-radius: 12px;
+        font-size: 1.2rem;
+        font-weight: 500;
+        &--true {
+          background-color: #ffe6e6;
+          color: #ff4d4d;
+        }
+        &--false {
+          background-color: #e6f7f5;
+          color: #00c4b4;
+        }
       }
 
       .td-img {

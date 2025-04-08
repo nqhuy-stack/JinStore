@@ -25,6 +25,7 @@ const authSlice = createSlice({
     },
   },
   reducers: {
+    //COMMENT: lOGIN
     loginStart: (state) => {
       state.login.isFetching = true;
     },
@@ -37,6 +38,7 @@ const authSlice = createSlice({
       state.login.isFetching = false;
       state.login.error = true;
     },
+    //COMMENT: LOGOUT
     logoutSuccess: (state) => {
       state.login.isFetching = false;
       state.login.currentUser = null;
@@ -49,6 +51,7 @@ const authSlice = createSlice({
     logoutStart: (state) => {
       state.login.isFetching = true;
     },
+    //COMMENT: REGISTER
     registerStart: (state) => {
       state.register.isFetching = true;
     },
@@ -62,6 +65,7 @@ const authSlice = createSlice({
       state.register.error = true;
       state.register.success = false;
     },
+    //COMMENT: RESET PASSWORD
     resetPasswordStart: (state) => {
       state.resetPassword.isFetching = true;
     },

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getCategories } from '@/services/CategoryService.jsx';
+import { getCategoriesAll } from '@/services/CategoryService.jsx';
 
 const CategoryList = () => {
   const urlImage = './src/assets/images/categories/';
@@ -12,7 +12,7 @@ const CategoryList = () => {
     const fetchCategories = async () => {
       try {
         setLoading(true);
-        const data = await getCategories();
+        const data = await getCategoriesAll();
         setCategories(data);
       } catch (error) {
         setError('Không thể tải danh mục. Vui lòng thử lại sau.');
@@ -32,9 +32,8 @@ const CategoryList = () => {
     <nav className="section__content section__home-cate">
       <ul>
         {categories.map(
-          ({ _id, name, description, image, parentId, slug, status }) =>
-            status === 'active' &&
-            parentId === null && (
+          ({ _id, name, description, image, slug, status }) =>
+            status === 'active' && (
               <li className="item-categories" key={_id}>
                 <Link className="link-categories" to={`/shop?category=${encodeURIComponent(slug)}`}>
                   <img src={`${urlImage}${image}`} alt={`${name} : ${description}`} />

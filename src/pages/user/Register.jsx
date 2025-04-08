@@ -8,7 +8,7 @@ import FormDescribe from '@components/common/formDescribe';
 function Register() {
   return (
     <Fragment>
-      <div className="register-container">
+      <section className="register-container">
         <FormDescribe>
           Hãy đăng ký để khám phá thế giới của chúng tôi và cùng nhau xây dựng một tương lai bền vững.
         </FormDescribe>
@@ -26,7 +26,7 @@ function Register() {
             Already have an account? <Link to="/login">Sign In</Link>
           </p>
         </div>
-      </div>
+      </section>
     </Fragment>
   );
 }

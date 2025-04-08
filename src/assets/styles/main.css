@@ -2168,13 +2168,7 @@ html {
   resize: vertical;
 }
 .admin__section .admin__form .admin__form-field input[type=file] {
-  padding: 5px 0;
-}
-.admin__section .admin__form .admin__form-field .admin__image-preview {
-  display: block;
-  margin-top: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  padding: 5px;
 }
 .admin__section .admin__form .admin__form-button {
   background-color: #28a745;
@@ -2215,6 +2209,7 @@ html {
   transform: translateY(-2px);
 }
 .admin__section .admin__image-preview {
+  margin-top: 10px;
   width: 100%;
   height: 8rem;
   -o-object-fit: cover;
@@ -2233,7 +2228,8 @@ html {
   border: 1px solid #ddd;
 }
 .admin__section .admin__image-preview--category {
-  width: 60px;
+  width: -moz-fit-content;
+  width: fit-content;
   height: 60px;
   border: 1px solid #ddd;
 }
@@ -2345,35 +2341,19 @@ html {
 .admin__section .admin__table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed;
+  table-layout: auto;
 }
 .admin__section .admin__table th,
 .admin__section .admin__table td {
+  max-width: 400px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   padding: 5px 20px;
+  box-sizing: border-box;
   border-bottom: 1px solid #ddd;
   font-size: 1.4rem;
   vertical-align: middle;
-}
-.admin__section .admin__table .th-name {
-  text-align: center;
-}
-.admin__section .admin__table .th-name,
-.admin__section .admin__table .td-name {
-  max-width: 400px;
-}
-.admin__section .admin__table .td-slug,
-.admin__section .admin__table .th-slug,
-.admin__section .admin__table .td-date,
-.admin__section .admin__table .th-date,
-.admin__section .admin__table .td-img,
-.admin__section .admin__table .th-img {
-  width: 20%;
-  text-align: center;
-}
-.admin__section .admin__table .td-option,
-.admin__section .admin__table .th-option {
-  width: 200px;
-  text-align: center;
 }
 .admin__section .admin__table th {
   background-color: #ffffff;
@@ -2382,6 +2362,32 @@ html {
   text-align: left;
   border-right: none;
   text-transform: uppercase;
+}
+.admin__section .admin__table .td-outstanding,
+.admin__section .admin__table .th-outstanding,
+.admin__section .admin__table .th-name,
+.admin__section .admin__table .td-date,
+.admin__section .admin__table .th-date,
+.admin__section .admin__table .td-option,
+.admin__section .admin__table .th-option,
+.admin__section .admin__table .td-slug,
+.admin__section .admin__table .th-slug,
+.admin__section .admin__table .th-img {
+  text-align: center;
+}
+.admin__section .admin__table .td__outstanding {
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+.admin__section .admin__table .td__outstanding--true {
+  background-color: #ffe6e6;
+  color: #ff4d4d;
+}
+.admin__section .admin__table .td__outstanding--false {
+  background-color: #e6f7f5;
+  color: #00c4b4;
 }
 .admin__section .admin__table .td-img {
   width: 70px;
