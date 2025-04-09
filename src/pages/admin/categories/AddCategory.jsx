@@ -1,6 +1,6 @@
 // File: src/pages/admin/AddCategory.jsx
 import slugify from 'slugify';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess } from '@/redux/authSlice.jsx';
@@ -13,11 +13,20 @@ const AddCategory = () => {
   const user = useSelector((state) => state.auth.login.currentUser);
   const accessToken = user?.accessToken;
   const axiosJWT = createAxios(user, dispatch, loginSuccess);
+
   const [name, setName] = useState('');
+  const [slug, setSlug] = useState('');
   const [image, setImage] = useState('');
   const [description, setDescription] = useState('');
 
   const [imagePreview, setImagePreview] = useState(null);
+  const [customSlug, setCustomSlug] = useState(false);
+
+  useEffect(() => {
+    if (!customSlug) {
+      setSlug(slugify(name, { lower: true, strict: true }));
+    }
+  }, [name, customSlug]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -40,6 +49,7 @@ const AddCategory = () => {
 
     const newCategory = {
       name: name.trim(),
+      slug: slug,
       image: image || '',
       description: description.trim(),
     };
@@ -47,6 +57,7 @@ const AddCategory = () => {
     await addCategories(newCategory, dispatch, accessToken, axiosJWT);
     navigate('/admin/categories');
   };
+  console.log(slug);
 
   return (
     <section className="admin__section">
@@ -67,18 +78,23 @@ const AddCategory = () => {
           </div>
           {/* NOTE: Slug */}
           <div className="admin__form-field">
-            <label htmlFor="slug">Slug (chỉ mang tính chất tham khảo)</label>
+            <label className="label__slug" htmlFor="slug">
+              Tự chỉnh sửa slug
+              <input type="checkbox" checked={customSlug} onChange={() => setCustomSlug(!customSlug)} />
+            </label>
             <input
               type="text"
-              value={slugify(name, { lower: true, strict: true })}
-              readOnly
+              value={slug}
+              readOnly={!customSlug}
+              onChange={(e) => setSlug(e.target.value)}
+              placeholder={!customSlug ? 'Slug tự động phát sinh' : 'Vui lòng nhập slug cho phù hợp'}
               style={{
-                backgroundColor: '#f3f4f6',
+                cursor: !customSlug ? 'default' : 'text',
+                backgroundColor: !customSlug ? '#f3f4f6' : 'white',
                 color: '#6b7280',
                 border: '1px solid #d1d5db',
                 borderRadius: '6px',
                 width: '100%',
-                cursor: 'default',
               }}
             />
           </div>

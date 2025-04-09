@@ -5,23 +5,20 @@ import { useNavigate, useLocation } from 'react-router-dom';
 
 import Modal from '@components/common/Modal';
 import Pagination from '@components/common/Pagination';
-import { getCategoriesAll } from '@services/CategoryService.jsx';
-import { editStatus } from '@services/CategoryService';
+import { getCategoriesAll, editCategory, deleteCategory } from '@services/CategoryService';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
 
 const Categories = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
+  const { state } = useLocation();
 
-  // Lấy dữ liệu category mới từ state (nếu có)
-  const newCategory = location.state?.newCategory;
-  const [error, setError] = useState(null);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [categoryToDelete, setCategoryToDelete] = useState(null);
+  const [idCateDel, setIdCateDel] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -37,86 +34,89 @@ const Categories = () => {
       try {
         setLoading(true);
         const data = await getCategoriesAll();
-        setCategories(data);
-      } catch (error) {
+        setCategories(
+          data.map((cat) => ({
+            ...cat,
+            name: cat.name || '',
+            description: cat.description || '',
+            status: cat.status || 'inactive',
+          })),
+        );
+      } catch {
         setError('Không thể tải danh mục. Vui lòng thử lại sau.');
-        console.error('Lỗi khi lấy danh mục:', error);
       } finally {
         setLoading(false);
       }
     };
-
     fetchCategories();
   }, []);
 
-  if (error) return <div>{error}</div>;
-
-  // Thêm category mới vào danh sách nếu có
-  if (newCategory && !categories.some((cat) => cat.id === newCategory.id)) {
-    setCategories((prev) => [...prev, newCategory]);
-  }
+  useEffect(() => {
+    const newCategory = state?.newCategory;
+    if (newCategory && !categories.some((cat) => cat.id === newCategory.id)) {
+      setCategories((prev) => [...prev, newCategory]);
+    }
+  }, [state, categories]);
 
   const handleViewCategory = async (id, status) => {
-    const newStatus = status === 'active' ? 'inactive' : 'active';
-    await editStatus(id, newStatus, accessToken, axiosJWT);
-    // Cập nhật state categories ngay lập tức
-    setCategories((prevCategories) =>
-      prevCategories.map((category) => (category._id === id ? { ...category, status: newStatus } : category)),
-    );
+    try {
+      const newStatus = status === 'active' ? 'inactive' : 'active';
+      await editCategory(id, { status: newStatus }, accessToken, axiosJWT);
+      setCategories((prev) => prev.map((cat) => (cat._id === id ? { ...cat, status: newStatus } : cat)));
 
-    // Kiểm tra và cập nhật currentPage nếu cần
-    const updatedCategories = categories.map((category) =>
-      category._id === id ? { ...category, status: newStatus } : category,
-    );
-    const activeCategories = updatedCategories.filter((category) => category.status === 'active');
-    const newTotalPages = Math.ceil(activeCategories.length / itemsPerPage);
-
-    if (currentPage > newTotalPages) {
-      setCurrentPage(Math.max(1, newTotalPages));
+      const activeCategories = categories.filter((cat) => cat.status === 'active');
+      const newTotalPages = Math.ceil(activeCategories.length / itemsPerPage);
+      if (currentPage > newTotalPages) {
+        setCurrentPage(Math.max(1, newTotalPages));
+      }
+    } catch (error) {
+      console.error('Lỗi khi cập nhật trạng thái:', error);
     }
   };
 
-  const handleEditCategory = (id) => {
-    navigate(`/admin/categories/edit/${id}`);
-  };
-
-  const handleDeleteCategory = (category) => {
-    setCategoryToDelete(category);
+  const handleDeleteCategory = (id) => {
+    setIdCateDel(id);
     setIsDeleteModalOpen(true);
   };
 
-  const confirmDeleteCategory = () => {
+  const confirmDeleteCategory = async () => {
     setLoading(true);
-    setTimeout(() => {
-      setCategories(categories.filter((c) => c.id !== categoryToDelete.id));
+    console.log(idCateDel);
+    try {
+      await deleteCategory(idCateDel, accessToken, axiosJWT);
+      setCategories((prev) => prev.filter((cat) => cat._id !== idCateDel));
+
+      const activeCategories = categories.filter((cat) => cat.status === 'active');
+      const newTotalPages = Math.ceil(activeCategories.length / itemsPerPage);
+      if (currentPage > newTotalPages) {
+        setCurrentPage(Math.max(1, newTotalPages));
+      }
+    } catch (err) {
+      console.error('Lỗi khi xóa danh mục:', err);
+    } finally {
       setIsDeleteModalOpen(false);
-      setCategoryToDelete(null);
+      setIdCateDel(null);
       setLoading(false);
-    }, 500);
+    }
   };
 
-  const handleAddCategory = () => {
-    navigate('/admin/categories/add');
-  };
+  const handleEditCategory = (id) => navigate(`/admin/categories/edit/${id}`);
+  const handleAddCategory = () => navigate('/admin/categories/add');
 
   const filteredCategories = categories.filter(
-    (category) => category.status === 'active' && category.name.toLowerCase().includes(searchTerm.toLowerCase()),
+    (cat) => cat.status === 'active' && (cat.name || '').toLowerCase().includes(searchTerm.toLowerCase()),
   );
+  const totalPages = Math.ceil(filteredCategories.length / itemsPerPage);
+  const currentCategories = filteredCategories.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
   const formatDate = (isoDate) => moment(isoDate).format('DD/MM/YYYY HH:mm:ss');
 
-  //NOTE: Panigation
-  const totalItems = filteredCategories.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentCategories = filteredCategories.slice(startIndex, endIndex);
+  if (error) return <div>{error}</div>;
 
   return (
     <section className="admin__section">
       <div className="admin__section-header">
-        <h2 className="admin__section-title">
-          All Category ({categories.filter((category) => category.status === 'active').length})
-        </h2>
+        <h2 className="admin__section-title">All Category ({filteredCategories.length})</h2>
         <button className="admin__add-button" onClick={handleAddCategory}>
           + Add New
         </button>
@@ -147,58 +147,55 @@ const Categories = () => {
                 </tr>
               </thead>
               <tbody>
-                {currentCategories.map(
-                  (category) =>
-                    category.status === 'active' && (
-                      <tr key={category._id}>
-                        <td className="td-name">{category.name}</td>
-                        <td className="td-name">{category.description}</td>
-                        <td className="td-date">{formatDate(category.createdAt)}</td>
-                        <td className="td-img">
-                          <img
-                            src={`${urlImage}${category.image}`}
-                            alt={`${category.name} : ${category.description}`}
-                            className="admin__image-preview admin__image-preview--category"
-                          />
-                        </td>
-                        <td className="td-slug">{category.slug}</td>
-                        <td className="td-outstanding">
-                          <span
-                            className={`td__outstanding ${category.isOutstanding ? 'td__outstanding--true' : 'td__outstanding--false'}`}
-                          >
-                            {category.isOutstanding ? 'Nổi bật' : 'Bình thường'}
-                          </span>
-                        </td>
-                        <td className="td-option">
-                          <button
-                            className="admin__action-btn admin__action-btn--view"
-                            onClick={() => handleViewCategory(category._id, category.status)}
-                            disabled={loading}
-                          >
-                            <i className="fas fa-eye"></i>
-                          </button>
-                          <button
-                            className="admin__action-btn admin__action-btn--edit"
-                            onClick={() => handleEditCategory(category._id)}
-                            disabled={loading}
-                          >
-                            <i className="fas fa-edit"></i>
-                          </button>
-                          <button
-                            className="admin__action-btn admin__action-btn--delete"
-                            onClick={() => handleDeleteCategory(category)}
-                            disabled={loading}
-                          >
-                            <i className="fas fa-trash"></i>
-                          </button>
-                        </td>
-                      </tr>
-                    ),
-                )}
+                {currentCategories.map((category) => (
+                  <tr key={category._id}>
+                    <td className="td-name">{category.name || 'Không có tên'}</td>
+                    <td className="td-name">{category.description || 'Không có mô tả'}</td>
+                    <td className="td-date">{formatDate(category.createdAt)}</td>
+                    <td className="td-img">
+                      <img
+                        src={`${urlImage}${category.image}`}
+                        alt={`${category.name || 'Danh mục'} : ${category.description || 'Không có mô tả'}`}
+                        className="admin__image-preview admin__image-preview--category"
+                      />
+                    </td>
+                    <td className="td-slug">{category.slug || 'Không có slug'}</td>
+                    <td className="td-outstanding">
+                      <span
+                        className={`td__outstanding ${category.isOutstanding ? 'td__outstanding--true' : 'td__outstanding--false'}`}
+                      >
+                        {category.isOutstanding ? 'Nổi bật' : 'Bình thường'}
+                      </span>
+                    </td>
+                    <td className="td-option">
+                      <button
+                        className="admin__action-btn admin__action-btn--view"
+                        onClick={() => handleViewCategory(category._id, category.status)}
+                        disabled={loading}
+                      >
+                        <i className="fas fa-eye"></i>
+                      </button>
+                      <button
+                        className="admin__action-btn admin__action-btn--edit"
+                        onClick={() => handleEditCategory(category._id)}
+                        disabled={loading}
+                      >
+                        <i className="fas fa-edit"></i>
+                      </button>
+                      <button
+                        className="admin__action-btn admin__action-btn--delete"
+                        onClick={() => handleDeleteCategory(category._id)}
+                        disabled={loading}
+                      >
+                        <i className="fas fa-trash"></i>
+                      </button>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
-          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={(page) => setCurrentPage(page)} />
+          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
         </>
       )}
 
@@ -206,11 +203,11 @@ const Categories = () => {
         isOpen={isDeleteModalOpen}
         onClose={() => {
           setIsDeleteModalOpen(false);
-          setCategoryToDelete(null);
+          setIdCateDel(null);
         }}
         onConfirm={confirmDeleteCategory}
-        title="Confirm Delete Category"
-        message={categoryToDelete ? `Are you sure you want to delete category "${categoryToDelete.name}"?` : ''}
+        title="Xóa danh mục"
+        message={idCateDel ? 'Bạn có chắc chắn muốn xóa danh mục này?' : ''}
       />
     </section>
   );

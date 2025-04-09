@@ -2030,7 +2030,7 @@ html {
   gap: 1rem;
 }
 .admin__section .admin__section-title {
-  margin: 0;
+  margin: 0 0 1rem 0;
   font-size: 1.5rem;
   color: #2c3e50;
   font-weight: 600;
@@ -2151,6 +2151,19 @@ html {
   font-weight: 500;
   margin-bottom: 5px;
   color: #000000;
+}
+.admin__section .admin__form .admin__form-field .label__image,
+.admin__section .admin__form .admin__form-field .label__slug {
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 15px;
+}
+.admin__section .admin__form .admin__form-field .label__image input[type=checkbox],
+.admin__section .admin__form .admin__form-field .label__slug input[type=checkbox] {
+  width: 13px;
+  height: 13px;
 }
 .admin__section .admin__form .admin__form-field input,
 .admin__section .admin__form .admin__form-field textarea,
