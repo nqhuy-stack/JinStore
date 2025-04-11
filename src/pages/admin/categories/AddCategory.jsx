@@ -16,7 +16,7 @@ const AddCategory = () => {
 
   const [name, setName] = useState('');
   const [slug, setSlug] = useState('');
-  const [image, setImage] = useState('');
+  const [image, setImage] = useState(null);
   const [description, setDescription] = useState('');
 
   const [imagePreview, setImagePreview] = useState(null);
@@ -30,9 +30,8 @@ const AddCategory = () => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    console.log(file.name);
     if (file) {
-      setImage(file.name);
+      setImage(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result);
@@ -47,17 +46,23 @@ const AddCategory = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const newCategory = {
-      name: name.trim(),
-      slug: slug,
-      image: image || '',
-      description: description.trim(),
-    };
+    // Create FormData object to send file
+    const formData = new FormData();
+    formData.append('name', name.trim());
+    formData.append('slug', slug);
+    formData.append('description', description.trim());
 
-    await addCategories(newCategory, dispatch, accessToken, axiosJWT);
-    navigate('/admin/categories');
+    if (image) {
+      formData.append('image', image);
+    }
+
+    try {
+      await addCategories(formData, dispatch, accessToken, axiosJWT);
+      navigate('/admin/categories');
+    } catch (error) {
+      console.error('Error adding category:', error);
+    }
   };
-  console.log(slug);
 
   return (
     <section className="admin__section">
@@ -71,6 +76,7 @@ const AddCategory = () => {
               type="text"
               id="name"
               name="name"
+              value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Enter category name"
               required
@@ -118,7 +124,12 @@ const AddCategory = () => {
           {/* NOTE: Description */}
           <div className="admin__form-field">
             <label htmlFor="description">Description *</label>
-            <textarea name="description" onChange={(e) => setDescription(e.target.value)}></textarea>
+            <textarea
+              name="description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              required
+            ></textarea>
           </div>
         </div>
         <button type="submit" className="admin__form-button">

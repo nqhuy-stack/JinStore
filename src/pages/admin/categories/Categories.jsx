@@ -27,22 +27,32 @@ const Categories = () => {
   const axiosJWT = createAxios(user, dispatch, loginSuccess);
 
   const itemsPerPage = 10;
-  const urlImage = '../src/assets/images/categories/';
-
   useEffect(() => {
     const fetchCategories = async () => {
       try {
+        console.log('🔍 Starting to fetch categories...');
         setLoading(true);
+        setError(null);
+
         const data = await getCategoriesAll();
-        setCategories(
-          data.map((cat) => ({
-            ...cat,
-            name: cat.name || '',
-            description: cat.description || '',
-            status: cat.status || 'inactive',
-          })),
-        );
-      } catch {
+        console.log(`✅ Fetched ${data.length} categories`);
+
+        if (data && Array.isArray(data)) {
+          setCategories(
+            data.map((cat) => ({
+              ...cat,
+              name: cat.name || '',
+              description: cat.description || '',
+              status: cat.status || 'inactive',
+            })),
+          );
+        } else {
+          console.error('❌ Received invalid data format:', data);
+          setError('Dữ liệu danh mục không hợp lệ');
+        }
+      } catch (err) {
+        console.error('❌ Error in fetchCategories:', err);
+
         setError('Không thể tải danh mục. Vui lòng thử lại sau.');
       } finally {
         setLoading(false);
@@ -54,12 +64,16 @@ const Categories = () => {
   useEffect(() => {
     const newCategory = state?.newCategory;
     if (newCategory && !categories.some((cat) => cat.id === newCategory.id)) {
+      console.log('➕ Adding new category from state:', newCategory);
+
       setCategories((prev) => [...prev, newCategory]);
     }
   }, [state, categories]);
 
   const handleViewCategory = async (id, status) => {
     try {
+      console.log(`👁️ Toggling category status: ${id} from ${status}`);
+
       const newStatus = status === 'active' ? 'inactive' : 'active';
       await editCategory(id, { status: newStatus }, accessToken, axiosJWT);
       setCategories((prev) => prev.map((cat) => (cat._id === id ? { ...cat, status: newStatus } : cat)));
@@ -70,18 +84,22 @@ const Categories = () => {
         setCurrentPage(Math.max(1, newTotalPages));
       }
     } catch (error) {
-      console.error('Lỗi khi cập nhật trạng thái:', error);
+      console.error('❌ Lỗi khi cập nhật trạng thái:', error);
     }
   };
 
   const handleDeleteCategory = (id) => {
+    console.log(`🗑️ Opening delete modal for category: ${id}`);
+
     setIdCateDel(id);
     setIsDeleteModalOpen(true);
   };
 
   const confirmDeleteCategory = async () => {
     setLoading(true);
-    console.log(idCateDel);
+
+    console.log(`🗑️ Deleting category: ${idCateDel}`);
+
     try {
       await deleteCategory(idCateDel, accessToken, axiosJWT);
       setCategories((prev) => prev.filter((cat) => cat._id !== idCateDel));
@@ -92,7 +110,7 @@ const Categories = () => {
         setCurrentPage(Math.max(1, newTotalPages));
       }
     } catch (err) {
-      console.error('Lỗi khi xóa danh mục:', err);
+      console.error('❌ Lỗi khi xóa danh mục:', err);
     } finally {
       setIsDeleteModalOpen(false);
       setIdCateDel(null);
@@ -100,8 +118,15 @@ const Categories = () => {
     }
   };
 
-  const handleEditCategory = (id) => navigate(`/admin/categories/edit/${id}`);
-  const handleAddCategory = () => navigate('/admin/categories/add');
+  const handleEditCategory = (id) => {
+    console.log(`✏️ Navigating to edit category: ${id}`);
+    navigate(`/admin/categories/edit/${id}`);
+  };
+
+  const handleAddCategory = () => {
+    console.log('➕ Navigating to add new category');
+    navigate('/admin/categories/add');
+  };
 
   const filteredCategories = categories.filter(
     (cat) => cat.status === 'active' && (cat.name || '').toLowerCase().includes(searchTerm.toLowerCase()),
@@ -111,7 +136,7 @@ const Categories = () => {
 
   const formatDate = (isoDate) => moment(isoDate).format('DD/MM/YYYY HH:mm:ss');
 
-  if (error) return <div>{error}</div>;
+  if (error) return <div className="error-message">{error}</div>;
 
   return (
     <section className="admin__section">
@@ -154,7 +179,7 @@ const Categories = () => {
                     <td className="td-date">{formatDate(category.createdAt)}</td>
                     <td className="td-img">
                       <img
-                        src={`${urlImage}${category.image}`}
+                        src={category.image?.url || '/placeholder-image.jpg'}
                         alt={`${category.name || 'Danh mục'} : ${category.description || 'Không có mô tả'}`}
                         className="admin__image-preview admin__image-preview--category"
                       />
