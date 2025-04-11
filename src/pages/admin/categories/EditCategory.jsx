@@ -1,0 +1,234 @@
+// File: src/pages/admin/AddCategory.jsx
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-hot-toast';
+
+import { getCategories } from '@services/CategoryService.jsx';
+import { loginSuccess } from '@/redux/authSlice.jsx';
+import { editCategory } from '@services/CategoryService.jsx';
+import { createAxios } from '@utils/createInstance.jsx';
+
+const AddCategory = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const urlImage = '../../../src/assets/images/categories/';
+
+  const user = useSelector((state) => state.auth.login.currentUser);
+  const accessToken = user?.accessToken;
+  const axiosJWT = createAxios(user, dispatch, loginSuccess);
+  const [category, setCategory] = useState([]);
+
+  const [name, setName] = useState('');
+  const [slug, setSlug] = useState('');
+  const [image, setImage] = useState('');
+  const [description, setDescription] = useState('');
+
+  const [imagePreview, setImagePreview] = useState(null);
+  const [customSlug, setCustomSlug] = useState(false);
+  const [customImg, setCustomImg] = useState(false);
+
+  const { id } = useParams();
+
+  const [formData, setFormData] = useState({
+    name: '',
+    slug: '',
+    image: '',
+    description: '',
+  });
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const data = await getCategories(id);
+        setCategory(data);
+        setFormData({
+          name: data?.name || '',
+          slug: data?.slug || '',
+          image: data?.image || '',
+          description: data?.description || '',
+        });
+      } catch (err) {
+        toast.dismiss();
+        toast.error(err.response?.data.message, {
+          autoClose: 500,
+        });
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    console.log(file.name);
+    if (file) {
+      setFormData((prev) => ({
+        ...prev,
+        image: file.name,
+      }));
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setImage(null);
+      setImagePreview(null);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const updatedFields = {};
+    Object.keys(formData).forEach((key) => {
+      if (
+        formData[key] &&
+        ((typeof formData[key] === 'string' && formData[key].trim() !== category[key]) ||
+          (typeof formData[key] === 'object' && formData[key] !== category[key])) // file ảnh
+      ) {
+        updatedFields[key] = formData[key];
+      }
+    });
+
+    if (Object.keys(updatedFields).length === 0) {
+      toast.dismiss();
+      toast('Chưa có thông tin nào được thay đổi.', {
+        duration: 3000,
+        position: 'top-center',
+        style: {
+          background: '#fff3cd',
+          color: '#856404',
+          border: '1px solid #ffeeba',
+          borderRadius: '8px',
+          fontWeight: '500',
+          fontSize: '1.6rem',
+        },
+        icon: '⚠️',
+      });
+      return;
+    }
+
+    try {
+      await editCategory(id, updatedFields, accessToken, axiosJWT);
+      navigate('/admin/categories');
+    } catch (error) {
+      console.error('Lỗi khi cập nhật:', error);
+    }
+  };
+
+  return (
+    <section className="admin__section">
+      <h2 className="admin__section-title">Cập nhật thông tin danh mục</h2>
+      <form className="admin__form" onSubmit={handleSubmit}>
+        <div className="admin__form-row">
+          {/* NOTE: Name */}
+          <div className="admin__form-field">
+            <label htmlFor="name">Category Name *</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleInputChange}
+              placeholder="Enter category name"
+              required
+            />
+          </div>
+          {/* NOTE: Slug */}
+          <div className="admin__form-field">
+            <label className="label__slug" htmlFor="slug">
+              Tự chỉnh sửa slug
+              <input type="checkbox" checked={customSlug} onChange={() => setCustomSlug(!customSlug)} />
+            </label>
+            <input
+              type="text"
+              value={formData.slug}
+              readOnly={!customSlug}
+              onChange={handleInputChange}
+              placeholder={!customSlug ? 'Slug tự động phát sinh' : 'Vui lòng nhập slug cho phù hợp'}
+              style={{
+                cursor: !customSlug ? 'default' : 'text',
+                backgroundColor: !customSlug ? '#f3f4f6' : 'white',
+                color: '#6b7280',
+                border: '1px solid #d1d5db',
+                borderRadius: '6px',
+                width: '100%',
+              }}
+            />
+          </div>
+        </div>
+        <div className="admin__form-row">
+          {/* NOTE: Image */}
+          <div className="admin__form-field">
+            <label className="label__image" htmlFor="image">
+              Thay đổi ảnh
+              <input type="checkbox" checked={customImg} onChange={() => setCustomImg(!customImg)} />
+            </label>
+            {customImg ? (
+              <input
+                type="file"
+                id="image"
+                name="image"
+                accept="image/*"
+                onChange={handleImageChange}
+                style={{
+                  backgroundColor: 'white',
+                }}
+              />
+            ) : (
+              <input
+                type="text"
+                value={formData.image}
+                readOnly={!customImg}
+                style={{
+                  padding: '5.5px',
+                  cursor: 'default',
+                  backgroundColor: '#f3f4f6',
+                  color: '#6b7280',
+                  border: '1px solid #d1d5db',
+                  borderRadius: '6px',
+                  fontWeight: '500',
+                  width: '100%',
+                }}
+              />
+            )}
+
+            {imagePreview ? (
+              <img src={imagePreview} alt="Preview" className="admin__image-preview admin__image-preview--category" />
+            ) : (
+              formData.image &&
+              typeof formData.image === 'string' && (
+                <img
+                  src={`${urlImage}${formData.image}`}
+                  alt="Preview"
+                  className="admin__image-preview admin__image-preview--category"
+                />
+              )
+            )}
+          </div>
+          {/* NOTE: Description */}
+          <div className="admin__form-field">
+            <label htmlFor="description">Description *</label>
+            <textarea value={formData.description} name="description" onChange={handleInputChange}></textarea>
+          </div>
+        </div>
+        <button type="submit" className="admin__form-button">
+          Update Category
+        </button>
+      </form>
+    </section>
+  );
+};
+
+export default AddCategory;

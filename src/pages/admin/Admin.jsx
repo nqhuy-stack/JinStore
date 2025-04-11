@@ -58,6 +58,9 @@ const Admin = () => {
 
       if (path.includes('/add')) {
         items.push({ text: 'Add Category' });
+      } else if (path.includes('/edit/')) {
+        const id = path.split('/').pop();
+        items.push({ text: `Edit Category #${id}` });
       }
     } else if (path.includes('/admin/orders')) {
       items.push({ text: 'Orders', link: '/admin/orders' });

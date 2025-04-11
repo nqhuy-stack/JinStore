@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 
 import { useEffect, useState } from 'react';
-import { getCategories } from '@/services/CategoryService';
+import { getCategoriesAll } from '@/services/CategoryService';
 import jsonNavbar from '@json/navbar.jsx';
 
 import appStore from '@assets/images/logo/button-appstore.svg';
@@ -28,7 +28,7 @@ const Footer = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const data = await getCategories(); // Goi API lay danh sach categories
+        const data = await getCategoriesAll(); // Goi API lay danh sach categories
         setCategory(data);
       } catch (error) {
         console.error('Loi khi lay danh muc:', error);

@@ -12,7 +12,7 @@ const Login = () => {
 
   return (
     <Fragment>
-      <div className="login-container">
+      <section className="login-container">
         <FormDescribe>
           Hãy đăng nhập để khám phá thế giới của chúng tôi và cùng nhau xây dựng một tương lai bền vững.
         </FormDescribe>
@@ -30,7 +30,7 @@ const Login = () => {
             Don&apos;t have an account? <Link to="/register">Sign up</Link>
           </p>
         </div>
-      </div>
+      </section>
     </Fragment>
   );
 };

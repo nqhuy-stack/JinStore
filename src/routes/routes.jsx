@@ -7,19 +7,24 @@ import NotFound from '@pages/user/NotFound.jsx';
 // import Shop from '@pages/user/Shop';
 // import Cart from '@pages/user/Cart';
 // import Wishlist from '@pages/user/Wishlist';
-import ProductList from '@/pages/user/ProductList';
-import ProductDetails from '@/pages/user/ProductDetails';
+import ProductList from '@pages/user/ProductList';
+import ProductDetails from '@pages/user/ProductDetails';
+
+import Products from '@pages/admin/products/Products';
+import AddProduct from '@pages/admin/products/AddProduct';
+import EditProduct from '@pages/admin/products/EditProduct';
+import ProductReviews from '@pages/admin/products/ProductReviews';
+
 import Admin from '@pages/admin/Admin';
-import Dashboard from '@pages/admin/Dashboard';
-import Products from '@pages/admin/Products';
-import AddProduct from '@pages/admin/AddProduct';
-import EditProduct from '@pages/admin/EditProduct';
-import Orders from '@pages/admin/Orders';
-import OrdersDetail from '@pages/admin/OrdersDetail';
 import Users from '@pages/admin/Users';
-import Categories from '@pages/admin/Categories';
-import ProductReviews from '@pages/admin/ProductReviews';
-import AddCategory from '@/pages/admin/AddCategory';
+import Dashboard from '@pages/admin/Dashboard';
+
+import Orders from '@pages/admin/orders/Orders';
+import OrdersDetail from '@pages/admin/orders/OrdersDetail';
+
+import Categories from '@pages/admin/categories/Categories';
+import AddCategory from '@/pages/admin/categories/AddCategory';
+import EditCategory from '@/pages/admin/categories/EditCategory';
 const routes = [
   {
     path: '/',
@@ -68,6 +73,7 @@ const routes = [
       { path: 'orders/:id', page: OrdersDetail },
       { path: 'categories', page: Categories },
       { path: 'categories/add', page: AddCategory },
+      { path: 'categories/edit/:id', page: EditCategory },
       { path: 'users', page: Users },
     ],
   },
