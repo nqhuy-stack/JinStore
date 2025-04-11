@@ -9,20 +9,18 @@ import { loginSuccess } from '@/redux/authSlice.jsx';
 import { editCategory } from '@services/CategoryService.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
 
-const AddCategory = () => {
+const EditCategory = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const urlImage = '../../../src/assets/images/categories/';
 
   const user = useSelector((state) => state.auth.login.currentUser);
   const accessToken = user?.accessToken;
   const axiosJWT = createAxios(user, dispatch, loginSuccess);
-  const [category, setCategory] = useState([]);
+  const [category, setCategory] = useState(null);
 
   const [name, setName] = useState('');
   const [slug, setSlug] = useState('');
-  const [image, setImage] = useState('');
+  const [image, setImage] = useState(null);
   const [description, setDescription] = useState('');
 
   const [imagePreview, setImagePreview] = useState(null);
@@ -31,24 +29,17 @@ const AddCategory = () => {
 
   const { id } = useParams();
 
-  const [formData, setFormData] = useState({
-    name: '',
-    slug: '',
-    image: '',
-    description: '',
-  });
-
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const data = await getCategories(id);
         setCategory(data);
-        setFormData({
-          name: data?.name || '',
-          slug: data?.slug || '',
-          image: data?.image || '',
-          description: data?.description || '',
-        });
+        setName(data?.name || '');
+        setSlug(data?.slug || '');
+        setDescription(data?.description || '');
+        if (data?.image?.url) {
+          setImagePreview(data.image.url);
+        }
       } catch (err) {
         toast.dismiss();
         toast.error(err.response?.data.message, {
@@ -58,24 +49,19 @@ const AddCategory = () => {
     };
 
     fetchCategories();
-  }, []);
+  }, [id]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    if (name === 'name') setName(value);
+    if (name === 'slug') setSlug(value);
+    if (name === 'description') setDescription(value);
   };
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    console.log(file.name);
     if (file) {
-      setFormData((prev) => ({
-        ...prev,
-        image: file.name,
-      }));
+      setImage(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result);
@@ -90,18 +76,28 @@ const AddCategory = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const updatedFields = {};
-    Object.keys(formData).forEach((key) => {
-      if (
-        formData[key] &&
-        ((typeof formData[key] === 'string' && formData[key].trim() !== category[key]) ||
-          (typeof formData[key] === 'object' && formData[key] !== category[key])) // file ảnh
-      ) {
-        updatedFields[key] = formData[key];
-      }
-    });
+    // Create FormData object to send file
+    const formData = new FormData();
 
-    if (Object.keys(updatedFields).length === 0) {
+    // Only append fields that have changed
+    if (name !== category.name) {
+      formData.append('name', name.trim());
+    }
+
+    if (slug !== category.slug) {
+      formData.append('slug', slug);
+    }
+
+    if (description !== category.description) {
+      formData.append('description', description.trim());
+    }
+
+    if (image) {
+      formData.append('image', image);
+    }
+
+    // Check if any fields have changed
+    if (formData.keys().length === 0) {
       toast.dismiss();
       toast('Chưa có thông tin nào được thay đổi.', {
         duration: 3000,
@@ -120,12 +116,16 @@ const AddCategory = () => {
     }
 
     try {
-      await editCategory(id, updatedFields, accessToken, axiosJWT);
+      await editCategory(id, formData, accessToken, axiosJWT);
       navigate('/admin/categories');
     } catch (error) {
       console.error('Lỗi khi cập nhật:', error);
     }
   };
+
+  if (!category) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <section className="admin__section">
@@ -139,7 +139,7 @@ const AddCategory = () => {
               type="text"
               id="name"
               name="name"
-              value={formData.name}
+              value={name}
               onChange={handleInputChange}
               placeholder="Enter category name"
               required
@@ -153,9 +153,10 @@ const AddCategory = () => {
             </label>
             <input
               type="text"
-              value={formData.slug}
+              value={slug}
               readOnly={!customSlug}
               onChange={handleInputChange}
+              name="slug"
               placeholder={!customSlug ? 'Slug tự động phát sinh' : 'Vui lòng nhập slug cho phù hợp'}
               style={{
                 cursor: !customSlug ? 'default' : 'text',
@@ -189,7 +190,7 @@ const AddCategory = () => {
             ) : (
               <input
                 type="text"
-                value={formData.image}
+                value={category.image?.url || ''}
                 readOnly={!customImg}
                 style={{
                   padding: '5.5px',
@@ -204,23 +205,14 @@ const AddCategory = () => {
               />
             )}
 
-            {imagePreview ? (
+            {imagePreview && (
               <img src={imagePreview} alt="Preview" className="admin__image-preview admin__image-preview--category" />
-            ) : (
-              formData.image &&
-              typeof formData.image === 'string' && (
-                <img
-                  src={`${urlImage}${formData.image}`}
-                  alt="Preview"
-                  className="admin__image-preview admin__image-preview--category"
-                />
-              )
             )}
           </div>
           {/* NOTE: Description */}
           <div className="admin__form-field">
             <label htmlFor="description">Description *</label>
-            <textarea value={formData.description} name="description" onChange={handleInputChange}></textarea>
+            <textarea value={description} name="description" onChange={handleInputChange} required></textarea>
           </div>
         </div>
         <button type="submit" className="admin__form-button">
@@ -231,4 +223,4 @@ const AddCategory = () => {
   );
 };
 
-export default AddCategory;
+export default EditCategory;
