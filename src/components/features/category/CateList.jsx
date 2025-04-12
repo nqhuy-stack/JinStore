@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { getCategoriesAll } from '@/services/CategoryService.jsx';
 
 const CategoryList = () => {
-  const urlImage = './src/assets/images/categories/';
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -36,7 +35,11 @@ const CategoryList = () => {
             status === 'active' && (
               <li className="item-categories" key={_id}>
                 <Link className="link-categories" to={`/shop?category=${encodeURIComponent(slug)}`}>
-                  <img src={`${urlImage}${image}`} alt={`${name} : ${description}`} />
+                  <img
+                    src={image?.url || '/placeholder-image.jpg'}
+                    alt={`${name} : ${description}`}
+                    className="category-image"
+                  />
                   <span>{name}</span>
                 </Link>
               </li>

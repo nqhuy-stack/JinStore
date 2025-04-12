@@ -144,6 +144,14 @@
               padding: 15px 15px 0 15px;
               position: relative;
 
+              img.category-image {
+                width: 100%;
+                height: auto;
+                max-height: 120px;
+                object-fit: contain;
+                margin-bottom: 10px;
+              }
+
               span {
                 position: absolute;
                 bottom: 0;
@@ -161,13 +169,6 @@
                 overflow: hidden;
                 text-overflow: ellipsis;
                 min-height: 50px; // Thay height cố định
-              }
-
-              img {
-                position: absolute;
-                top: 0;
-                @include size(90%, auto);
-                object-fit: contain;
               }
             }
           }
