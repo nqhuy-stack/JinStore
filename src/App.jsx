@@ -1,5 +1,5 @@
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
-import { Fragment, useEffect } from 'react';
+import { Fragment } from 'react';
 import { useSelector } from 'react-redux';
 import { Toaster } from 'react-hot-toast';
 import PropTypes from 'prop-types';
