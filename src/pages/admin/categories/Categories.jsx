@@ -162,7 +162,7 @@ const Categories = () => {
             <table className="admin__table">
               <thead>
                 <tr>
-                  <th className="th-nam">Product Name</th>
+                  <th className="th-nam">Category Name</th>
                   <th className="th-nam">Description</th>
                   <th className="th-date">Date</th>
                   <th className="th-img">Image</th>

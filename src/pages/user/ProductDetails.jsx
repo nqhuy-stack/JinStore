@@ -117,6 +117,14 @@ const ProductDetails = () => {
     return () => clearInterval(timer);
   }, []);
 
+  // Add scroll to top effect when product ID changes
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }, [id]);
+
   const handleQuantityChange = (value) => {
     const newQuantity = Math.max(1, Math.min(product.stockQuantity, quantity + value));
     setQuantity(newQuantity);

@@ -139,10 +139,17 @@ const Header = () => {
                 <img src={iconHeart} alt="iconheart" />
                 <span className="header__count">0</span>
               </div>
-              <div className="header__cart">
+              {/* <div className="header__cart">
                 <img src={iconCart} alt="iconcart-shopping" />
                 <span className="header__count">0</span>
-              </div>
+                <Link to="/cart">Cart</Link>
+              </div> */}
+              <Link to="/cart">
+                <div className="header__cart">
+                  <img src={iconCart} alt="iconcart-shopping" />
+                  <span className="header__count">0</span>
+                </div>
+              </Link>
             </div>
           </div>
         </section>
