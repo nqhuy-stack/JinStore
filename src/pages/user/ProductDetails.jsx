@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link, useLocation } from 'react-router-dom';
+import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faStar,
@@ -21,6 +21,7 @@ import Breadcrumb from '@components/common/Breadcrumb';
 const ProductDetails = () => {
   const { id } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
@@ -31,6 +32,7 @@ const ProductDetails = () => {
     minutes: 0,
     seconds: 0,
   });
+  const [activeTab, setActiveTab] = useState('description');
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -115,6 +117,14 @@ const ProductDetails = () => {
     return () => clearInterval(timer);
   }, []);
 
+  // Add scroll to top effect when product ID changes
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }, [id]);
+
   const handleQuantityChange = (value) => {
     const newQuantity = Math.max(1, Math.min(product.stockQuantity, quantity + value));
     setQuantity(newQuantity);
@@ -150,6 +160,10 @@ const ProductDetails = () => {
 
   //     return faMugHot; // Default icon
   //   };
+
+  const handleRelatedProductClick = (productId) => {
+    navigate(`/product/${productId}`);
+  };
 
   if (loading) {
     return (
@@ -335,6 +349,222 @@ const ProductDetails = () => {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* Description and Reviews Section */}
+      <div className="product-details__tabs">
+        <div className="tabs__header">
+          <button
+            className={`tab-button ${activeTab === 'description' ? 'active' : ''}`}
+            onClick={() => setActiveTab('description')}
+          >
+            Description
+          </button>
+          <button
+            className={`tab-button ${activeTab === 'reviews' ? 'active' : ''}`}
+            onClick={() => setActiveTab('reviews')}
+          >
+            Reviews ({product.reviews})
+          </button>
+        </div>
+
+        <div className="tabs__content">
+          {activeTab === 'description' ? (
+            <div className="description-content">
+              <h3>Product Description</h3>
+              <div className="description-text">
+                <p>{product.description}</p>
+                <div className="product-features">
+                  <h4>Key Features:</h4>
+                  <ul>
+                    <li>Premium Quality</li>
+                    <li>100% Authentic</li>
+                    <li>Carefully Selected</li>
+                    <li>Best in Market</li>
+                  </ul>
+                </div>
+                {product.isOrganic && (
+                  <div className="organic-info">
+                    <FontAwesomeIcon icon={faLeaf} />
+                    <h4>Organic Product</h4>
+                    <p>This product is certified organic and meets all organic farming standards.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="reviews-content">
+              <div className="reviews-summary">
+                <div className="rating-overview">
+                  <h3>Customer Reviews</h3>
+                  <div className="average-rating">
+                    <span className="rating-number">{product.rating}</span>
+                    <div className="stars">
+                      {[...Array(5)].map((_, index) => (
+                        <FontAwesomeIcon
+                          key={index}
+                          icon={faStar}
+                          className={index < Math.floor(product.rating) ? 'filled' : ''}
+                        />
+                      ))}
+                    </div>
+                    <span className="total-reviews">Based on {product.reviews} reviews</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="reviews-list">
+                {/* Mock reviews - In a real app, these would come from an API */}
+                {[...Array(3)].map((_, index) => (
+                  <div key={index} className="review-item">
+                    <div className="review-header">
+                      <div className="reviewer-info">
+                        <h4>John Doe</h4>
+                        <span className="review-date">Posted on {new Date().toLocaleDateString()}</span>
+                      </div>
+                      <div className="review-rating">
+                        {[...Array(5)].map((_, starIndex) => (
+                          <FontAwesomeIcon key={starIndex} icon={faStar} className={starIndex < 4 ? 'filled' : ''} />
+                        ))}
+                      </div>
+                    </div>
+                    <p className="review-text">
+                      Great product! The quality is excellent and it arrived quickly. Would definitely recommend to
+                      others.
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="write-review">
+                <button className="write-review-button">
+                  <FontAwesomeIcon icon={faStar} /> Write a Review
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Related Products Section */}
+      <div className="product-details__related">
+        <h2 className="related__title">Related Products</h2>
+        <div className="related__products">
+          {[
+            {
+              id: 1,
+              name: 'Large Garden Spinach & Herb Wrap Tortillas - 15oz,5ct',
+              price: 27.9,
+              originalPrice: 32.9,
+              discount: '15%',
+              rating: 3,
+              reviews: 3,
+              image: 'https://example.com/spinach.jpg',
+              inStock: true,
+            },
+            {
+              id: 2,
+              name: 'Peach - each',
+              price: 0.75,
+              originalPrice: 1.75,
+              discount: '55%',
+              rating: 3,
+              reviews: 3,
+              image: 'https://example.com/peach.jpg',
+              inStock: true,
+            },
+            {
+              id: 3,
+              name: 'Yellow Potatoes Whole Fresh, 5lb Bag',
+              price: 0.5,
+              originalPrice: 1.99,
+              discount: '75%',
+              rating: 3,
+              reviews: 3,
+              image: 'https://example.com/potatoes.jpg',
+              inStock: true,
+            },
+            {
+              id: 4,
+              name: 'Fresh Cauliflower, Each',
+              price: 12.79,
+              originalPrice: 14.79,
+              discount: '14%',
+              rating: 2,
+              reviews: 2,
+              image: 'https://example.com/cauliflower.jpg',
+              inStock: true,
+            },
+            {
+              id: 5,
+              name: 'Fresh Broccoli Crowns, Each',
+              price: 11.54,
+              originalPrice: 17.88,
+              discount: '35%',
+              rating: 3,
+              reviews: 3,
+              image: 'https://example.com/broccoli.jpg',
+              inStock: true,
+            },
+            {
+              id: 6,
+              name: 'Fresh Purple Eggplant',
+              price: 2.99,
+              originalPrice: 3.99,
+              discount: '25%',
+              rating: 3,
+              reviews: 3,
+              image: 'https://example.com/eggplant.jpg',
+              inStock: true,
+            },
+          ].map((relatedProduct) => (
+            <div
+              key={relatedProduct.id}
+              className="related__product-card"
+              onClick={() => handleRelatedProductClick(relatedProduct.id)}
+              style={{ cursor: 'pointer' }}
+            >
+              <div className="product-card__image">
+                <img src={relatedProduct.image} alt={relatedProduct.name} />
+                {relatedProduct.discount && <span className="discount-badge">{relatedProduct.discount}</span>}
+                <button
+                  className="wishlist-button"
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent triggering parent click
+                    // Add wishlist functionality here
+                  }}
+                >
+                  <FontAwesomeIcon icon={faHeart} />
+                </button>
+              </div>
+              <div className="product-card__content">
+                <h3 className="product-name">{relatedProduct.name}</h3>
+                <div className="product-rating">
+                  <div className="stars">
+                    {[...Array(5)].map((_, index) => (
+                      <FontAwesomeIcon
+                        key={index}
+                        icon={faStar}
+                        className={index < relatedProduct.rating ? 'filled' : ''}
+                      />
+                    ))}
+                  </div>
+                  <span className="review-count">({relatedProduct.reviews})</span>
+                </div>
+                <div className="product-price">
+                  <span className="current-price">${relatedProduct.price.toFixed(2)}</span>
+                  {relatedProduct.originalPrice && (
+                    <span className="original-price">${relatedProduct.originalPrice.toFixed(2)}</span>
+                  )}
+                </div>
+                <button className="add-to-cart-btn" disabled={!relatedProduct.inStock}>
+                  <FontAwesomeIcon icon={faCartPlus} />
+                  {relatedProduct.inStock ? 'Add to Cart' : 'Out of Stock'}
+                </button>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

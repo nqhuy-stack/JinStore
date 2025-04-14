@@ -6,8 +6,9 @@ import About from '@pages/user/About.jsx';
 import Contact from '@pages/user/Contact.jsx';
 import NotFound from '@pages/user/NotFound.jsx';
 // import Shop from '@pages/user/Shop';
-// import Cart from '@pages/user/Cart';
-// import Wishlist from '@pages/user/Wishlist';
+import Cart from '@pages/user/Cart';
+import Checkout from '@pages/user/Checkout';
+import Wishlist from '@pages/user/Wishlist';
 import ProductList from '@pages/user/ProductList';
 import ProductDetails from '@pages/user/ProductDetails';
 
@@ -62,6 +63,18 @@ const routes = [
   {
     path: '/product/:id',
     page: ProductDetails,
+  },
+  {
+    path: '/cart',
+    page: Cart,
+  },
+  {
+    path: '/checkout',
+    page: Checkout,
+  },
+  {
+    path: '/wishlist',
+    page: Wishlist,
   },
   {
     path: '/admin',
