@@ -61,7 +61,10 @@ ProtectedRoute.defaultProps = {
  */
 const App = () => {
   const location = useLocation();
-  const isPublicPage = location.pathname === '/login' || location.pathname === '/register';
+  const isPublicPage =
+    location.pathname === '/login' ||
+    location.pathname === '/register' ||
+    location.pathname === '/login-google/success';
 
   /**
    * Render route cho admin

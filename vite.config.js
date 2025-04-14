@@ -11,7 +11,7 @@ export default defineConfig({
   optimizeDeps: {
     include: ['react-toastify'],
   },
-  base: '/JinStore/',
+  base: '/JinStore',
   resolve: {
     extensions: ['.js', '.jsx'],
     alias: {

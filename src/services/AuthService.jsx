@@ -32,9 +32,12 @@ export const login = async (user, dispatch, navigate) => {
     } else {
       navigate('/');
     }
-  } catch (err) {
+  } catch (error) {
     dispatch(loginFailed());
-    throw alert(err.response?.data.message);
+    toast.dismiss();
+    toast.error(error.response?.data.message, {
+      autoClose: 1000,
+    });
   }
 };
 
@@ -60,7 +63,10 @@ export const logOut = async (dispatch, id, navigate, accessToken, axiosJWT) => {
         );
       } catch (error) {
         console.error('Error calling logout API:', error);
-        // Tiếp tục xử lý logout dù API có lỗi
+        toast.dismiss();
+        toast.error(error.response?.data.message, {
+          autoClose: 1000,
+        });
       }
     }
 
@@ -77,6 +83,10 @@ export const logOut = async (dispatch, id, navigate, accessToken, axiosJWT) => {
   } catch (error) {
     console.error('Logout error:', error);
     dispatch(logoutFailed());
+    toast.dismiss();
+    toast.error(error.response?.data.message, {
+      autoClose: 1000,
+    });
   }
 };
 
@@ -93,9 +103,12 @@ export const register = async (user, dispatch, navigate) => {
     });
 
     navigate('/login');
-  } catch (err) {
+  } catch (error) {
     dispatch(registerFailed('Something is wrong'));
-    throw alert(err.response?.data.message);
+    toast.dismiss();
+    toast.error(error.response?.data.message, {
+      autoClose: 1000,
+    });
   }
 };
 

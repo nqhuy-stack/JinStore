@@ -8,7 +8,7 @@ const ProductsCategoryList = ({ idCategory }) => {
     const fetchProducts = async () => {
       try {
         const data = await getProductsByIdCategory(idCategory);
-        setProducts(data);
+        setProducts(Array.isArray(data) ? data : []);
         console.log('Dữ liệu sản phẩm:', data);
       } catch (error) {
         console.error('Lỗi khi lấy danh mục:', error);
@@ -16,13 +16,13 @@ const ProductsCategoryList = ({ idCategory }) => {
     };
 
     fetchProducts();
-  }, []);
+  }, [idCategory]);
 
   console.log('idCategory nhận được:', idCategory);
 
   return (
     <nav className="section__content section__home-prodCate">
-      <h2>Sản phẩm theo danh mục {filteredProducts.length}</h2>
+      <h2>Sản phẩm theo danh mục: {filteredProducts?.length ?? 0} sản phẩm</h2>
       <ul>
         {filteredProducts.length > 0 ? (
           filteredProducts
