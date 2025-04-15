@@ -142,9 +142,7 @@ const Admin = () => {
         </aside>
         <main className="admin__main">
           {/* Breadcrumb */}
-          <div className="admin__breadcrumb">
-            <Breadcrumb items={breadcrumbItems} />
-          </div>
+          <Breadcrumb items={breadcrumbItems} />
 
           {/* Main content */}
           <Outlet />

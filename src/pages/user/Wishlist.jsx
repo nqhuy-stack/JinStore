@@ -72,41 +72,42 @@ const Wishlist = () => {
   };
 
   return (
-    <div className="wishlist">
+    <>
       <Breadcrumb items={[{ text: 'Wishlist' }]} />
+      <div className="wishlist">
+        <div className="wishlist__container">
+          <div className="wishlist__grid">
+            {wishlistItems.map((item) => (
+              <div key={item.id} className="wishlist__item">
+                <button className="remove-btn" onClick={() => handleRemoveFromWishlist(item.id)}>
+                  <FontAwesomeIcon icon={faTimes} />
+                </button>
 
-      <div className="wishlist__container">
-        <div className="wishlist__grid">
-          {wishlistItems.map((item) => (
-            <div key={item.id} className="wishlist__item">
-              <button className="remove-btn" onClick={() => handleRemoveFromWishlist(item.id)}>
-                <FontAwesomeIcon icon={faTimes} />
-              </button>
+                <div className="item__image">
+                  <img src={item.image} alt={item.name} />
+                </div>
 
-              <div className="item__image">
-                <img src={item.image} alt={item.name} />
+                <div className="item__category">{item.category}</div>
+
+                <h3 className="item__name">{item.name}</h3>
+
+                <div className="item__weight">{item.weight}</div>
+
+                <div className="item__price">
+                  <span className="current-price">${item.price.toFixed(2)}</span>
+                  <span className="original-price">${item.originalPrice.toFixed(2)}</span>
+                </div>
+
+                <button className="add-btn" onClick={() => handleAddToCart(item.id)}>
+                  Add
+                  <FontAwesomeIcon icon={faPlus} />
+                </button>
               </div>
-
-              <div className="item__category">{item.category}</div>
-
-              <h3 className="item__name">{item.name}</h3>
-
-              <div className="item__weight">{item.weight}</div>
-
-              <div className="item__price">
-                <span className="current-price">${item.price.toFixed(2)}</span>
-                <span className="original-price">${item.originalPrice.toFixed(2)}</span>
-              </div>
-
-              <button className="add-btn" onClick={() => handleAddToCart(item.id)}>
-                Add
-                <FontAwesomeIcon icon={faPlus} />
-              </button>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

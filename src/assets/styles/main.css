@@ -988,7 +988,14 @@ html {
   color: #000000;
 }
 
-.breadcrumb__container {
+.block__breadcrumb {
+  background-color: white;
+  padding: 0.7rem 20px 0.5rem;
+  margin: 1.5rem 0;
+  border-radius: 0.4rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.block__breadcrumb .breadcrumb__container {
   max-width: 1200px;
   margin: 0;
   padding: 0;
@@ -997,7 +1004,7 @@ html {
   align-items: center;
   height: auto;
 }
-.breadcrumb__item {
+.block__breadcrumb .breadcrumb__item {
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -1009,106 +1016,106 @@ html {
   text-decoration: none;
   line-height: 1.2;
 }
-.breadcrumb__item:first-child {
+.block__breadcrumb .breadcrumb__item:first-child {
   padding-left: 0;
   margin-left: 0;
 }
-.breadcrumb__item--home {
+.block__breadcrumb .breadcrumb__item--home {
   color: #304ffe;
   padding-left: 0;
   margin-left: 0;
 }
-.breadcrumb__item--active {
+.block__breadcrumb .breadcrumb__item--active {
   color: #0d47a1;
   font-weight: 700;
 }
-.breadcrumb__item a {
+.block__breadcrumb .breadcrumb__item a {
   color: inherit;
   text-decoration: none;
   font-size: 1.4rem !important;
 }
-.breadcrumb__item a:hover {
+.block__breadcrumb .breadcrumb__item a:hover {
   color: #1976d2;
   text-decoration: underline;
 }
-.breadcrumb__separator {
+.block__breadcrumb .breadcrumb__separator {
   color: #5c6bc0;
   margin: 0 0.5rem;
   font-size: 1.8rem !important;
 }
-.breadcrumb__icon {
+.block__breadcrumb .breadcrumb__icon {
   margin-right: 0.5rem;
-  font-size: 1.9rem !important;
+  font-size: 1.4rem !important;
 }
 @media (max-width: 768px) {
-  .breadcrumb {
+  .block__breadcrumb .breadcrumb {
     padding: 0.3rem 0;
   }
-  .breadcrumb__item {
+  .block__breadcrumb .breadcrumb__item {
     font-size: 1.8rem;
   }
-  .breadcrumb__separator {
+  .block__breadcrumb .breadcrumb__separator {
     font-size: 1.5rem;
   }
-  .breadcrumb__icon {
+  .block__breadcrumb .breadcrumb__icon {
     font-size: 1.4rem;
   }
 }
 @media (max-width: 480px) {
-  .breadcrumb__item {
+  .block__breadcrumb .breadcrumb__item {
     font-size: 1.3rem;
     padding: 0.2rem 0.2rem;
   }
-  .breadcrumb__separator {
+  .block__breadcrumb .breadcrumb__separator {
     font-size: 1.1rem;
     margin: 0 0.2rem;
   }
-  .breadcrumb__icon {
+  .block__breadcrumb .breadcrumb__icon {
     font-size: 1.2rem;
     margin-right: 0.2rem;
   }
 }
 
-.admin__breadcrumb .breadcrumb,
+.block__breadcrumb .breadcrumb,
 .user__section .breadcrumb,
 .product-details .breadcrumb {
   margin-left: 0;
   padding-left: 0;
 }
-.admin__breadcrumb .breadcrumb__container,
+.block__breadcrumb .breadcrumb__container,
 .user__section .breadcrumb__container,
 .product-details .breadcrumb__container {
   padding-left: 0;
   margin-left: 0;
 }
-.admin__breadcrumb .breadcrumb__item:first-child,
+.block__breadcrumb .breadcrumb__item:first-child,
 .user__section .breadcrumb__item:first-child,
 .product-details .breadcrumb__item:first-child {
   padding-left: 0;
   margin-left: 0;
 }
-.admin__breadcrumb .breadcrumb__item--home,
+.block__breadcrumb .breadcrumb__item--home,
 .user__section .breadcrumb__item--home,
 .product-details .breadcrumb__item--home {
   padding-left: 0;
   margin-left: 0;
 }
-.admin__breadcrumb .breadcrumb__item,
+.block__breadcrumb .breadcrumb__item,
 .user__section .breadcrumb__item,
 .product-details .breadcrumb__item {
   font-size: 1.8rem;
 }
-.admin__breadcrumb .breadcrumb__item a,
+.block__breadcrumb .breadcrumb__item a,
 .user__section .breadcrumb__item a,
 .product-details .breadcrumb__item a {
   font-size: 1.8rem;
 }
-.admin__breadcrumb .breadcrumb__separator,
+.block__breadcrumb .breadcrumb__separator,
 .user__section .breadcrumb__separator,
 .product-details .breadcrumb__separator {
   font-size: 1.5rem;
 }
-.admin__breadcrumb .breadcrumb__icon,
+.block__breadcrumb .breadcrumb__icon,
 .user__section .breadcrumb__icon,
 .product-details .breadcrumb__icon {
   font-size: 1.4rem;
@@ -2860,31 +2867,24 @@ html {
     font-size: 2rem;
   }
 }
-.admin__breadcrumb {
-  background-color: white;
-  padding: 0.7rem 20px 0.5rem;
-  margin-bottom: 1.5rem;
-  border-radius: 0.4rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-}
-.admin__breadcrumb .breadcrumb__container {
+.admin .block__breadcrumb .breadcrumb__container {
   padding: 0;
   margin-left: 0;
 }
-.admin__breadcrumb .breadcrumb__item {
+.admin .block__breadcrumb .breadcrumb__item {
   text-align: center;
   font-size: 1.4rem !important;
 }
-.admin__breadcrumb .breadcrumb__item:first-child {
+.admin .block__breadcrumb .breadcrumb__item:first-child {
   padding-left: 0;
 }
-.admin__breadcrumb .breadcrumb__item a {
+.admin .block__breadcrumb .breadcrumb__item a {
   font-size: 1.4rem !important;
 }
-.admin__breadcrumb .breadcrumb__separator {
+.admin .block__breadcrumb .breadcrumb__separator {
   font-size: 1.4rem !important;
 }
-.admin__breadcrumb .breadcrumb__icon {
+.admin .block__breadcrumb .breadcrumb__icon {
   font-size: 1.4rem !important;
 }
 
@@ -2980,9 +2980,9 @@ html {
   padding: 2rem;
   background-color: #f8f9fa;
   min-height: 100vh;
+  margin-bottom: 1.5rem;
 }
 .cart__container {
-  max-width: 1400px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1fr 350px;
@@ -3296,13 +3296,12 @@ html {
   min-height: 100vh;
 }
 .product-details__container {
-  max-width: 1400px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 4rem;
   background: white;
-  padding: 3rem;
+  padding: 1rem;
   border-radius: 1.2rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
@@ -3611,7 +3610,6 @@ html {
   padding: 3rem;
   border-radius: 1.2rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  max-width: 1400px;
   margin: 40px auto 0;
 }
 .product-details__tabs .tabs__header {
@@ -3793,7 +3791,6 @@ html {
   font-size: 1.8rem;
 }
 .product-details__related {
-  max-width: 1400px;
   margin: 40px auto;
   padding: 3rem;
   background: white;
@@ -4061,9 +4058,9 @@ html {
   padding: 2rem;
   background-color: #f8f9fa;
   min-height: 100vh;
+  margin-bottom: 1.5rem;
 }
 .checkout__container {
-  max-width: 1400px;
   margin: 0 auto;
   display: grid;
   grid-template-columns: 1fr 400px;
@@ -4343,9 +4340,9 @@ html {
   padding: 2rem;
   background-color: #f8f9fa;
   min-height: 100vh;
+  margin-bottom: 1.5rem;
 }
 .wishlist__container {
-  max-width: 1400px;
   margin: 0 auto;
   padding: 2rem 0;
 }
@@ -4520,6 +4517,7 @@ html {
   padding: 2rem;
   background-color: #f8f9fa;
   min-height: 100vh;
+  margin-bottom: 1.5rem;
 }
 .product-list__header {
   display: flex;
@@ -4566,7 +4564,7 @@ html {
 .product-list__content {
   display: grid;
   grid-template-columns: 280px 1fr;
-  gap: 3rem;
+  gap: 2rem;
 }
 .product-list__filters {
   background: white;

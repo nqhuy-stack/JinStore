@@ -358,9 +358,8 @@ const ProductList = () => {
   };
 
   return (
-    <section className="container">
+    <section className="">
       <Breadcrumb items={[{ text: 'Products' }]} />
-
       <div className="product-list">
         <div className="product-list__header">
           <div className="product-list__header-content">

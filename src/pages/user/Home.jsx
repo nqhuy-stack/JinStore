@@ -32,7 +32,7 @@ function Home() {
 
   return (
     <Fragment>
-      <section className=" container home">
+      <section className="home">
         <div className="home__banner">
           <img className="img-banner" src={fullBanner} alt="Banner" />
           <div className="banner__content">
@@ -40,7 +40,7 @@ function Home() {
             <h2 className="title">Get the best quality products at the lowest prices</h2>
             <p className="describe">We have prepared special discounts for you on organic breakfast products</p>
 
-            <Link to={'/shop'} className="btn btn-shop">
+            <Link to={'/product'} className="btn btn-shop">
               <p>Shop Now</p>
               <img src={moveRight} alt="Move Right" />
             </Link>
@@ -48,7 +48,7 @@ function Home() {
         </div>
 
         {/* NOTE: danh mục nỗi bật */}
-        <ReusableSection title="Browse by Categories" linkTo="shop">
+        <ReusableSection title="Browse by Categories" linkTo="product">
           <CategoryList />
         </ReusableSection>
 

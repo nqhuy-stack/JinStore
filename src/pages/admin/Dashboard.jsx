@@ -1,5 +1,5 @@
 // File: src/pages/admin/Dashboard.jsx
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Chart as ChartJS,
   CategoryScale,

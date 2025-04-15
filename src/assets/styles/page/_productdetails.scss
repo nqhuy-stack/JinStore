@@ -4,13 +4,13 @@
   min-height: 100vh;
 
   &__container {
-    max-width: 1400px;
+    // max-width: 1400px;
     margin: 0 auto;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 4rem;
     background: white;
-    padding: 3rem;
+    padding: 1rem;
     border-radius: 1.2rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
@@ -374,7 +374,7 @@
     padding: 3rem;
     border-radius: 1.2rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    max-width: 1400px;
+    // max-width: 1400px;
     margin: 40px auto 0;
 
     .tabs__header {
@@ -603,7 +603,7 @@
   }
 
   &__related {
-    max-width: 1400px;
+    // max-width: 1400px;
     margin: 40px auto;
     padding: 3rem;
     background: white;

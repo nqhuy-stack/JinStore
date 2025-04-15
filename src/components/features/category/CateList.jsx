@@ -34,7 +34,7 @@ const CategoryList = () => {
           ({ _id, name, description, image, slug, status }) =>
             status === 'active' && (
               <li className="item-categories" key={_id}>
-                <Link className="link-categories" to={`/shop?category=${encodeURIComponent(slug)}`}>
+                <Link className="link-categories" to={`/Product?category=${encodeURIComponent(slug)}`}>
                   <img
                     src={image?.url || '/placeholder-image.jpg'}
                     alt={`${name} : ${description}`}
