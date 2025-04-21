@@ -30,15 +30,14 @@ const ProductsCategoryList = ({ idCategory }) => {
             .map((product) => (
               <li key={product._id} className="product-item">
                 <img
-                  src={product.images?.[0] || 'https://via.placeholder.com/150'}
+                  src={product.images[1]?.url || 'https://sonnptnt.thaibinh.gov.vn/App/images/no-image-news.png'}
                   alt={product.name}
-                  width="100"
-                  height="100"
+                  width="15%"
                 />
                 <div>
                   <strong>{product.name}</strong>
                   <p>Giá: {product.price.toLocaleString()} VNĐ</p>
-                  <p>Giảm giá: {product.discount}%</p>
+                  <p>Giảm giá: {product.discount * 100} %</p>
                 </div>
               </li>
             ))

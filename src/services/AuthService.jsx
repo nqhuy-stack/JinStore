@@ -10,10 +10,9 @@ import {
   logoutFailed,
 } from '@/redux/authSlice.jsx';
 import axios from 'axios';
-// import { toast } from 'react-toastify';
 import { toast } from 'react-hot-toast';
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL_V1 || import.meta.env.VITE_API_URL_V2;
 
 //NOTE: Đăng nhập
 export const login = async (user, dispatch, navigate) => {

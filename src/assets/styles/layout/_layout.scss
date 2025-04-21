@@ -13,3 +13,24 @@
   padding: 0 20px;
 }
 
+.block__table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+.custom-select {
+  padding: 5px 10px;
+  border-color: $color-primary-purple;
+  background-color: #e6f7f5;
+  color: #00c4b4;
+  &:focus {
+    outline: none;
+    box-shadow: none;
+    border-color: $color-primary-purple;
+  }
+  & option {
+    background-color: white;
+    color: black;
+  }
+}

@@ -1,9 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const categoriesSlice = createSlice({
-  name: 'categories',
+const itemSlice = createSlice({
+  name: 'item',
   initialState: {
-    categories: [], // Danh sách danh mục
+    item: [], // Danh sách danh mục
     add: {
       isFetching: false,
       error: null, // Thay vì boolean, lưu thông tin lỗi chi tiết
@@ -20,7 +20,7 @@ const categoriesSlice = createSlice({
       state.add.isFetching = false;
       state.add.success = true;
       state.add.error = null;
-      state.categories.push(action.payload);
+      state.item.push(action.payload);
     },
     addFailed: (state, action) => {
       state.add.isFetching = false;
@@ -37,5 +37,5 @@ const categoriesSlice = createSlice({
   },
 });
 
-export const { addStart, addSuccess, addFailed, resetAddState } = categoriesSlice.actions;
-export default categoriesSlice.reducer;
+export const { addStart, addSuccess, addFailed, resetAddState } = itemSlice.actions;
+export default itemSlice.reducer;

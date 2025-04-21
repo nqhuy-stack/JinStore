@@ -75,7 +75,7 @@ const ProductReviews = () => {
       ) : (
         <>
           <div className="admin__table-wrapper">
-            <table className="admin__table">
+            <table className="admin__table block__table">
               <thead>
                 <tr>
                   <th>No.</th>

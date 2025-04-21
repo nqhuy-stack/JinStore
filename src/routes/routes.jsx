@@ -25,6 +25,7 @@ import Orders from '@pages/admin/orders/Orders';
 import OrdersDetail from '@pages/admin/orders/OrdersDetail';
 
 import Categories from '@pages/admin/categories/Categories';
+import CategoryForm from '@/pages/admin/categories/CategoryForm';
 import AddCategory from '@/pages/admin/categories/AddCategory';
 import EditCategory from '@/pages/admin/categories/EditCategory';
 const routes = [
@@ -90,8 +91,8 @@ const routes = [
       { path: 'orders', page: Orders },
       { path: 'orders/:id', page: OrdersDetail },
       { path: 'categories', page: Categories },
-      { path: 'categories/add', page: AddCategory },
-      { path: 'categories/edit/:id', page: EditCategory },
+      { path: 'categories/form', page: CategoryForm },
+      { path: 'categories/form/:id', page: CategoryForm },
       { path: 'users', page: Users },
     ],
   },

@@ -1,8 +1,8 @@
-import { addStart, addSuccess, addFailed, resetAddState } from '@/redux/categoriesSlice.jsx';
+import { addStart, addSuccess, addFailed, resetAddState } from '@/redux/itemSlice.jsx';
 import axios from 'axios';
 import { toast } from 'react-hot-toast';
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL_V1 || import.meta.env.VITE_API_URL_V2;
 
 // Cấu hình header mặc định
 const defaultHeaders = {
@@ -43,7 +43,6 @@ export const getCategoriesAll = async () => {
     throw new Error(errorMessage);
   }
 };
-
 // NOTE: Lấy danh mục theo ID
 export const getCategories = async (id) => {
   if (!id) throw new Error('ID danh mục không hợp lệ!');

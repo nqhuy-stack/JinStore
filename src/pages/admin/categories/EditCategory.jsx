@@ -21,7 +21,8 @@ const EditCategory = () => {
   const [name, setName] = useState('');
   const [slug, setSlug] = useState('');
   const [image, setImage] = useState(null);
-
+  const [status, setStatus] = useState('');
+  const [isOutstanding, setIsOutstanding] = useState('');
   const [description, setDescription] = useState('');
 
   const [imagePreview, setImagePreview] = useState(null);
@@ -39,6 +40,8 @@ const EditCategory = () => {
         setName(data?.name || '');
         setSlug(data?.slug || '');
         setDescription(data?.description || '');
+        setStatus(data?.status || 'inactive');
+        setIsOutstanding(data?.isOutstanding || false);
         if (data?.image?.url) {
           setImagePreview(data.image.url);
         }
@@ -58,6 +61,8 @@ const EditCategory = () => {
     if (name === 'name') setName(value);
     if (name === 'slug') setSlug(value);
     if (name === 'description') setDescription(value);
+    if (name === 'status') setStatus(value);
+    if (name === 'isOutstanding') setIsOutstanding(value);
   };
 
   const handleImageChange = (e) => {
@@ -94,6 +99,14 @@ const EditCategory = () => {
 
     if (description !== category.description) {
       formData.append('description', description.trim());
+    }
+
+    if (status !== category.status) {
+      formData.append('status', status);
+    }
+
+    if (isOutstanding !== category.isOutstanding) {
+      formData.append('isOutstanding', isOutstanding);
     }
 
     if (image) {
@@ -218,6 +231,22 @@ const EditCategory = () => {
           <div className="admin__form-field">
             <label htmlFor="description">Description *</label>
             <textarea value={description} name="description" onChange={handleInputChange} required></textarea>
+          </div>
+        </div>
+        <div className="admin__form-row">
+          <div className="admin__form-field">
+            <label htmlFor="status">Trạng thái</label>
+            <select id="status" name="status" value={status} onChange={handleInputChange}>
+              <option value="active">Kích hoạt</option>
+              <option value="inactive">Ngừng kích hoạt</option>
+            </select>
+          </div>
+          <div className="admin__form-field">
+            <label htmlFor="isOutstanding">Nổi bật</label>
+            <select id="isOutstanding" name="isOutstanding" value={isOutstanding} onChange={handleInputChange}>
+              <option value={true}>Có</option>
+              <option value={false}>Không</option>
+            </select>
           </div>
         </div>
         <button type="submit" className="admin__form-button">

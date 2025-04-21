@@ -56,7 +56,7 @@ const Admin = () => {
     } else if (path.includes('/admin/categories')) {
       items.push({ text: 'Categories', link: '/admin/categories' });
 
-      if (path.includes('/add')) {
+      if (path.includes(`/form?mode='add'`)) {
         items.push({ text: 'Add Category' });
       } else if (path.includes('/edit/')) {
         const id = path.split('/').pop();
@@ -105,37 +105,37 @@ const Admin = () => {
             <li className={`admin__menu-item ${location.pathname === '/admin' ? 'active' : ''}`}>
               <Link to="/admin">
                 <i className="fas fa-tachometer-alt"></i>
-                <span>Dashboard</span>
+                <span>Tổng quát</span>
               </Link>
             </li>
             <li className={`admin__menu-item ${location.pathname === '/admin/products' ? 'active' : ''}`}>
               <Link to="/admin/products">
                 <i className="fas fa-box"></i>
-                <span>Products</span>
+                <span>Sản phẩm</span>
               </Link>
             </li>
             <li className={`admin__menu-item ${location.pathname === '/admin/categories' ? 'active' : ''}`}>
               <Link to="/admin/categories">
                 <i className="fas fa-list"></i>
-                <span>Categories</span>
+                <span>Danh mục</span>
               </Link>
             </li>
             <li className={`admin__menu-item ${location.pathname === '/admin/orders' ? 'active' : ''}`}>
               <Link to="/admin/orders">
                 <i className="fas fa-shopping-cart"></i>
-                <span>Orders</span>
+                <span>Đặt hàng</span>
               </Link>
             </li>
             <li className={`admin__menu-item ${location.pathname === '/admin/users' ? 'active' : ''}`}>
               <Link to="/admin/users">
                 <i className="fas fa-users"></i>
-                <span>Users</span>
+                <span>Người dùng</span>
               </Link>
             </li>
             <li className={`admin__menu-item ${location.pathname === '/admin/product-reviews' ? 'active' : ''}`}>
               <Link to="/admin/product-reviews">
                 <i className="fas fa-star"></i>
-                <span>Product Reviews</span>
+                <span>Đánh giá</span>
               </Link>
             </li>
           </ul>

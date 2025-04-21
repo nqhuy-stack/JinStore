@@ -1,8 +1,8 @@
 import iconGoogleLogin from '@assets/icons/icongooglelogin.svg';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-const APP_URL = import.meta.env.VITE_APP_URL;
-const API_URL = import.meta.env.VITE_API_URL;
+const APP_URL = import.meta.env.VITE_APP_URL_V1 || import.meta.env.VITE_APP_URL_V2;
+const API_URL = import.meta.env.VITE_API_URL_V1 || import.meta.env.VITE_API_URL_V2;
 
 const LINK_GET_TOKEN =
   `https://accounts.google.com/o/oauth2/v2/auth?` +

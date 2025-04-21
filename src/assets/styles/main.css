@@ -411,6 +411,28 @@ html {
   padding: 0 20px;
 }
 
+.block__table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+.custom-select {
+  padding: 5px 10px;
+  border-color: #634c9f;
+  background-color: #e6f7f5;
+  color: #00c4b4;
+}
+.custom-select:focus {
+  outline: none;
+  box-shadow: none;
+  border-color: #634c9f;
+}
+.custom-select option {
+  background-color: white;
+  color: black;
+}
+
 .header {
   position: sticky;
   top: 0;
@@ -803,94 +825,103 @@ html {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  font-family: "Poppins", sans-serif;
 }
 
-.modal {
-  background-color: #ffffff;
-  width: 90%;
-  max-width: 400px;
+.modal-content {
+  background: #ffffff;
+  padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  overflow: hidden;
+  width: 400px;
+  max-width: 90%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease;
 }
-.modal__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 20px;
-  background-color: #f5f5f5;
-  border-bottom: 1px solid #ddd;
-}
-.modal__header .modal__title {
+
+.modal-title {
   font-size: 1.8rem;
   font-weight: 600;
   color: #000000;
-  margin: 0;
+  margin-bottom: 10px;
 }
-.modal__header .modal__close {
-  background: none;
-  border: none;
-  font-size: 2rem;
-  color: #6b7280;
-  cursor: pointer;
-  transition: color 0.3s ease;
-}
-.modal__header .modal__close:hover {
-  color: #ff4d4d;
-}
-.modal__body {
-  padding: 20px;
+
+.modal-message {
   font-size: 1.4rem;
   color: #6b7280;
+  margin-bottom: 20px;
 }
-.modal__body p {
-  margin: 0;
-}
-.modal__footer {
+
+.modal-buttons {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-  padding: 15px 20px;
-  border-top: 1px solid #ddd;
-  background-color: #f9fafb;
 }
-.modal__btn {
-  padding: 8px 15px;
+
+.modal-btn {
+  padding: 8px 16px;
   border: none;
   border-radius: 4px;
   font-size: 1.4rem;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
-.modal__btn--cancel {
-  background-color: #e5e7eb;
-  color: #6b7280;
+.modal-btn--cancel {
+  background: #ccc;
+  color: #fff;
 }
-.modal__btn--cancel:hover {
-  background-color: #d1d5db;
+.modal-btn--cancel:hover {
+  background: #b3b3b3;
+  transform: translateY(-2px);
 }
-.modal__btn--confirm {
-  background-color: #28a745;
-  color: white;
+.modal-btn--cancel:active {
+  transform: translateY(0);
 }
-.modal__btn--confirm:hover {
-  background-color: #1e7e34;
+.modal-btn--confirm {
+  background: #ff4d4d;
+  color: #fff;
 }
-.modal__btn--confirm.modal__btn--danger {
-  background-color: #ff4d4d;
+.modal-btn--confirm:hover {
+  background: #ff1a1a;
+  transform: translateY(-2px);
 }
-.modal__btn--confirm.modal__btn--danger:hover {
-  background-color: #ff1a1a;
+.modal-btn--confirm:active {
+  transform: translateY(0);
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@media (max-width: 768px) {
+  .modal-content {
+    width: 90%;
+    padding: 15px;
+  }
+  .modal-title {
+    font-size: 1.6rem;
+  }
+  .modal-message {
+    font-size: 1.3rem;
+  }
+  .modal-btn {
+    padding: 6px 12px;
+    font-size: 1.3rem;
+  }
+}
 .pagination {
   display: flex;
   justify-content: center;
@@ -986,6 +1017,141 @@ html {
   font-size: 1.6rem;
   line-height: 1.6;
   color: #000000;
+}
+
+.form-table-container {
+  margin: 20px 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+.form-table-container .form-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 15px;
+  table-layout: fixed;
+}
+.form-table-container .form-table th,
+.form-table-container .form-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  vertical-align: middle;
+}
+.form-table-container .form-table th {
+  background-color: #f5f5f5;
+  font-weight: 600;
+  text-align: left;
+}
+.form-table-container .attr-name-col {
+  width: 10%;
+}
+.form-table-container .attr-value-col {
+  width: 50%;
+}
+.form-table-container .attr-action-col {
+  width: 5%;
+  text-align: center;
+}
+.form-table-container .attribute-input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+.form-table-container .attribute-textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  resize: vertical;
+  min-height: 60px !important;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+.form-table-container .no-attributes {
+  text-align: center;
+  font-style: italic;
+  color: #777;
+  padding: 20px 0;
+}
+.form-table-container .error-message {
+  color: #d32f2f;
+  margin-bottom: 10px;
+  padding: 8px;
+  background-color: #fdecea;
+  border-radius: 4px;
+}
+.form-table-container .table-actions {
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-start;
+}
+.form-table-container .add-btn {
+  background-color: rgb(224, 224, 224);
+  color: black;
+  border: 1px solid #ddd;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  width: 100%;
+}
+.form-table-container .add-btn:hover {
+  background-color: rgb(206, 206, 206);
+}
+.form-table-container .add-btn:disabled {
+  background-color: #a5d6a7;
+  cursor: not-allowed;
+}
+.form-table-container .remove-btn {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+  width: 100%;
+  max-width: 80px;
+  margin: 0 auto;
+  display: block;
+}
+.form-table-container .remove-btn:hover {
+  background-color: #d32f2f;
+}
+.form-table-container .remove-btn:disabled {
+  background-color: #ef9a9a;
+  cursor: not-allowed;
+}
+.form-table-container .category-suggestions {
+  margin-top: 20px;
+  border-top: 1px solid #eee;
+  padding-top: 15px;
+}
+.form-table-container .category-suggestions h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #333;
+}
+.form-table-container .category-attributes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.form-table-container .suggestion-btn {
+  background-color: #e0e0e0;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  font-size: 13px;
+}
+.form-table-container .suggestion-btn:hover {
+  background-color: #d5d5d5;
 }
 
 .block__breadcrumb {
@@ -2059,6 +2225,8 @@ html {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 2rem;
   margin-bottom: 30px;
+  overflow-x: auto;
+  white-space: nowrap;
 }
 .admin__section .admin__section-header {
   display: flex;
@@ -2116,8 +2284,9 @@ html {
 .admin__section .admin__search-bar {
   margin-bottom: 20px;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
 }
+.admin__section .admin__search-bar select,
 .admin__section .admin__search-bar input {
   width: 100%;
   max-width: 300px;
@@ -2127,11 +2296,15 @@ html {
   font-size: 1.4rem;
   color: #6b7280;
 }
-.admin__section .admin__search-bar input::-moz-placeholder {
+.admin__section .admin__search-bar select::-moz-placeholder, .admin__section .admin__search-bar input::-moz-placeholder {
   color: #6b7280;
 }
+.admin__section .admin__search-bar select::placeholder,
 .admin__section .admin__search-bar input::placeholder {
   color: #6b7280;
+}
+.admin__section .admin__search-bar .custom-select.select-category {
+  max-width: 100%;
 }
 .admin__section .admin__add-button {
   display: flex;
@@ -2188,12 +2361,29 @@ html {
 .admin__section .admin__form .admin__form-field {
   flex: 1;
 }
+.admin__section .admin__form .admin__form-field--unit {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  flex: 0.5 !important;
+}
+.admin__section .admin__form .admin__form-field--unit label {
+  display: block;
+  text-align: end;
+  width: 100% !important;
+}
+.admin__section .admin__form .admin__form-field--unit input {
+  display: block;
+  width: 100% !important;
+}
 .admin__section .admin__form .admin__form-field label {
   display: block;
   font-size: 1.3rem;
   font-weight: 500;
   margin-bottom: 5px;
   color: #000000;
+  max-width: -moz-fit-content;
+  max-width: fit-content;
 }
 .admin__section .admin__form .admin__form-field .label__image,
 .admin__section .admin__form .admin__form-field .label__slug {
@@ -2208,6 +2398,12 @@ html {
   width: 13px;
   height: 13px;
 }
+.admin__section .admin__form .admin__form-field .product-attributes {
+  margin: 0 0 1rem 0;
+  font-size: 1.5rem;
+  color: #2c3e50;
+  font-weight: 600;
+}
 .admin__section .admin__form .admin__form-field input,
 .admin__section .admin__form .admin__form-field textarea,
 .admin__section .admin__form .admin__form-field select {
@@ -2217,6 +2413,13 @@ html {
   border-radius: 5px;
   font-size: 1.4rem;
   box-sizing: border-box;
+}
+.admin__section .admin__form .admin__form-field input :focus,
+.admin__section .admin__form .admin__form-field textarea :focus,
+.admin__section .admin__form .admin__form-field select :focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(41, 98, 255, 0.5);
+  border: none;
 }
 .admin__section .admin__form .admin__form-field textarea {
   min-height: 100px;
@@ -2236,6 +2439,8 @@ html {
   font-size: 1.4rem;
   font-weight: 600;
   transition: background-color 0.3s ease;
+  margin-left: auto;
+  display: block;
 }
 .admin__section .admin__form .admin__form-button:hover {
   background-color: #1e7e34;
@@ -2396,11 +2601,29 @@ html {
 }
 .admin__section .admin__table {
   width: 100%;
-  border-collapse: collapse;
-  table-layout: auto;
+  /*       // Cột icon (dùng trong Categories)
+  .admin__table-icon {
+    width: 80px;
+    text-align: center;
+
+    i {
+      font-size: 1.6rem;
+      color: #6b7280;
+    }
+  }
+
+  // Cột slug (dùng trong Categories)
+  .admin__table-slug {
+    width: 100px;
+    text-align: left;
+  } */
+}
+.admin__section .admin__table tr:hover {
+  background-color: #f3f4f6;
 }
 .admin__section .admin__table th,
 .admin__section .admin__table td {
+  min-width: 80px;
   max-width: 400px;
   white-space: nowrap;
   overflow: hidden;
@@ -2410,6 +2633,14 @@ html {
   border-bottom: 1px solid #ddd;
   font-size: 1.4rem;
   vertical-align: middle;
+}
+.admin__section .admin__table th:first-child,
+.admin__section .admin__table td:first-child {
+  padding-left: 5px;
+}
+.admin__section .admin__table th:last-child,
+.admin__section .admin__table td:last-child {
+  padding-right: 0 !important;
 }
 .admin__section .admin__table th {
   background-color: #ffffff;
@@ -2421,7 +2652,6 @@ html {
 }
 .admin__section .admin__table .td-outstanding,
 .admin__section .admin__table .th-outstanding,
-.admin__section .admin__table .th-name,
 .admin__section .admin__table .td-date,
 .admin__section .admin__table .th-date,
 .admin__section .admin__table .td-option,
@@ -2431,23 +2661,28 @@ html {
 .admin__section .admin__table .th-img {
   text-align: center;
 }
+.admin__section .admin__table .td__status,
+.admin__section .admin__table .td__isActive,
 .admin__section .admin__table .td__outstanding {
   padding: 5px 10px;
   border-radius: 12px;
   font-size: 1.2rem;
   font-weight: 500;
 }
+.admin__section .admin__table .td__status--true,
+.admin__section .admin__table .td__isActive--true,
 .admin__section .admin__table .td__outstanding--true {
   background-color: #ffe6e6;
   color: #ff4d4d;
 }
+.admin__section .admin__table .td__status--false,
+.admin__section .admin__table .td__isActive--false,
 .admin__section .admin__table .td__outstanding--false {
   background-color: #e6f7f5;
   color: #00c4b4;
 }
 .admin__section .admin__table .td-img {
-  width: 70px;
-  height: 70px;
+  width: 100px;
   text-align: center;
 }
 .admin__section .admin__table .td-img img {
@@ -2533,18 +2768,6 @@ html {
   -o-object-fit: cover;
      object-fit: cover;
 }
-.admin__section .admin__table .admin__table-icon {
-  width: 80px;
-  text-align: center;
-}
-.admin__section .admin__table .admin__table-icon i {
-  font-size: 1.6rem;
-  color: #6b7280;
-}
-.admin__section .admin__table .admin__table-slug {
-  width: 100px;
-  text-align: left;
-}
 .admin__section .admin__table .admin__table-actions {
   width: 150px;
   text-align: center;
@@ -2589,7 +2812,7 @@ html {
   font-size: 1.4rem;
   color: #6b7280;
 }
-.admin__section .admin__table .admin__action-btn {
+.admin__section .admin__action-btn {
   padding: 5px;
   border: none;
   border-radius: 4px;
@@ -2598,33 +2821,33 @@ html {
   margin-right: 10px;
   background: none;
 }
-.admin__section .admin__table .admin__action-btn i {
+.admin__section .admin__action-btn i {
   font-size: 1.4rem;
 }
-.admin__section .admin__table .admin__action-btn--view {
+.admin__section .admin__action-btn--view {
   color: #00c4b4;
 }
-.admin__section .admin__table .admin__action-btn--view:hover {
+.admin__section .admin__action-btn--view:hover {
   color: #009185;
 }
-.admin__section .admin__table .admin__action-btn--edit {
+.admin__section .admin__action-btn--edit {
   color: #00c4b4;
 }
-.admin__section .admin__table .admin__action-btn--edit:hover {
+.admin__section .admin__action-btn--edit:hover {
   color: #009185;
 }
-.admin__section .admin__table .admin__action-btn--delete {
+.admin__section .admin__action-btn--delete {
   color: #ff4d4d;
 }
-.admin__section .admin__table .admin__action-btn--delete:hover {
+.admin__section .admin__action-btn--delete:hover {
   color: #ff1a1a;
 }
-.admin__section .admin__table .admin__action-btn--tracking {
+.admin__section .admin__action-btn--tracking {
   padding: 5px 10px;
   background-color: #28a745;
   color: white;
 }
-.admin__section .admin__table .admin__action-btn--tracking:hover {
+.admin__section .admin__action-btn--tracking:hover {
   background-color: #1e7e34;
 }
 .admin__section .error-message {

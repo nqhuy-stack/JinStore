@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import { LuEye, LuEyeClosed } from 'react-icons/lu';
 
 import Button from '@components/common/Button';
+import PageLoad from '@pages/pageLoad';
 
 function FormLogin() {
   const [usernameOrEmail, setUsernameOrEmail] = useState('');
@@ -37,44 +38,48 @@ function FormLogin() {
   };
 
   return (
-    <Fragment>
-      <form className="login-form" onSubmit={handleSubmit}>
-        <div className="login-field">
-          <label>Username Or Email*</label>
-          <div className="field_input">
-            <input
-              type="text"
-              name="usernameOrEmail"
-              placeholder="Username or Email"
-              onChange={(e) => setUsernameOrEmail(e.target.value)}
-              required
-              className="login-input"
-            />
+  <Fragment>
+      {isLoading ? (
+        <PageLoad zIndex="9999" />
+      ) : (
+        <form className="login-form" onSubmit={handleSubmit}>
+          <div className="login-field">
+            <label>Username Or Email*</label>
+            <div className="field_input">
+              <input
+                type="text"
+                name="usernameOrEmail"
+                placeholder="Username or Email"
+                onChange={(e) => setUsernameOrEmail(e.target.value)}
+                required
+                className="login-input"
+              />
+            </div>
           </div>
-        </div>
-        <div className="login-field">
-          <label>Password *</label>
-          <div className="field_input">
-            <input
-              type={showPassword ? 'text' : 'password'}
-              name="password"
-              placeholder="Mật khẩu"
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="login-input"
-            />
-            <Button className="see-password" onClick={togglePasswordVisibility}>
-              {showPassword ? <LuEye className="icon-eye" /> : <LuEyeClosed className="icon-eye" />}
-            </Button>
+          <div className="login-field">
+            <label>Password *</label>
+            <div className="field_input">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                name="password"
+                placeholder="Mật khẩu"
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="login-input"
+              />
+              <Button className="see-password" onClick={togglePasswordVisibility}>
+                {showPassword ? <LuEye className="icon-eye" /> : <LuEyeClosed className="icon-eye" />}
+              </Button>
+            </div>
           </div>
-        </div>
-        <span className="login-resetPassword">
-          <Link to="/resetPassword">Forgot password ?</Link>
-        </span>
-        <Button type="submit" className="btn login-button" loading={isLoading}>
-          Login
-        </Button>
-      </form>
+          <span className="login-resetPassword">
+            <Link to="/resetPassword">Forgot password ?</Link>
+          </span>
+          <Button type="submit" className="btn login-button" loading={isLoading}>
+            Login
+          </Button>
+        </form>
+      )}
     </Fragment>
   );
 }

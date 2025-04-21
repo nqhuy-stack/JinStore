@@ -1,4 +1,5 @@
-import { loginGoogle } from '@services/socialService.jsx';
+import { loginGoogle } from '@services/SocialService.jsx';
+import PageLoad from '@pages/PageLoad';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -17,8 +18,8 @@ function SocialCallback() {
       }
     };
     fetchLoginGoogle();
-  }, []);
-
+  }, [navigate, dispatch]);
+  return <PageLoad zIndex="9999" />;
 }
 
 export default SocialCallback;

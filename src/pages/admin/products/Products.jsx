@@ -1,53 +1,147 @@
 // File: src/pages/admin/Products.jsx
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+
 import Modal from '@components/common/Modal';
-import Pagination from '@components/common/Pagination'; // Thêm import
+import { loginSuccess } from '@/redux/authSlice.jsx';
+import Pagination from '@components/common/Pagination';
+import { createAxios } from '@utils/createInstance.jsx';
+import { getProductsAll, editProduct, deleteProduct } from '@services/ProductService';
+import { getCategoriesAll } from '@services/CategoryService';
+import PageLoad from '@pages/PageLoad';
 
 const Products = () => {
-  const [products, setProducts] = useState([
-    // Dữ liệu giả lập (tăng số lượng để minh họa phân trang)
-    { id: 1, name: 'Aata Buscut', category: 'Buscut', qty: 100, price: 10, status: 'Approved' },
-    { id: 2, name: 'Cold Brew Coffee', category: 'Coffee', qty: 50, price: 15, status: 'Pending' },
-    // ... Thêm nhiều sản phẩm hơn (giả lập 50 sản phẩm)
-    ...Array.from({ length: 48 }, (_, i) => ({
-      id: i + 3,
-      name: `Product ${i + 3}`,
-      category: 'Category',
-      qty: Math.floor(Math.random() * 100),
-      price: Math.floor(Math.random() * 50),
-      status: Math.random() > 0.5 ? 'Approved' : 'Pending',
-    })),
-  ]);
-  const [loading, setLoading] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [productToDelete, setProductToDelete] = useState(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [currentPage, setCurrentPage] = useState(1); // Thêm state cho trang hiện tại
-  const itemsPerPage = 10; // Số mục trên mỗi trang
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const handleViewProduct = (id) => {
-    navigate(`/admin/products/view/${id}`);
+  const [originalProducts, setOriginalProducts] = useState([]);
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [idProdDel, setIdProdDel] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const user = useSelector((state) => state.auth.login.currentUser);
+  const accessToken = user?.accessToken;
+  const axiosJWT = createAxios(user, dispatch, loginSuccess);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const data = await getProductsAll();
+        setOriginalProducts(data);
+
+        if (data && Array.isArray(data)) {
+          setProducts(data);
+        } else {
+          setError('Dữ liệu danh mục không hợp lệ');
+        }
+      } catch {
+        setError('Không thể tải danh mục. Vui lòng thử lại sau.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, []);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        console.log('🔍 Starting to fetch categories...');
+        setLoading(true);
+        setError(null);
+
+        const data = await getCategoriesAll();
+        console.log(`✅ Fetched ${data.length} categories`);
+        if (data && Array.isArray(data)) {
+          setCategories(
+            data.map((cat) => ({
+              ...cat,
+              name: cat.name,
+            })),
+          );
+        } else {
+          console.error('❌ Received invalid data format:', data);
+          setError('Dữ liệu danh mục không hợp lệ');
+        }
+      } catch (err) {
+        console.error('❌ Error in fetchCategories:', err);
+
+        setError('Không thể tải danh mục. Vui lòng thử lại sau.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  const handleFilter = (e) => {
+    const _idCategory = e.target.value;
+    if (_idCategory === 'all') {
+      setProducts(originalProducts); // Hiển thị tất cả danh mục
+    } else {
+      const filteredProducts = originalProducts.filter((category) => category._idCategory._id === _idCategory);
+      setProducts(filteredProducts);
+    }
+    setCurrentPage(1); // Reset to first page
+  };
+
+  const handleViewProduct = async (id, isActive) => {
+    try {
+      const newIsActive = isActive ? false : true;
+      await editProduct(id, { isActive: newIsActive }, accessToken, axiosJWT);
+      setProducts((prev) => prev.map((prod) => (prod._id === id ? { ...prod, isActive: newIsActive } : prod)));
+      setOriginalProducts((prev) => prev.map((prod) => (prod._id === id ? { ...prod, isActive: newIsActive } : prod)));
+
+      const activeProducts = products.filter((prod) => prod.isActive);
+      const newTotalPages = Math.ceil(activeProducts.length / itemsPerPage);
+      if (currentPage > newTotalPages) {
+        setCurrentPage(Math.max(1, newTotalPages));
+      }
+    } catch (error) {
+      console.error('❌ Lỗi khi cập nhật trạng thái:', error);
+    }
   };
 
   const handleEditProduct = (id) => {
     navigate(`/admin/products/edit/${id}`);
   };
 
-  const handleDeleteProduct = (product) => {
-    setProductToDelete(product);
+  const handleDeleteProduct = (id) => {
+    console.log(`🗑️ Opening delete modal for product: ${id}`);
+    setIdProdDel(id);
     setIsDeleteModalOpen(true);
   };
 
-  const confirmDeleteProduct = () => {
+  const confirmDeleteProduct = async () => {
     setLoading(true);
-    setTimeout(() => {
-      setProducts(products.filter((p) => p.id !== productToDelete.id));
+    try {
+      await deleteProduct(idProdDel, accessToken, axiosJWT);
+      setProducts((prev) => prev.filter((prod) => prod._id !== idProdDel));
+      setOriginalProducts((prev) => prev.filter((prod) => prod._id !== idProdDel));
+
+      const activeProducts = products.filter((prod) => prod.isActive);
+      const newTotalPages = Math.ceil(activeProducts.length / itemsPerPage);
+      if (currentPage > newTotalPages) {
+        setCurrentPage(Math.max(1, newTotalPages));
+      }
+    } catch (err) {
+      console.error('❌ Lỗi khi xóa danh mục:', err);
+    } finally {
       setIsDeleteModalOpen(false);
-      setProductToDelete(null);
+      setIdProdDel(null);
       setLoading(false);
-    }, 500);
+    }
   };
 
   const handleAddProduct = () => {
@@ -81,71 +175,91 @@ const Products = () => {
         </div>
       </div>
       <div className="admin__search-bar">
+        <select className="custom-select" onChange={handleFilter}>
+          <option value="all">Tất cả</option>
+          {categories.map((category) => (
+            <option key={category._id} value={category._id}>
+              {category.name}
+            </option>
+          ))}
+        </select>
         <input
           type="text"
-          placeholder="Search by Product Name..."
+          placeholder="Search by Category Name..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
       {loading ? (
-        <p>Đang tải...</p>
+        !error && <PageLoad zIndex="1" />
       ) : (
         <>
           <div className="admin__table-wrapper">
-            <table className="admin__table">
+            <table className="admin__table block__table">
               <thead>
                 <tr>
-                  <th>Product Image</th>
-                  <th>Product Name</th>
-                  <th>Category</th>
-                  <th>Current Qty</th>
-                  <th>Price</th>
-                  <th>Status</th>
-                  <th>Option</th>
+                  <th className="th-status">Trạng thái</th>
+                  <th className="th-img">Ảnh</th>
+                  <th className="th-name">Tên</th>
+                  <th className="th-description">Mô tả</th>
+                  <th className="th-category">Danh mục</th>
+                  <th className="th-quantity">Số lượng</th>
+                  <th className="th-unit">Đơn vị</th>
+                  <th className="th-price">Giá (1 Đơn vị)</th>
+                  <th className="th-discount">Giảm giá</th>
+                  <th className="th-option">Tùy chỉnh</th>
                 </tr>
               </thead>
               <tbody>
                 {currentProducts.map((product) => (
-                  <tr key={product.id}>
-                    <td>
+                  <tr
+                    key={product.id}
+                    style={{
+                      backgroundColor: product.isActive ? (product.quantity > 0 ? '#fff' : '#dfdfdf') : '#f8d7da',
+                    }}
+                  >
+                    <td className="td-status">
+                      <span
+                        style={{
+                          backgroundColor: product.isActive ? (product.quantity > 0 ? '#fff' : '#dfdfdf') : '#f8d7da',
+                        }}
+                        className={`td__isActive td__isActive--${product.isActive ? (product.quantity > 0 ? 'false' : 'true') : 'true'}`}
+                      >
+                        {product.isActive ? (product.quantity > 0 ? 'Đang bán' : 'Hết hàng') : 'Ngừng bán'}
+                      </span>
+                    </td>
+                    <td className="td-img">
                       <img
-                        src="https://via.placeholder.com/100"
+                        src={product.images[1]?.url || 'https://sonnptnt.thaibinh.gov.vn/App/images/no-image-news.png'}
                         alt={product.name}
                         className="admin__image-preview admin__image-preview--product"
                       />
                     </td>
-                    <td>{product.name}</td>
-                    <td>{product.category}</td>
-                    <td>{product.qty}</td>
-                    <td>${product.price}</td>
-                    <td>
-                      <span
-                        className={`admin__status admin__status--${
-                          product.status.toLowerCase() === 'approved' ? 'approved' : 'pending'
-                        }`}
-                      >
-                        {product.status}
-                      </span>
-                    </td>
-                    <td>
+                    <td className="td-name">{product.name}</td>
+                    <td className="td-description">{product.description}</td>
+                    <td className="td-category">{product._idCategory?.name}</td>
+                    <td>{product.quantity}</td>
+                    <td>{product.unit}</td>
+                    <td>{product.price} VND</td>
+                    <td>{product.discount}%</td>
+                    <td className="td-option">
                       <button
                         className="admin__action-btn admin__action-btn--view"
-                        onClick={() => handleViewProduct(product.id)}
+                        onClick={() => handleViewProduct(product._id, product.isActive)}
                         disabled={loading}
                       >
                         <i className="fas fa-eye"></i>
                       </button>
                       <button
                         className="admin__action-btn admin__action-btn--edit"
-                        onClick={() => handleEditProduct(product.id)}
+                        onClick={() => handleEditProduct(product._id)}
                         disabled={loading}
                       >
                         <i className="fas fa-edit"></i>
                       </button>
                       <button
                         className="admin__action-btn admin__action-btn--delete"
-                        onClick={() => handleDeleteProduct(product)}
+                        onClick={() => handleDeleteProduct(product._id)}
                         disabled={loading}
                       >
                         <i className="fas fa-trash"></i>
@@ -164,11 +278,11 @@ const Products = () => {
         isOpen={isDeleteModalOpen}
         onClose={() => {
           setIsDeleteModalOpen(false);
-          setProductToDelete(null);
+          setIdProdDel(null);
         }}
         onConfirm={confirmDeleteProduct}
-        title="Confirm Delete Product"
-        message={productToDelete ? `Are you sure you want to delete product "${productToDelete.name}"?` : ''}
+        title="Xóa sản phẩm"
+        message={idProdDel ? `Bạn có chắc chắn muốn xóa sản phẩm này"${idProdDel.name}"?` : ''}
       />
     </section>
   );

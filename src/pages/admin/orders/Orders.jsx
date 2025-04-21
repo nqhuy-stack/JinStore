@@ -270,7 +270,7 @@ const Orders = () => {
       ) : (
         <>
           <div className="admin__table-wrapper">
-            <table className="admin__table">
+            <table className="block__table admin__table">
               <thead>
                 <tr>
                   <th>Order Image</th>
@@ -287,7 +287,7 @@ const Orders = () => {
                   <tr key={order.id}>
                     <td>
                       <img
-                        src={order.items[0]?.image}
+                        src={'https://sonnptnt.thaibinh.gov.vn/App/images/no-image-news.png'}
                         alt={order.items[0]?.name}
                         className="admin__image-preview admin__image-preview--order"
                       />

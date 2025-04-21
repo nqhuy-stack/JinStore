@@ -346,6 +346,8 @@ $admin-transition: all 0.3s ease;
     box-shadow: $admin-shadow;
     padding: 2rem;
     margin-bottom: 30px;
+    overflow-x: auto;
+    white-space: nowrap;
 
     .admin__section-header {
       display: flex;
@@ -414,8 +416,9 @@ $admin-transition: all 0.3s ease;
     .admin__search-bar {
       margin-bottom: 20px;
       display: flex;
-      justify-content: flex-end;
+      justify-content: space-between;
 
+      select,
       input {
         width: 100%;
         max-width: 300px;
@@ -427,6 +430,12 @@ $admin-transition: all 0.3s ease;
 
         &::placeholder {
           color: #6b7280;
+        }
+      }
+
+      .custom-select {
+        &.select-category {
+          max-width: 100%;
         }
       }
     }
@@ -494,13 +503,29 @@ $admin-transition: all 0.3s ease;
 
       .admin__form-field {
         flex: 1;
-
+        &--unit {
+          display: flex;
+          flex-direction: column;
+          align-items: start;
+          flex: 0.5 !important;
+          // width: 100px !important;
+          label {
+            display: block;
+            text-align: end;
+            width: 100% !important;
+          }
+          input {
+            display: block;
+            width: 100% !important;
+          }
+        }
         label {
           display: block;
           font-size: 1.3rem;
           font-weight: 500;
           margin-bottom: 5px;
           color: #000000;
+          max-width: fit-content;
         }
 
         .label__image,
@@ -515,6 +540,13 @@ $admin-transition: all 0.3s ease;
           }
         }
 
+        .product-attributes {
+          margin: 0 0 1rem 0;
+          font-size: 1.5rem;
+          color: $admin-text-color;
+          font-weight: 600;
+        }
+
         input,
         textarea,
         select {
@@ -524,6 +556,11 @@ $admin-transition: all 0.3s ease;
           border-radius: 5px;
           font-size: 1.4rem;
           box-sizing: border-box;
+          :focus {
+            outline: none;
+            box-shadow: 0 0 5px rgba(41, 98, 255, 0.5);
+            border: none;
+          }
         }
 
         textarea {
@@ -547,7 +584,8 @@ $admin-transition: all 0.3s ease;
         font-size: 1.4rem;
         font-weight: 600;
         transition: background-color 0.3s ease;
-
+        margin-left: auto;
+        display: block;
         &:hover {
           background-color: darken(#28a745, 10%);
         }
@@ -741,11 +779,14 @@ $admin-transition: all 0.3s ease;
     // Bảng chung (dùng trong Products, Orders, Users, Categories, ProductReviews)
     .admin__table {
       width: 100%;
-      border-collapse: collapse;
-      table-layout: auto;
-
+      tr {
+        &:hover {
+          background-color: #f3f4f6;
+        }
+      }
       th,
       td {
+        min-width: 80px;
         max-width: 400px;
         white-space: nowrap;
         overflow: hidden;
@@ -755,6 +796,17 @@ $admin-transition: all 0.3s ease;
         border-bottom: 1px solid #ddd;
         font-size: 1.4rem;
         vertical-align: middle;
+      }
+
+      th,
+      td {
+        &:first-child {
+          padding-left: 5px;
+        }
+
+        &:last-child {
+          padding-right: 0 !important;
+        }
       }
 
       th {
@@ -768,7 +820,6 @@ $admin-transition: all 0.3s ease;
 
       .td-outstanding,
       .th-outstanding,
-      .th-name,
       .td-date,
       .th-date,
       .td-option,
@@ -778,7 +829,8 @@ $admin-transition: all 0.3s ease;
       .th-img {
         text-align: center;
       }
-
+      .td__status,
+      .td__isActive,
       .td__outstanding {
         padding: 5px 10px;
         border-radius: 12px;
@@ -795,8 +847,7 @@ $admin-transition: all 0.3s ease;
       }
 
       .td-img {
-        width: 70px;
-        height: 70px;
+        width: 100px;
         text-align: center;
         img {
           width: 100%;
@@ -907,7 +958,7 @@ $admin-transition: all 0.3s ease;
         }
       }
 
-      // Cột icon (dùng trong Categories)
+      /*       // Cột icon (dùng trong Categories)
       .admin__table-icon {
         width: 80px;
         text-align: center;
@@ -922,7 +973,7 @@ $admin-transition: all 0.3s ease;
       .admin__table-slug {
         width: 100px;
         text-align: left;
-      }
+      } */
 
       // Cột hành động (View, Edit, Delete)
       .admin__table-actions {
@@ -980,49 +1031,49 @@ $admin-transition: all 0.3s ease;
         font-size: 1.4rem;
         color: #6b7280;
       }
+    }
 
-      // Nút hành động (View, Edit, Delete, Tracking)
-      .admin__action-btn {
-        padding: 5px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 1.2rem;
-        margin-right: 10px;
-        background: none;
+    // Nút hành động (View, Edit, Delete, Tracking)
+    .admin__action-btn {
+      padding: 5px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      margin-right: 10px;
+      background: none;
 
-        i {
-          font-size: 1.4rem;
+      i {
+        font-size: 1.4rem;
+      }
+
+      &--view {
+        color: #00c4b4;
+        &:hover {
+          color: darken(#00c4b4, 10%);
         }
+      }
 
-        &--view {
-          color: #00c4b4;
-          &:hover {
-            color: darken(#00c4b4, 10%);
-          }
+      &--edit {
+        color: #00c4b4;
+        &:hover {
+          color: darken(#00c4b4, 10%);
         }
+      }
 
-        &--edit {
-          color: #00c4b4;
-          &:hover {
-            color: darken(#00c4b4, 10%);
-          }
+      &--delete {
+        color: #ff4d4d;
+        &:hover {
+          color: darken(#ff4d4d, 10%);
         }
+      }
 
-        &--delete {
-          color: #ff4d4d;
-          &:hover {
-            color: darken(#ff4d4d, 10%);
-          }
-        }
-
-        &--tracking {
-          padding: 5px 10px;
-          background-color: #28a745;
-          color: white;
-          &:hover {
-            background-color: darken(#28a745, 10%);
-          }
+      &--tracking {
+        padding: 5px 10px;
+        background-color: #28a745;
+        color: white;
+        &:hover {
+          background-color: darken(#28a745, 10%);
         }
       }
     }
