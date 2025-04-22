@@ -18,16 +18,18 @@ import EditProduct from '@pages/admin/products/EditProduct';
 import ProductReviews from '@pages/admin/products/ProductReviews';
 
 import Admin from '@pages/admin/Admin';
-import Users from '@pages/admin/Users';
+import Users from '@pages/admin/users/Users';
+// import AddUser from '@pages/admin/users/AddUser';
 import Dashboard from '@pages/admin/Dashboard';
 
 import Orders from '@pages/admin/orders/Orders';
 import OrdersDetail from '@pages/admin/orders/OrdersDetail';
 
 import Categories from '@pages/admin/categories/Categories';
-import CategoryForm from '@/pages/admin/categories/CategoryForm';
+import CategoryForm from '@pages/admin/categories/CategoryForm';
 // import AddCategory from '@/pages/admin/categories/AddCategory';
 // import EditCategory from '@/pages/admin/categories/EditCategory';
+
 const routes = [
   {
     path: '/',
@@ -94,6 +96,7 @@ const routes = [
       { path: 'categories/form', page: CategoryForm },
       { path: 'categories/form/:id', page: CategoryForm },
       { path: 'users', page: Users },
+      // { path: 'users/add', page: AddUser },
     ],
   },
 ];
