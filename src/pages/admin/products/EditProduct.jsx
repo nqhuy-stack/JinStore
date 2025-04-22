@@ -7,6 +7,7 @@ import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
 import PageLoad from '@pages/pageLoad';
 import toast from 'react-hot-toast';
+import Modal from '@components/common/Modal';
 
 const EditProduct = () => {
   //NOTE: navigate and dispatch
@@ -38,6 +39,7 @@ const EditProduct = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [customImg, setCustomImg] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -69,6 +71,7 @@ const EditProduct = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
+        setLoading(true);
         const data = await getProduct(id);
         setProduct(data);
         setName(data.name);
@@ -77,13 +80,16 @@ const EditProduct = () => {
         setUnit(data.unit);
         setDiscount(data.discount);
         setQuantity(data.quantity);
-        setIdCategory(data._idCategory);
-        setInformation(data.information);
-        setImages(data.images);
+        setIdCategory(data._idCategory._id);
+        setInformation(data.information || []);
+        setImages(data.images || []);
         setImageFiles([]);
         setImagesToDelete([]);
       } catch (error) {
-        console.error('Loi khi lay thong tin san pham:', error);
+        console.error('Lỗi khi lấy thông tin sản phẩm:', error);
+        toast.error('Không thể tải thông tin sản phẩm. Vui lòng thử lại sau.');
+      } finally {
+        setLoading(false);
       }
     };
     fetchProduct();
@@ -93,7 +99,7 @@ const EditProduct = () => {
   useEffect(() => {
     return () => {
       images.forEach((img) => {
-        if (img.url.startsWith('blob:')) {
+        if (img.url && img.url.startsWith('blob:')) {
           URL.revokeObjectURL(img.url);
         }
       });
@@ -116,7 +122,7 @@ const EditProduct = () => {
     const imageToRemove = images[indexToRemove];
 
     setImages((prev) => {
-      if (imageToRemove.url.startsWith('blob:')) {
+      if (imageToRemove.url && imageToRemove.url.startsWith('blob:')) {
         URL.revokeObjectURL(imageToRemove.url);
       }
       return prev.filter((_, index) => index !== indexToRemove);
@@ -148,75 +154,90 @@ const EditProduct = () => {
     setInformation(newInformation);
   };
 
+  //NOTE: Hàm xử lý sự kiện khi nhấn nút "Cập nhật sản phẩm"
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setTimeout(() => {
+      setIsConfirmModalOpen(true);
+      setLoading(false);
+    }, 500);
+  };
 
-    // Chuẩn bị formData cho cập nhật
-    const formData = new FormData();
-    if (name !== product.name) {
-      formData.append('name', name);
-    }
-    if (description !== product.description) {
-      formData.append('description', description);
-    }
-    if (price !== product.price) {
-      formData.append('price', price);
-    }
-    if (unit !== product.unit) {
-      formData.append('unit', unit);
-    }
-    if (discount !== product.discount) {
-      formData.append('discount', discount);
-    }
-    if (quantity !== product.quantity) {
-      formData.append('quantity', quantity);
-    }
-    if (JSON.stringify(_idCategory) !== JSON.stringify(product._idCategory)) {
-      formData.append('_idCategory', _idCategory);
-    }
-    if (JSON.stringify(information) !== JSON.stringify(product.information)) {
-      formData.append('information', JSON.stringify(information));
-    }
-    if (imagesToDelete.length > 0) {
-      formData.append('imagesToDelete', JSON.stringify(imagesToDelete));
-    }
-    imageFiles.forEach((file) => formData.append('images', file));
-
-    if ([...formData.keys()].length === 0 && imagesToDelete.length === 0) {
-      toast('Chưa có thông tin nào được thay đổi.', {
-        duration: 3000,
-        position: 'top-center',
-        style: {
-          background: '#fff3cd',
-          color: '#856404',
-          border: '1px solid #ffeeba',
-          borderRadius: '8px',
-          fontWeight: '500',
-          fontSize: '1.6rem',
-        },
-        icon: '⚠️',
-      });
-      return;
-    }
+  //NOTE: Hàm xác nhận cập nhật sản phẩm
+  const confirmUpdateProduct = async () => {
     try {
       setLoading(true);
+
+      // Chuẩn bị formData cho cập nhật
+      const formData = new FormData();
+      if (name !== product.name) {
+        formData.append('name', name);
+      }
+      if (description !== product.description) {
+        formData.append('description', description);
+      }
+      if (price !== product.price) {
+        formData.append('price', price);
+      }
+      if (unit !== product.unit) {
+        formData.append('unit', unit);
+      }
+      if (discount !== product.discount) {
+        formData.append('discount', discount);
+      }
+      if (quantity !== product.quantity) {
+        formData.append('quantity', quantity);
+      }
+      if (_idCategory !== product._idCategory._id) {
+        formData.append('_idCategory', _idCategory);
+      }
+      if (JSON.stringify(information) !== JSON.stringify(product.information)) {
+        formData.append('information', JSON.stringify(information));
+      }
+      if (imagesToDelete.length > 0) {
+        formData.append('imagesToDelete', JSON.stringify(imagesToDelete));
+      }
+      imageFiles.forEach((file) => formData.append('images', file));
+
+      if ([...formData.keys()].length === 0 && imagesToDelete.length === 0) {
+        toast('Chưa có thông tin nào được thay đổi.', {
+          duration: 3000,
+          position: 'top-center',
+          style: {
+            background: '#fff3cd',
+            color: '#856404',
+            border: '1px solid #ffeeba',
+            borderRadius: '8px',
+            fontWeight: '500',
+            fontSize: '1.6rem',
+          },
+          icon: '⚠️',
+        });
+        setIsConfirmModalOpen(false);
+        return;
+      }
+
       await editProduct(id, formData, accessToken, axiosJWT);
       setImagesToDelete([]);
+      setIsConfirmModalOpen(false);
       navigate('/admin/products');
     } catch (error) {
       console.error('Lỗi khi cập nhật:', error);
+      toast.error('Không thể cập nhật sản phẩm. Vui lòng thử lại sau.');
     } finally {
       setLoading(false);
     }
   };
+
   return (
     <section className="admin__section">
       {loading ? (
         <PageLoad zIndex="1" />
       ) : (
         <>
-          <h2 className="admin__section-title">Thêm sản phẩm</h2>
-          <form className="admin__form" id="form-addProduct" onSubmit={handleSubmit}>
+          <h2 className="admin__section-title">Cập nhật sản phẩm</h2>
+          <form className="admin__form" id="form-editProduct" onSubmit={handleSubmit}>
             <div className="admin__form-row">
               {/* COMMENT: Tên sản phẩm */}
               <div className="admin__form-field">
@@ -340,7 +361,7 @@ const EditProduct = () => {
                   type="text"
                   id="product-category"
                   name="category"
-                  value={_idCategory._id}
+                  value={_idCategory}
                   onChange={(e) => setIdCategory(e.target.value)}
                   required
                   disabled={loading || error}
@@ -372,7 +393,7 @@ const EditProduct = () => {
                       {categories.map((category) => (
                         <option key={category._id} value={category._id}>
                           {category.name}
-                          {product._idCategory._id !== category._id
+                          {product && product._idCategory._id !== category._id
                             ? _idCategory === category._id
                               ? ' (Đã chọn)'
                               : ''
@@ -397,6 +418,7 @@ const EditProduct = () => {
                     id="product-images"
                     name="image"
                     accept="image/*"
+                    multiple
                     onChange={handleImageChange}
                     style={{
                       backgroundColor: 'white',
@@ -515,6 +537,14 @@ const EditProduct = () => {
               {loading ? 'Đang cập nhật...' : 'Cập nhật sản phẩm'}
             </button>
           </form>
+
+          <Modal
+            isOpen={isConfirmModalOpen}
+            onClose={() => setIsConfirmModalOpen(false)}
+            onConfirm={confirmUpdateProduct}
+            title="Vui lòng xác nhận lại"
+            message={`Bạn chắc chắn muốn cập nhật sản phẩm "${name}" này?`}
+          />
         </>
       )}
     </section>
