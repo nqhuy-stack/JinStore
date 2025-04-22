@@ -32,6 +32,14 @@ const CategoryForm = () => {
   const [customImg, setCustomImg] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  // Thêm state để theo dõi các trường đã được nhập
+  const [touchedFields, setTouchedFields] = useState({
+    name: false,
+    description: false,
+    status: false,
+    isOutstanding: false,
+  });
+
   // Load category data for edit mode
   useEffect(() => {
     if (mode === 'edit' && id) {
@@ -93,8 +101,148 @@ const CategoryForm = () => {
     }
   };
 
+  // Hàm xử lý khi người dùng rời khỏi trường nhập liệu
+  const handleBlur = (field) => {
+    setTouchedFields((prev) => ({ ...prev, [field]: true }));
+
+    // Hiển thị thông báo nếu trường bắt buộc chưa được nhập
+    if (!name && field === 'name') {
+      toast.error('Vui lòng nhập tên danh mục', {
+        duration: 2000,
+        position: 'top-center',
+        style: {
+          background: '#f8d7da',
+          color: '#721c24',
+          border: '1px solid #f5c6cb',
+          borderRadius: '8px',
+          fontWeight: '500',
+          fontSize: '1.6rem',
+        },
+        icon: '⚠️',
+      });
+    }
+
+    if (!description && field === 'description') {
+      toast.error('Vui lòng nhập mô tả danh mục', {
+        duration: 2000,
+        position: 'top-center',
+        style: {
+          background: '#f8d7da',
+          color: '#721c24',
+          border: '1px solid #f5c6cb',
+          borderRadius: '8px',
+          fontWeight: '500',
+          fontSize: '1.6rem',
+        },
+        icon: '⚠️',
+      });
+    }
+
+    if (!status && field === 'status') {
+      toast.error('Vui lòng chọn trạng thái danh mục', {
+        duration: 2000,
+        position: 'top-center',
+        style: {
+          background: '#f8d7da',
+          color: '#721c24',
+          border: '1px solid #f5c6cb',
+          borderRadius: '8px',
+          fontWeight: '500',
+          fontSize: '1.6rem',
+        },
+        icon: '⚠️',
+      });
+    }
+
+    if (!isOutstanding && field === 'isOutstanding') {
+      toast.error('Vui lòng chọn trạng thái nổi bật', {
+        duration: 2000,
+        position: 'top-center',
+        style: {
+          background: '#f8d7da',
+          color: '#721c24',
+          border: '1px solid #f5c6cb',
+          borderRadius: '8px',
+          fontWeight: '500',
+          fontSize: '1.6rem',
+        },
+        icon: '⚠️',
+      });
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Kiểm tra các trường bắt buộc
+    if (!name) {
+      toast.error('Vui lòng nhập tên danh mục', {
+        duration: 3000,
+        position: 'top-center',
+        style: {
+          background: '#f8d7da',
+          color: '#721c24',
+          border: '1px solid #f5c6cb',
+          borderRadius: '8px',
+          fontWeight: '500',
+          fontSize: '1.6rem',
+        },
+        icon: '⚠️',
+      });
+      return;
+    }
+
+    if (!description) {
+      toast.error('Vui lòng nhập mô tả danh mục', {
+        duration: 3000,
+        position: 'top-center',
+        style: {
+          background: '#f8d7da',
+          color: '#721c24',
+          border: '1px solid #f5c6cb',
+          borderRadius: '8px',
+          fontWeight: '500',
+          fontSize: '1.6rem',
+        },
+        icon: '⚠️',
+      });
+      return;
+    }
+
+    if (!status) {
+      toast.error('Vui lòng chọn trạng thái danh mục', {
+        duration: 3000,
+        position: 'top-center',
+        style: {
+          background: '#f8d7da',
+          color: '#721c24',
+          border: '1px solid #f5c6cb',
+          borderRadius: '8px',
+          fontWeight: '500',
+          fontSize: '1.6rem',
+        },
+        icon: '⚠️',
+      });
+      return;
+    }
+
+    if (!isOutstanding) {
+      toast.error('Vui lòng chọn trạng thái nổi bật', {
+        duration: 3000,
+        position: 'top-center',
+        style: {
+          background: '#f8d7da',
+          color: '#721c24',
+          border: '1px solid #f5c6cb',
+          borderRadius: '8px',
+          fontWeight: '500',
+          fontSize: '1.6rem',
+        },
+        icon: '⚠️',
+      });
+      return;
+    }
+
     const formData = new FormData();
 
     // Append data to FormData
@@ -123,9 +271,9 @@ const CategoryForm = () => {
           duration: 3000,
           position: 'top-center',
           style: {
-            background: '#fff3cd',
-            color: '#856404',
-            border: '1px solid #ffeeba',
+            background: '#f8d7da',
+            color: '#721c24',
+            border: '1px solid #f5c6cb',
             borderRadius: '8px',
             fontWeight: '500',
             fontSize: '1.6rem',
@@ -173,16 +321,24 @@ const CategoryForm = () => {
           <form className="admin__form" onSubmit={handleSubmit}>
             <div className="admin__form-row">
               <div className="admin__form-field">
-                <label htmlFor="name">Tên Danh Mục *</label>
+                <label htmlFor="name">
+                  Tên Danh Mục <span className="required">*</span>
+                </label>
                 <input
                   type="text"
                   id="name"
                   name="name"
                   value={name}
                   onChange={handleInputChange}
+                  onBlur={() => handleBlur('name')}
                   placeholder="Nhập tên danh mục"
                   required
                 />
+                {touchedFields.name && !name && (
+                  <div className="field-error" style={{ color: '#dc3545', marginTop: '5px', fontSize: '1.4rem' }}>
+                    Vui lòng nhập tên danh mục
+                  </div>
+                )}
               </div>
               <div className="admin__form-field">
                 <label className="label__slug" htmlFor="slug">
@@ -205,6 +361,9 @@ const CategoryForm = () => {
                     width: '100%',
                   }}
                 />
+                <div className="field-hint" style={{ color: '#6c757d', fontSize: '1.2rem', marginTop: '5px' }}>
+                  {!customSlug ? 'Slug sẽ tự động tạo từ tên danh mục' : 'Nhập slug tùy chỉnh cho danh mục'}
+                </div>
               </div>
             </div>
             <div className="admin__form-row">
@@ -254,28 +413,73 @@ const CategoryForm = () => {
                     className="admin__image-preview admin__image-preview--category"
                   />
                 )}
+                <div className="field-hint" style={{ color: '#6c757d', fontSize: '1.2rem', marginTop: '5px' }}>
+                  {mode === 'edit' ? 'Chọn ảnh mới để thay thế ảnh hiện tại' : 'Tải lên ảnh đại diện cho danh mục'}
+                </div>
               </div>
               <div className="admin__form-field">
-                <label htmlFor="description">Mô Tả *</label>
-                <textarea name="description" value={description} onChange={handleInputChange} required></textarea>
+                <label htmlFor="description">
+                  Mô Tả <span className="required">*</span>
+                </label>
+                <textarea
+                  name="description"
+                  value={description}
+                  onChange={handleInputChange}
+                  onBlur={() => handleBlur('description')}
+                  placeholder="Nhập mô tả danh mục"
+                  required
+                />
+                {touchedFields.description && !description && (
+                  <div className="field-error" style={{ color: '#dc3545', marginTop: '5px', fontSize: '1.4rem' }}>
+                    Vui lòng nhập mô tả danh mục
+                  </div>
+                )}
               </div>
             </div>
             <div className="admin__form-row">
               <div className="admin__form-field">
-                <label htmlFor="status">Trạng Thái</label>
-                <select id="status" name="status" value={status} onChange={handleInputChange}>
+                <label htmlFor="status">
+                  Trạng Thái <span className="required">*</span>
+                </label>
+                <select
+                  id="status"
+                  name="status"
+                  value={status}
+                  onChange={handleInputChange}
+                  onBlur={() => handleBlur('status')}
+                  required
+                >
                   <option value="">Chọn trạng thái</option>
                   <option value="active">Kích hoạt</option>
                   <option value="inactive">Ngừng kích hoạt</option>
                 </select>
+                {touchedFields.status && !status && (
+                  <div className="field-error" style={{ color: '#dc3545', marginTop: '5px', fontSize: '1.4rem' }}>
+                    Vui lòng chọn trạng thái danh mục
+                  </div>
+                )}
               </div>
               <div className="admin__form-field">
-                <label htmlFor="isOutstanding">Nổi Bật</label>
-                <select id="isOutstanding" name="isOutstanding" value={isOutstanding} onChange={handleInputChange}>
+                <label htmlFor="isOutstanding">
+                  Nổi Bật <span className="required">*</span>
+                </label>
+                <select
+                  id="isOutstanding"
+                  name="isOutstanding"
+                  value={isOutstanding}
+                  onChange={handleInputChange}
+                  onBlur={() => handleBlur('isOutstanding')}
+                  required
+                >
                   <option value="">Chọn trạng thái</option>
                   <option value="true">Có</option>
                   <option value="false">Không</option>
                 </select>
+                {touchedFields.isOutstanding && !isOutstanding && (
+                  <div className="field-error" style={{ color: '#dc3545', marginTop: '5px', fontSize: '1.4rem' }}>
+                    Vui lòng chọn trạng thái nổi bật
+                  </div>
+                )}
               </div>
             </div>
             <button type="submit" className="admin__form-button">
