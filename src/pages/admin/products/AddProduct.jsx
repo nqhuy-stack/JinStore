@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
 import PageLoad from '@pages/pageLoad';
+import toast from 'react-hot-toast';
 
 const AddProduct = () => {
   const [newProduct, setNewProduct] = useState({
@@ -32,6 +33,16 @@ const AddProduct = () => {
   const [error, setError] = useState(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const information = newProduct.information || [];
+
+  // Thêm state để theo dõi các trường đã được nhập
+  const [touchedFields, setTouchedFields] = useState({
+    name: false,
+    description: false,
+    price: false,
+    unit: false,
+    quantity: false,
+    _idCategory: false,
+  });
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -101,6 +112,110 @@ const AddProduct = () => {
   //NOTE: Hàm xử lý sự kiện khi nhấn nút "Thêm sản phẩm"
   const handleAddProduct = (e) => {
     e.preventDefault();
+
+    // Kiểm tra các trường bắt buộc
+    if (!newProduct.name) {
+      toast.error('Vui lòng nhập tên sản phẩm', {
+        duration: 3000,
+        position: 'top-center',
+        style: {
+          background: '#f8d7da',
+          color: '#721c24',
+          border: '1px solid #f5c6cb',
+          borderRadius: '8px',
+          fontWeight: '500',
+          fontSize: '1.6rem',
+        },
+        icon: '⚠️',
+      });
+      return;
+    }
+
+    if (!newProduct.description) {
+      toast.error('Vui lòng nhập mô tả sản phẩm', {
+        duration: 3000,
+        position: 'top-center',
+        style: {
+          background: '#f8d7da',
+          color: '#721c24',
+          border: '1px solid #f5c6cb',
+          borderRadius: '8px',
+          fontWeight: '500',
+          fontSize: '1.6rem',
+        },
+        icon: '⚠️',
+      });
+      return;
+    }
+
+    if (!newProduct.price) {
+      toast.error('Vui lòng nhập giá sản phẩm', {
+        duration: 3000,
+        position: 'top-center',
+        style: {
+          background: '#f8d7da',
+          color: '#721c24',
+          border: '1px solid #f5c6cb',
+          borderRadius: '8px',
+          fontWeight: '500',
+          fontSize: '1.6rem',
+        },
+        icon: '⚠️',
+      });
+      return;
+    }
+
+    if (!newProduct.unit) {
+      toast.error('Vui lòng chọn đơn vị sản phẩm', {
+        duration: 3000,
+        position: 'top-center',
+        style: {
+          background: '#f8d7da',
+          color: '#721c24',
+          border: '1px solid #f5c6cb',
+          borderRadius: '8px',
+          fontWeight: '500',
+          fontSize: '1.6rem',
+        },
+        icon: '⚠️',
+      });
+      return;
+    }
+
+    if (!newProduct.quantity) {
+      toast.error('Vui lòng nhập số lượng sản phẩm', {
+        duration: 3000,
+        position: 'top-center',
+        style: {
+          background: '#f8d7da',
+          color: '#721c24',
+          border: '1px solid #f5c6cb',
+          borderRadius: '8px',
+          fontWeight: '500',
+          fontSize: '1.6rem',
+        },
+        icon: '⚠️',
+      });
+      return;
+    }
+
+    if (!newProduct._idCategory) {
+      toast.error('Vui lòng chọn danh mục sản phẩm', {
+        duration: 3000,
+        position: 'top-center',
+        style: {
+          background: '#f8d7da',
+          color: '#721c24',
+          border: '1px solid #f5c6cb',
+          borderRadius: '8px',
+          fontWeight: '500',
+          fontSize: '1.6rem',
+        },
+        icon: '⚠️',
+      });
+      return;
+    }
+
     setLoading(true);
     setTimeout(() => {
       setIsAddModalOpen(true);
@@ -159,6 +274,48 @@ const AddProduct = () => {
     }
   };
 
+  // Hàm xử lý khi người dùng rời khỏi trường nhập liệu
+  const handleBlur = (field) => {
+    setTouchedFields((prev) => ({ ...prev, [field]: true }));
+
+    // Hiển thị thông báo nếu trường bắt buộc chưa được nhập
+    if (!newProduct[field] && field !== 'discount') {
+      toast.error(`Vui lòng nhập ${getFieldLabel(field)}`, {
+        duration: 2000,
+        position: 'top-center',
+        style: {
+          background: '#f8d7da',
+          color: '#721c24',
+          border: '1px solid #f5c6cb',
+          borderRadius: '8px',
+          fontWeight: '500',
+          fontSize: '1.6rem',
+        },
+        icon: '⚠️',
+      });
+    }
+  };
+
+  // Hàm lấy nhãn cho trường
+  const getFieldLabel = (field) => {
+    switch (field) {
+      case 'name':
+        return 'tên sản phẩm';
+      case 'description':
+        return 'mô tả sản phẩm';
+      case 'price':
+        return 'giá sản phẩm';
+      case 'unit':
+        return 'đơn vị sản phẩm';
+      case 'quantity':
+        return 'số lượng sản phẩm';
+      case '_idCategory':
+        return 'danh mục sản phẩm';
+      default:
+        return field;
+    }
+  };
+
   return (
     <section className="admin__section">
       {loading ? (
@@ -169,47 +326,78 @@ const AddProduct = () => {
           <form className="admin__form" id="form-addProduct" onSubmit={handleAddProduct}>
             <div className="admin__form-row">
               <div className="admin__form-field">
-                <label htmlFor="product-name">Tên sản phẩm</label>
+                <label htmlFor="product-name">
+                  Tên sản phẩm <span className="required">*</span>
+                </label>
                 <input
                   type="text"
                   id="product-name"
                   value={newProduct.name}
                   onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
-                  /* required */
+                  onBlur={() => handleBlur('name')}
+                  required
+                  placeholder="Nhập tên sản phẩm"
                 />
+                {touchedFields.name && !newProduct.name && (
+                  <div className="field-error" style={{ color: '#dc3545', marginTop: '5px', fontSize: '1.4rem' }}>
+                    Vui lòng nhập tên sản phẩm
+                  </div>
+                )}
               </div>
               <div className="admin__form-field">
-                <label htmlFor="product-description">Mô tả</label>
+                <label htmlFor="product-description">
+                  Mô tả <span className="required">*</span>
+                </label>
                 <textarea
                   id="product-description"
                   value={newProduct.description}
                   onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
+                  onBlur={() => handleBlur('description')}
                   required
+                  placeholder="Nhập mô tả sản phẩm"
                 />
+                {touchedFields.description && !newProduct.description && (
+                  <div className="field-error" style={{ color: '#dc3545', marginTop: '5px', fontSize: '1.4rem' }}>
+                    Vui lòng nhập mô tả sản phẩm
+                  </div>
+                )}
               </div>
             </div>
             <div className="admin__form-row">
               <div className="admin__form-field">
-                <label htmlFor="product-price">Giá (/1 sản phẩm)</label>
+                <label htmlFor="product-price">
+                  Giá (/1 sản phẩm) <span className="required">*</span>
+                </label>
                 <input
                   type="number"
                   id="product-price"
                   value={newProduct.price}
                   onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
-                  /* required */
+                  onBlur={() => handleBlur('price')}
+                  required
                   step="100"
                   min="0"
+                  placeholder="Nhập giá sản phẩm"
                 />
+                {touchedFields.price && !newProduct.price && (
+                  <div className="field-error" style={{ color: '#dc3545', marginTop: '5px', fontSize: '1.4rem' }}>
+                    Vui lòng nhập giá sản phẩm
+                  </div>
+                )}
               </div>
               <div className="admin__form-field admin__form-field--unit">
-                <label htmlFor="product-unit">Đơn vị</label>
+                <label htmlFor="product-unit">
+                  Đơn vị <span className="required">*</span>
+                </label>
                 <select
                   className="custom-select"
                   id="product-unit"
                   value={newProduct.unit}
                   onChange={(e) => setNewProduct({ ...newProduct, unit: e.target.value })}
+                  onBlur={() => handleBlur('unit')}
                   required
                 >
+                  <option value="">Chọn đơn vị</option>
                   <optgroup label="🔢 Đơn vị khối lượng">
                     <option value="g">Gram (g)</option>
                     <option value="kg">Kilogram (kg)</option>
@@ -246,6 +434,11 @@ const AddProduct = () => {
                     <option value="thùng-lẻ">Thùng (chia lẻ)</option>
                   </optgroup>
                 </select>
+                {touchedFields.unit && !newProduct.unit && (
+                  <div className="field-error" style={{ color: '#dc3545', marginTop: '5px', fontSize: '1.4rem' }}>
+                    Vui lòng chọn đơn vị sản phẩm
+                  </div>
+                )}
               </div>
 
               <div className="admin__form-field">
@@ -258,27 +451,40 @@ const AddProduct = () => {
                   step="1"
                   min={0}
                   max={100}
+                  placeholder="Nhập % giảm giá (nếu có)"
                 />
               </div>
               <div className="admin__form-field">
-                <label htmlFor="product-quantity">Số lượng</label>
+                <label htmlFor="product-quantity">
+                  Số lượng <span className="required">*</span>
+                </label>
                 <input
                   type="number"
                   id="product-quantity"
-                  value={newProduct.stock}
-                  onChange={(e) => setNewProduct({ ...newProduct, stock: e.target.value })}
+                  value={newProduct.quantity}
+                  onChange={(e) => setNewProduct({ ...newProduct, quantity: e.target.value })}
+                  onBlur={() => handleBlur('quantity')}
                   required
                   min="0"
+                  placeholder="Nhập số lượng sản phẩm"
                 />
+                {touchedFields.quantity && !newProduct.quantity && (
+                  <div className="field-error" style={{ color: '#dc3545', marginTop: '5px', fontSize: '1.4rem' }}>
+                    Vui lòng nhập số lượng sản phẩm
+                  </div>
+                )}
               </div>
               <div className="admin__form-field">
-                <label htmlFor="product-category">Thuộc danh mục</label>
+                <label htmlFor="product-category">
+                  Thuộc danh mục <span className="required">*</span>
+                </label>
                 <select
                   className="custom-select select-category"
                   type="text"
                   id="product-category"
                   value={newProduct._idCategory}
                   onChange={(e) => setNewProduct({ ...newProduct, _idCategory: e.target.value })}
+                  onBlur={() => handleBlur('_idCategory')}
                   required
                   disabled={loading || error}
                 >
@@ -311,12 +517,18 @@ const AddProduct = () => {
                     </>
                   )}
                 </select>
+                {touchedFields._idCategory && !newProduct._idCategory && (
+                  <div className="field-error" style={{ color: '#dc3545', marginTop: '5px', fontSize: '1.4rem' }}>
+                    Vui lòng chọn danh mục sản phẩm
+                  </div>
+                )}
               </div>
             </div>
             <div className="admin__form-row">
               <div className="admin__form-field">
-                <label htmlFor="product-images">Images</label>
+                <label htmlFor="product-images">Hình ảnh sản phẩm</label>
                 <input type="file" id="product-images" accept="image/*" multiple onChange={handleImageChange} />
+                <div className="field-hint">Bạn có thể chọn nhiều ảnh cùng lúc</div>
                 {newProduct.images.length > 0 && (
                   <div className="image-preview-container">
                     {newProduct.images.map((image, index) => (
@@ -340,6 +552,7 @@ const AddProduct = () => {
                 <label className="product-attributes" htmlFor="product-attributes">
                   Thuộc tính sản phẩm
                 </label>
+                <div className="field-hint">Thêm các thuộc tính đặc trưng của sản phẩm (tùy chọn)</div>
                 <div className="form-table-container">
                   <table className="form-table">
                     <thead>
@@ -416,7 +629,7 @@ const AddProduct = () => {
             onClose={() => setIsAddModalOpen(false)}
             onConfirm={confirmAddProduct}
             title="Vui lòng xác nhận lại"
-            message={`Bạn chắc chắn muốn thêm sản phẩm "${newProduct.name} này"?`}
+            message={`Bạn chắc chắn muốn thêm sản phẩm "${newProduct.name}" này?`}
           />
         </>
       )}

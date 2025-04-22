@@ -26,8 +26,8 @@ import OrdersDetail from '@pages/admin/orders/OrdersDetail';
 
 import Categories from '@pages/admin/categories/Categories';
 import CategoryForm from '@/pages/admin/categories/CategoryForm';
-import AddCategory from '@/pages/admin/categories/AddCategory';
-import EditCategory from '@/pages/admin/categories/EditCategory';
+// import AddCategory from '@/pages/admin/categories/AddCategory';
+// import EditCategory from '@/pages/admin/categories/EditCategory';
 const routes = [
   {
     path: '/',
