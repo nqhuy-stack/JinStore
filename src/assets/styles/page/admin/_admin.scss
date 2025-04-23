@@ -1023,6 +1023,30 @@ $admin-transition: all 0.3s ease;
         }
       }
 
+      // Status badges cho reviews
+      .admin__status-badge {
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 500;
+        text-transform: capitalize;
+
+        &--pending {
+          background-color: #fff3cd;
+          color: #856404;
+        }
+
+        &--approved {
+          background-color: #d4edda;
+          color: #155724;
+        }
+
+        &--rejected {
+          background-color: #f8d7da;
+          color: #721c24;
+        }
+      }
+
       // Select (dùng trong Orders để chọn trạng thái)
       select {
         padding: 5px;

@@ -13,14 +13,15 @@
 @import './layout/form';
 @import './layout/breadcrumb';
 
-@import './page/home';
-@import './page/contact';
-@import './page/login';
-@import './page/register';
-@import './page/notfound';
-@import './page/admin';
-@import './page/cart';
-@import './page/productdetails';
-@import './page/checkout';
-@import './page/wishlist';
-@import './page/productlist';
+@import './page/user/home';
+@import './page/user/contact';
+@import './page/user/login';
+@import './page/user/register';
+@import './page/user/notfound';
+@import './page/user/cart';
+@import './page/user/productdetails';
+@import './page/user/checkout';
+@import './page/user/wishlist';
+@import './page/user/productlist';
+
+@import './page/admin/admin';
