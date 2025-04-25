@@ -1,0 +1,267 @@
+@media (max-width: $admin-breakpoint-md) {
+  .admin {
+    &__header {
+      flex-direction: column;
+      gap: 10px;
+
+      .admin__search {
+        max-width: 100%;
+      }
+    }
+
+    &__content {
+      flex-direction: column;
+    }
+
+    &__sidebar {
+      transform: translateX(-100%);
+      width: $admin-sidebar-width;
+    }
+
+    &__main {
+      margin-left: 0;
+      padding: 1rem;
+    }
+
+    &__table {
+      th,
+      td {
+        padding: 10px;
+        font-size: 1.2rem;
+      }
+
+      .admin__table-description,
+      .admin__table-discount,
+      .admin__table-category,
+      .admin__table-date,
+      .admin__table-image,
+      .admin__table-icon,
+      .admin__table-slug {
+        display: none;
+      }
+    }
+
+    &__form-row {
+      flex-direction: column;
+    }
+
+    &__section {
+      padding: 1rem;
+    }
+
+    &__section-header {
+      flex-direction: column;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    &__section-actions {
+      width: 100%;
+      justify-content: flex-end;
+    }
+
+    &__table-container {
+      overflow-x: auto;
+    }
+
+    &__table {
+      min-width: 800px;
+    }
+
+    &__stats .admin__stat-card {
+      min-width: 100%;
+    }
+
+    &__search-bar {
+      input {
+        max-width: 100%;
+      }
+    }
+
+    &__product-info {
+      min-width: 200px;
+    }
+
+    // Image previews
+    .image-preview-container {
+      grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+      gap: 0.5rem;
+    }
+
+    .admin__image-preview {
+      height: 6rem;
+
+      &--user {
+        width: 30px;
+        height: 30px;
+      }
+
+      &--product {
+        width: 50px;
+        height: 50px;
+      }
+
+      &--category {
+        width: 50px;
+        height: 50px;
+      }
+
+      &--order {
+        width: 50px;
+        height: 50px;
+      }
+    }
+
+    .image-preview-remove {
+      width: 1.8rem;
+      height: 1.8rem;
+      font-size: 1.2rem;
+    }
+
+    &.menu-open {
+      .admin__sidebar {
+        transform: translateX(0);
+      }
+    }
+  }
+
+  .admin-dashboard {
+    &__stats {
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+
+    &__stat-card {
+      padding: 1.5rem;
+
+      h3 {
+        font-size: 1.4rem;
+      }
+
+      p {
+        font-size: 2rem;
+      }
+    }
+
+    &__chart-header {
+      flex-direction: column;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    &__chart-controls {
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    &__chart-btn {
+      flex: 1;
+      text-align: center;
+      padding: 0.5rem 0.8rem;
+      font-size: 0.8rem;
+    }
+
+    &__chart-container {
+      height: 300px;
+    }
+  }
+
+  // Menu Closed State
+  .admin.menu-closed {
+    .admin__sidebar {
+      width: $admin-sidebar-collapsed-width;
+    }
+
+    .admin__menu-item {
+      a {
+        padding: 1.2rem;
+        justify-content: center;
+
+        &::before {
+          display: none;
+        }
+
+        &::after {
+          display: none;
+        }
+
+        span {
+          display: none;
+        }
+      }
+
+      &.has-submenu {
+        > a::after {
+          display: none;
+        }
+
+        .admin__submenu {
+          display: none;
+        }
+      }
+    }
+
+    .admin__main {
+      margin-left: $admin-sidebar-collapsed-width;
+
+      @media (max-width: $admin-breakpoint-lg) {
+        margin-left: 0;
+      }
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .admin {
+    &__section {
+      padding: 0.75rem;
+    }
+
+    &__section-title {
+      font-size: 1.3rem;
+    }
+
+    &__add-button,
+    &__download-button,
+    &__import-export-button {
+      font-size: 1.2rem;
+      padding: 0.6rem 1.2rem;
+    }
+
+    &__form {
+      padding: 15px;
+
+      .admin__form-field {
+        margin-bottom: 10px;
+
+        label {
+          font-size: 1.2rem;
+        }
+
+        input,
+        select,
+        textarea {
+          padding: 8px;
+          font-size: 1.3rem;
+        }
+      }
+    }
+
+    &__table th,
+    &__table td {
+      padding: 8px 5px;
+      font-size: 1.1rem;
+    }
+  }
+
+  .admin-dashboard {
+    &__chart-btn {
+      font-size: 0.7rem;
+      padding: 0.4rem 0.6rem;
+    }
+
+    &__chart-container {
+      height: 250px;
+    }
+  }
+}
