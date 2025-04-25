@@ -215,17 +215,34 @@ const Products = () => {
                   <tr
                     key={product.id}
                     style={{
-                      backgroundColor: product.isActive ? (product.quantity > 0 ? '#fff' : '#dfdfdf') : '#f8d7da',
+                      backgroundColor: product.isActive
+                        ? product.quantity > 0
+                          ? product._idCategory?.status === 'active'
+                            ? '#fff'
+                            : '#f8d7da'
+                          : '#f8d7da'
+                        : '#f8d7da',
                     }}
                   >
                     <td className="td-status">
                       <span
-                        style={{
-                          backgroundColor: product.isActive ? (product.quantity > 0 ? '#fff' : '#dfdfdf') : '#f8d7da',
-                        }}
-                        className={`td__isActive td__isActive--${product.isActive ? (product.quantity > 0 ? 'false' : 'true') : 'true'}`}
+                        className={`td__isActive td__isActive--${
+                          product.isActive
+                            ? product.quantity > 0
+                              ? product._idCategory?.status === 'active'
+                                ? 'false'
+                                : 'true'
+                              : 'true'
+                            : 'true'
+                        }`}
                       >
-                        {product.isActive ? (product.quantity > 0 ? 'Đang bán' : 'Hết hàng') : 'Ngừng bán'}
+                        {product.isActive
+                          ? product.quantity > 0
+                            ? product._idCategory?.status === 'active'
+                              ? 'Đang bán'
+                              : 'Ngừng bán'
+                            : 'Ngừng bán'
+                          : 'Ngừng bán'}
                       </span>
                     </td>
                     <td className="td-img">

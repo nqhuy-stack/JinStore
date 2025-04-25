@@ -8,13 +8,13 @@ import FormDescribe from '@components/common/formDescribe';
 function Register() {
   return (
     <Fragment>
-      <section className="register-container">
+      <section className="account-container">
         <FormDescribe>
           Hãy đăng ký để khám phá thế giới của chúng tôi và cùng nhau xây dựng một tương lai bền vững.
         </FormDescribe>
-        <div className="register-main">
-          <h1 className="register-heading">Đăng ký</h1>
-          <p className="register-subtext">Vui lòng nhập thông tin đăng ký của bạn</p>
+        <div className="account-main">
+          <h1 className="account-heading">Đăng ký</h1>
+          <p className="account-subtext">Vui lòng nhập thông tin đăng ký của bạn</p>
           <FormRegister />
           <div className="item-other">
             <span className="line-left"></span>

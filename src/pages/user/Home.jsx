@@ -52,20 +52,22 @@ function Home() {
           <CategoryList />
         </ReusableSection>
 
-        <div className="home__cashBack">
-          <h1 className="cashBack-title">Get 10% Cashback! Min Order of 300.000</h1>
-          <p className="cashBack-subtitle">
-            Use code: <span className="code">GROCERY1920</span>
-          </p>
-        </div>
-
         {/* NOTE: sản phẩm theo danh mục (nổi bật) */}
         {category.map(
           (category) =>
-            category.isOutstanding === true && (
-              <ReusableSection title={category.name} key={category._id} linkTo={`shop?category=${category.slug}`}>
-                <ProductsCategoryList idCategory={category._id} />
-              </ReusableSection>
+            category.isOutstanding === true &&
+            category.status === 'active' && (
+              <>
+                <div className="home__cashBack">
+                  <h1 className="cashBack-title">Get 10% Cashback! Min Order of 300.000</h1>
+                  <p className="cashBack-subtitle">
+                    Use code: <span className="code">GROCERY1920</span>
+                  </p>
+                </div>
+                <ReusableSection title={category.name} key={category._id} linkTo={`product?category=${category.slug}`}>
+                  <ProductsCategoryList idCategory={category._id} />
+                </ReusableSection>
+              </>
             ),
         )}
       </section>

@@ -64,6 +64,7 @@ const App = () => {
   const isPublicPage =
     location.pathname === '/login' ||
     location.pathname === '/register' ||
+    location.pathname === '/resetPassword' ||
     location.pathname === '/login-google/success';
 
   /**

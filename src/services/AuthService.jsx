@@ -111,22 +111,9 @@ export const register = async (user, dispatch, navigate) => {
   }
 };
 
-// Danh sách sản phẩm theo danh mục
-export const getProductsByIdCategory = async (idCategory) => {
-  try {
-    const response = await axios.get(`${API_URL}/products/category/${idCategory}`);
-    return response.data;
-  } catch (error) {
-    throw error.response?.data || 'Lỗi hệ thống!';
-  }
-};
+export const sendOtp = async (email) => await axios.post(`${API_URL}/otp/send-otp`, { email });
 
-//Danh sách sản phẩm
-export const getProducts = async () => {
-  try {
-    const response = await axios.get(`${API_URL}/products`);
-    return response.data;
-  } catch (error) {
-    throw error.response?.data || 'Lỗi hệ thống!';
-  }
-};
+export const verifyOtp = async (email, otp) => await axios.post(`${API_URL}/otp/verify-otp`, { email, otp });
+
+export const resetPassword = async (email, password, confirmPassword) =>
+  await axios.patch(`${API_URL}/users/reset-password`, { email, password, confirmPassword });

@@ -1,14 +1,15 @@
 import Home from '@pages/user/Home.jsx';
 import Login from '@pages/user/Login.jsx';
-import SocialCallback from '@pages/user/SocialCallback';
 import Register from '@pages/user/Register.jsx';
+import ResetPassword from '@pages/user/ResetPassword.jsx';
+import SocialCallback from '@pages/user/SocialCallback';
 import About from '@pages/user/About.jsx';
 import Contact from '@pages/user/Contact.jsx';
 import NotFound from '@pages/user/NotFound.jsx';
+
 // import Shop from '@pages/user/Shop';
 import Cart from '@pages/user/Cart';
 import Checkout from '@pages/user/Checkout';
-import Wishlist from '@pages/user/Wishlist';
 import ProductList from '@pages/user/ProductList';
 import ProductDetails from '@pages/user/ProductDetails';
 
@@ -21,6 +22,7 @@ import Admin from '@pages/admin/Admin';
 import Users from '@pages/admin/users/Users';
 // import AddUser from '@pages/admin/users/AddUser';
 import Dashboard from '@pages/admin/Dashboard';
+import Discount from '@pages/admin/Discount';
 
 import Orders from '@pages/admin/orders/Orders';
 import OrdersDetail from '@pages/admin/orders/OrdersDetail';
@@ -38,6 +40,10 @@ const routes = [
   {
     path: '/login',
     page: Login,
+  },
+  {
+    path: '/resetPassword',
+    page: ResetPassword,
   },
   {
     path: '/login-google/success',
@@ -76,16 +82,13 @@ const routes = [
     page: Checkout,
   },
   {
-    path: '/wishlist',
-    page: Wishlist,
-  },
-  {
     path: '/admin',
     page: Admin,
     isProtected: true,
     adminOnly: true,
     children: [
       { path: '', page: Dashboard },
+      { path: 'discount', page: Discount },
       { path: 'products', page: Products },
       { path: 'products/add', page: AddProduct },
       { path: 'products/edit/:id', page: EditProduct },

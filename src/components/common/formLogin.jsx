@@ -38,44 +38,42 @@ function FormLogin() {
   };
 
   return (
-  <Fragment>
+    <Fragment>
       {isLoading ? (
         <PageLoad zIndex="9999" />
       ) : (
-        <form className="login-form" onSubmit={handleSubmit}>
-          <div className="login-field">
+        <form className="account-form" onSubmit={handleSubmit}>
+          <div className="account__field">
             <label>Username Or Email*</label>
-            <div className="field_input">
+            <div className="account__field-input">
               <input
                 type="text"
                 name="usernameOrEmail"
                 placeholder="Username or Email"
                 onChange={(e) => setUsernameOrEmail(e.target.value)}
                 required
-                className="login-input"
               />
             </div>
           </div>
-          <div className="login-field">
+          <div className="account__field">
             <label>Password *</label>
-            <div className="field_input">
+            <div className="account__field-input">
               <input
                 type={showPassword ? 'text' : 'password'}
                 name="password"
                 placeholder="Mật khẩu"
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="login-input"
               />
               <Button className="see-password" onClick={togglePasswordVisibility}>
                 {showPassword ? <LuEye className="icon-eye" /> : <LuEyeClosed className="icon-eye" />}
               </Button>
             </div>
           </div>
-          <span className="login-resetPassword">
+          <span className="link-resetPassword">
             <Link to="/resetPassword">Forgot password ?</Link>
           </span>
-          <Button type="submit" className="btn login-button" loading={isLoading}>
+          <Button type="submit" className="btn btn__submit-account" loading={isLoading}>
             Login
           </Button>
         </form>
