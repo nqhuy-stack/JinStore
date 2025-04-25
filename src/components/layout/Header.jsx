@@ -12,7 +12,6 @@ import logoFull from '@assets/images/logo/logo-full.svg';
 import iconLocation from '@assets/icons/iconlocation.svg';
 import iconSearch from '@assets/icons/iconsearch.svg';
 import iconCart from '@assets/icons/iconcart.svg';
-import iconHeart from '@assets/icons/iconheart.svg';
 import iconUser from '@assets/icons/iconuser.svg';
 
 const Header = () => {
@@ -134,13 +133,6 @@ const Header = () => {
                   </div>
                 )}
               </div>
-              <Link to="/wishlist">
-                <div className="header__wishlist">
-                  <i className="iconheart"></i>
-                  <img src={iconHeart} alt="iconheart" />
-                  <span className="header__count">0</span>
-                </div>
-              </Link>
               <Link to="/cart">
                 <div className="header__cart">
                   <img src={iconCart} alt="iconcart-shopping" />

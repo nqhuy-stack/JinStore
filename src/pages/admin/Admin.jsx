@@ -120,6 +120,12 @@ const Admin = () => {
                 <span>Danh mục</span>
               </Link>
             </li>
+            <li className={`admin__menu-item ${location.pathname === '/admin/discount' ? 'active' : ''}`}>
+              <Link to="/admin/discount">
+                <i className="fa-solid fa-tag"></i>
+                <span>Mã giảm giá</span>
+              </Link>
+            </li>
             <li className={`admin__menu-item ${location.pathname === '/admin/orders' ? 'active' : ''}`}>
               <Link to="/admin/orders">
                 <i className="fas fa-shopping-cart"></i>

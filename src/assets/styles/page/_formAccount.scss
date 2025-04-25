@@ -1,11 +1,11 @@
-.login-container {
+.account-container {
   margin: auto;
   max-width: 1140px;
   margin-top: 15rem;
   display: flex;
   align-items: flex-start;
   justify-items: center;
-  .login-main {
+  .account-main {
     margin-left: 10rem;
     width: 480px;
     height: fit-content;
@@ -15,10 +15,25 @@
     border-radius: 8px;
     text-align: center;
     background-color: white;
-    .login-form {
+
+    .account-heading {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+    .account-subtext {
+      font-size: 1.3rem;
+      font-style: normal;
+      font-weight: 400;
+      line-height: 19.5px; /* 150% */
+      color: $color-dark-text;
+      margin-bottom: 15px;
+    }
+
+    .account-form {
       margin-bottom: 15px;
       width: 100%;
-      .login-field {
+      .account__field {
         width: 100%;
         text-align: left;
         margin-bottom: 15px;
@@ -29,7 +44,7 @@
           font-weight: 500;
         }
 
-        .field_input {
+        &-input {
           border: 1px solid #a5a5a5;
           border-radius: 8px;
           overflow: hidden;
@@ -64,7 +79,7 @@
         }
       }
 
-      .login-button {
+      .btn__submit-account {
         width: 100%;
         color: #fff;
         border: none;
@@ -75,7 +90,8 @@
         margin-top: 10px;
       }
 
-      .login-resetPassword {
+      .form-footer,
+      .link-resetPassword {
         display: block;
         width: 100%;
         text-align: left;
@@ -87,20 +103,6 @@
           font-weight: 500;
         }
       }
-    }
-
-    .login-heading {
-      font-size: 24px;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-    .login-subtext {
-      font-size: 1.3rem;
-      font-style: normal;
-      font-weight: 400;
-      line-height: 19.5px; /* 150% */
-      color: $color-dark-text;
-      margin-bottom: 15px;
     }
 
     .item-other {
@@ -122,6 +124,12 @@
         color: #555; // Màu chữ
         text-transform: uppercase;
       }
+    }
+
+    .error-message {
+      color: #ff4d4d;
+      font-size: 1.4rem;
+      margin-bottom: 15px;
     }
   }
 }

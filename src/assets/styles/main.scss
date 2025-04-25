@@ -10,13 +10,11 @@
 @import './layout/footer';
 @import './layout/modal';
 @import './layout/pagination';
-@import './layout/form';
 @import './layout/breadcrumb';
 
 @import './page/home';
 @import './page/contact';
-@import './page/login';
-@import './page/register';
+@import './page/formAccount';
 @import './page/notfound';
 @import './page/admin';
 @import './page/cart';
@@ -24,3 +22,5 @@
 @import './page/checkout';
 @import './page/wishlist';
 @import './page/productlist';
+
+@import './ui/product';

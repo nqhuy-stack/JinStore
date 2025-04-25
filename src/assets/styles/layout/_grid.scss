@@ -1,49 +1,35 @@
-// Row: sử dụng flexbox và margin âm
-.row {
-  display: flex;
-  flex-wrap: wrap;
-  margin-left: -12px;
-  margin-right: -12px;
+.block__grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
 }
 
-// Cột chung
-.col {
-  padding-left: 12px;
-  padding-right: 12px;
-  flex: 1; // Tự động co giãn nếu không có kích thước cụ thể
-}
-
-// Hệ thống 12 cột
-@for $i from 1 through 12 {
-  .col-#{$i} {
-    flex: 0 0 calc(100% / 12 * $i);
-    max-width: calc(100% / 12 * $i);
+/* Khi màn hình nhỏ hơn 1200px, giảm xuống 4 cột */
+@media (max-width: 1200px) {
+  .block__grid {
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
-// Responsive Breakpoints giống Bootstrap
-$breakpoints: (
-  sm: 576px,
-  md: 768px,
-  lg: 992px,
-  xl: 1200px,
-);
-
-@each $breakpoint, $size in $breakpoints {
-  @media (min-width: $size) {
-    @for $i from 1 through 12 {
-      .col-#{$breakpoint}-#{$i} {
-        flex: 0 0 calc(100% / 12 * $i);
-        max-width: calc(100% / 12 * $i);
-      }
-    }
+/* Khi màn hình nhỏ hơn 900px, giảm xuống 3 cột */
+@media (max-width: 900px) {
+  .block__grid {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
-// Responsive mặc định cho mobile (cột chiếm 100%)
-@media (max-width: 575px) {
-  .col {
-    flex: 0 0 100%;
-    max-width: 100%;
+/* Khi màn hình nhỏ hơn 600px, giảm xuống 2 cột */
+@media (max-width: 600px) {
+  .block__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}
+
+/* Khi màn hình nhỏ hơn 400px, chỉ còn 1 cột */
+@media (max-width: 400px) {
+  .block__grid {
+    grid-template-columns: 1fr;
   }
 }

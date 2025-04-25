@@ -37,6 +37,17 @@ export const getProductsAll = async () => {
     throw new Error(errorMessage);
   }
 };
+
+//NOTE: Danh sách sản phẩm theo danh mục
+export const getProductsByIdCategory = async (idCategory) => {
+  try {
+    const response = await axios.get(`${API_URL}/products/category/${idCategory}`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || 'Lỗi hệ thống!';
+  }
+};
+
 // NOTE: Lấy sản phẩm theo ID
 export const getProduct = async (id) => {
   if (!id) throw new Error('ID sản phẩm không hợp lệ!');
