@@ -16,7 +16,7 @@
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
 
     .add-btn {
-      background-color: #00a76f;
+      background-color: $color-primary-purple;
       color: white;
     }
   }
@@ -94,7 +94,7 @@
     }
 
     &:hover {
-      color: #00a76f;
+      color: $color-primary-purple;
     }
   }
 
@@ -118,7 +118,7 @@
   .item__unit {
     font-size: 1.4rem;
     font-weight: 500;
-    color: #00a76f;
+    color: $color-primary-purple;
     padding: 0.4rem 0;
   }
 
@@ -131,7 +131,7 @@
     .current-price {
       font-size: 1.6rem;
       font-weight: 600;
-      color: #00a76f;
+      color: $color-primary-purple;
     }
 
     .original-price {
@@ -162,7 +162,7 @@
     }
 
     &:hover {
-      background-color: #00a76f;
+      background-color: $color-primary-purple;
       color: white;
     }
   }
