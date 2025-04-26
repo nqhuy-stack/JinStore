@@ -1,22 +1,28 @@
 // File: src/pages/user/ProductList.jsx
 import { useState, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Pagination from '@components/common/Pagination';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faFilter, faTags, faDollarSign, faTimes, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faFilter, faTags, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
 import Breadcrumb from '@components/common/Breadcrumb';
-import { getProductsByIdCategory, getProductsAll } from '@services/ProductService';
+import { getProductsAll } from '@services/ProductService';
 import { getCategoriesAll } from '@services/CategoryService';
-import ProductCard from '@components/common/ProductCard';
 
 const ProductList = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const slugCategory = queryParams.get('category');
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
+  const [priceStart, setPriceStart] = useState(null);
+  const [priceEnd, setPriceEnd] = useState(null);
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [originalProducts, setOriginalProducts] = useState([]);
+  const [sortOption, setSortOption] = useState('popularity');
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -27,40 +33,140 @@ const ProductList = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        // Lấy tất cả danh mục
-        const categoriesData = await getCategoriesAll();
+        const [categoriesData, productsData] = await Promise.all([getCategoriesAll(), getProductsAll()]);
         setCategories(categoriesData || []);
-
-        // Lấy tất cả sản phẩm
-        const productsData = await getProductsAll();
         setProducts(productsData || []);
         setOriginalProducts(productsData || []);
       } catch (error) {
         console.error('Lỗi khi lấy dữ liệu:', error);
-        // Đảm bảo không bị crash khi có lỗi
-        setCategories([]);
-        setProducts([]);
       } finally {
         setLoading(false);
       }
     };
-
     fetchData();
   }, []);
+
+  useEffect(() => {
+    if (!slugCategory || !categories.length) return;
+
+    const listCate = categories.find((cat) => cat.slug === slugCategory);
+
+    if (listCate) {
+      const filtered = originalProducts.filter((product) => product._idCategory._id === listCate._id);
+      setProducts(filtered);
+      setSelectedCategory(listCate._id);
+    } else {
+      setProducts([]); // không tìm thấy thì gán mảng rỗng
+    }
+  }, [slugCategory, categories, originalProducts]);
 
   // Lọc sản phẩm theo danh mục
   const handleFilter = (e) => {
     const _idCategory = e.target.value;
-    setSelectedCategory(_idCategory);
+    const categoryObj = categories.find((cat) => cat._id === _idCategory);
+
     if (_idCategory === 'all') {
-      setProducts(originalProducts); // Hiển thị tất cả danh mục
+      setSelectedCategory('all');
+      setProducts(originalProducts);
+      navigate('/product'); // reset URL
     } else {
-      const filteredProducts = originalProducts.filter((category) => category._idCategory._id === _idCategory);
-      setProducts(filteredProducts);
+      setSelectedCategory(_idCategory);
+      if (categoryObj) {
+        const filteredProducts = originalProducts.filter((product) => product._idCategory._id === _idCategory);
+        setProducts(filteredProducts);
+        navigate(`/product?category=${categoryObj.slug}`); // 🔥 cập nhật URL
+      }
     }
+
     setCurrentPage(1);
   };
 
+  const handleSort = (e) => {
+    const _idSort = e.target.value;
+    setSortOption(_idSort);
+    setCurrentPage(1);
+
+    if (!Array.isArray(products) || products.length === 0) {
+      return;
+    }
+
+    // Clone sâu mảng để đảm bảo tạo mới hoàn toàn
+    const sortedProducts = [...products];
+
+    console.log(
+      'Before sort:',
+      sortedProducts.map((p) => p.name + ' - ' + p.price),
+    );
+
+    switch (_idSort) {
+      case 'price-low':
+        sortedProducts.sort((a, b) => (a.price || 0) - (b.price || 0));
+        break;
+      case 'price-high':
+        sortedProducts.sort((a, b) => (b.price || 0) - (a.price || 0));
+        break;
+      case 'newest':
+        sortedProducts.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+        break;
+      case 'popularity':
+        sortedProducts.sort((a, b) => (b.reviews?.length || 0) - (a.reviews?.length || 0));
+        break;
+      default:
+        break;
+    }
+
+    console.log(
+      'After sort:',
+      sortedProducts.map((p) => p.name + ' - ' + p.price),
+    );
+
+    // Force React để nhận biết thay đổi
+    setProducts([...sortedProducts]);
+  };
+
+  const handleApplyFilter = () => {
+    setCurrentPage(1);
+    setError('');
+    setPriceStart(priceStart || 0);
+    if (priceEnd === 0 || priceEnd === null) {
+      setPriceEnd(0);
+      setError('Vui lòng nhập khoảng cho phù hợp');
+      setProducts(originalProducts);
+    }
+    if (priceStart > priceEnd) {
+      setError('Vui lòng nhập khoảng cho phù hợp');
+      setProducts(originalProducts);
+    }
+
+    const filteredProducts = [...originalProducts].filter((product) => {
+      const price = product.price * (1 - product.discount / 100) || 0;
+      return price >= priceStart && price <= priceEnd;
+    });
+    setProducts(filteredProducts);
+  };
+
+  const hasActiveFilters = () => {
+    if (
+      searchTerm !== '' ||
+      (selectedCategory !== '' && selectedCategory !== 'all') ||
+      priceStart !== null ||
+      priceEnd !== null ||
+      sortOption !== 'popularity'
+    ) {
+      return true;
+    }
+  };
+
+  const handleClearFilter = () => {
+    setSelectedCategory('all');
+    setPriceStart(null);
+    setPriceEnd(null);
+    setSortOption('popularity');
+    setCurrentPage(1);
+    setProducts(originalProducts);
+    setSearchTerm('');
+    setError('');
+  };
   // Xử lý thêm vào giỏ hàng
   const handleAddToCart = (product) => {
     if (!product) return;
@@ -101,11 +207,12 @@ const ProductList = () => {
     }
   }, [loading, products, categories]);
 
-  const filteredProducts = products.filter(
-    (product) =>
-      product._idCategory.status === 'active' && product.name.toLowerCase().includes(searchTerm.toLowerCase().trim()),
-  );
-  // Tính toán dữ liệu hiển thị trên trang hiện tại
+  // Tính toán sản phẩm được lọc
+  const filteredProducts = useMemo(() => {
+    return products.filter((product) => product.name.toLowerCase().includes(searchTerm.toLowerCase()));
+  }, [products, searchTerm]);
+
+  // Tính toán phân trang
   const totalItems = filteredProducts.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -138,6 +245,11 @@ const ProductList = () => {
               <h3>
                 <FontAwesomeIcon icon={faFilter} /> Filters
               </h3>
+              {hasActiveFilters() && (
+                <button className="clear-filters" onClick={handleClearFilter}>
+                  <FontAwesomeIcon icon={faTimes} /> Clear All
+                </button>
+              )}
             </div>
 
             <div className="filters__section">
@@ -173,6 +285,36 @@ const ProductList = () => {
                 </>
               </div>
             </div>
+            <div className="filters__section">
+              <h3 className="filters__title">Price Range</h3>
+
+              <div className="price-range">
+                <div className="price-inputs">
+                  <div className="price-input-group">
+                    <span className="currency">₫</span>
+
+                    <input type="number" value={priceStart} onChange={(e) => setPriceStart(e.target.value)} min="0" />
+                  </div>
+
+                  <span className="separator">-</span>
+
+                  <div className="price-input-group">
+                    <span className="currency">₫</span>
+
+                    <input
+                      type="number"
+                      value={priceEnd}
+                      onChange={(e) => setPriceEnd(e.target.value)}
+                      min={priceStart}
+                    />
+                  </div>
+                </div>
+                {error && <div className="error-message">{error}</div>}
+                <button className="btn apply-filter" onClick={handleApplyFilter}>
+                  Áp dụng
+                </button>
+              </div>
+            </div>
           </aside>
 
           <div className="product-list__main">
@@ -182,15 +324,12 @@ const ProductList = () => {
                 products
               </p>
               <div className="products-sort">
-                <label htmlFor="sort-select">Sort by:</label>
-                <select
-                  id="sort-select"
-                  className="sort-select" /* onChange={handleSortChange} */ /* value={sortOption} */
-                >
-                  <option value="popularity">Most Popular</option>
-                  <option value="price-low">Price: Low to High</option>
-                  <option value="price-high">Price: High to Low</option>
-                  <option value="newest">Newest First</option>
+                <label htmlFor="sort-select">Sắp xếp theo:</label>
+                <select id="sort-select" className="sort-select" onChange={handleSort} value={sortOption}>
+                  <option value="popularity">Phổ biến nhất</option>
+                  <option value="price-low">Giá: Thấp đến cao</option>
+                  <option value="price-high">Giá: Cao đến thấp</option>
+                  <option value="newest">Mới nhất</option>
                 </select>
               </div>
             </div>
@@ -199,11 +338,52 @@ const ProductList = () => {
               {loading ? (
                 renderSkeleton()
               ) : currentProducts && currentProducts.length > 0 ? (
-                <ProductCard
-                  products={currentProducts}
-                  handleAddToCart={handleAddToCart}
-                  handleProductClick={handleProductClick}
-                />
+                <>
+                  {currentProducts.map(
+                    (product) =>
+                      product._idCategory.status === 'active' && (
+                        <>
+                          <div
+                            key={product.id}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleProductClick(product);
+                            }}
+                            className="product__item"
+                          >
+                            <div className="item__image">
+                              <img src={product.images[0]?.url} alt={product.name} />
+                            </div>
+
+                            <div className="item__category">{product._idCategory?.name}</div>
+
+                            <h3 className="item__name">{product.name}</h3>
+
+                            <p className="item__description">{product.description}</p>
+
+                            <div className="item__price">
+                              <span className="current-price">
+                                {(product.price - product.price * (product.discount / 100)).toLocaleString()}/
+                                {product.unit}
+                              </span>
+                              <span className="original-price">{product.price.toLocaleString()}VNĐ</span>
+                            </div>
+
+                            <button
+                              className="add-btn"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleAddToCart(product._id);
+                              }}
+                            >
+                              Add
+                              <FontAwesomeIcon icon={faPlus} />
+                            </button>
+                          </div>
+                        </>
+                      ),
+                  )}
+                </>
               ) : (
                 <div className="no-products">
                   <h3>No products found</h3>

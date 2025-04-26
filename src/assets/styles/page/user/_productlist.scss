@@ -49,7 +49,7 @@
 
       &:focus {
         outline: none;
-        border-color: #00a76f;
+        border-color: $color-primary-purple;
         box-shadow: 0 0 0 3px rgba(0, 167, 111, 0.1);
       }
     }
@@ -75,8 +75,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 2.4rem;
-        padding-bottom: 1.6rem;
+        margin-bottom: 1rem;
         border-bottom: 2px solid #f1f5f9;
 
         h3 {
@@ -86,9 +85,10 @@
           display: flex;
           align-items: center;
           gap: 1rem;
+          line-height: 52px;
 
           svg {
-            color: #00a76f;
+            color: $color-primary-purple;
           }
         }
 
@@ -139,7 +139,7 @@
         gap: 1rem;
 
         svg {
-          color: #00a76f;
+          color: $color-primary-purple;
           font-size: 1.6rem;
         }
       }
@@ -178,8 +178,8 @@
           transition: all 0.3s ease;
 
           &:checked {
-            background-color: #00a76f;
-            border-color: #00a76f;
+            background-color: $color-primary-purple;
+            border-color: $color-primary-purple;
 
             &::after {
               content: '';
@@ -195,7 +195,7 @@
           }
 
           &:hover {
-            border-color: #00a76f;
+            border-color: $color-primary-purple;
           }
         }
 
@@ -228,7 +228,7 @@
         }
 
         .filters__check {
-          color: #00a76f;
+          color: $color-primary-purple;
           font-size: 1.4rem;
         }
 
@@ -242,60 +242,11 @@
     .price-range {
       margin-top: 2rem;
 
-      .price-slider {
-        position: relative;
-        height: 0.4rem;
-        background-color: #e2e8f0;
-        border-radius: 0.2rem;
-        margin: 2.4rem 0.8rem;
-
-        .slider-track-active {
-          position: absolute;
-          height: 100%;
-          background-color: #00a76f;
-          border-radius: 0.2rem;
-        }
-
-        input[type='range'] {
-          position: absolute;
-          width: calc(100% + 1.6rem);
-          height: 0.4rem;
-          left: -0.8rem;
-          background: none;
-          pointer-events: none;
-          -webkit-appearance: none;
-          z-index: 1;
-
-          &::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 2rem;
-            height: 2rem;
-            background: white;
-            border: 2px solid #00a76f;
-            border-radius: 50%;
-            pointer-events: auto;
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            position: relative;
-            top: -2.25rem;
-            &:hover {
-              transform: scale(1.1);
-              box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            }
-
-            &:active {
-              transform: scale(0.95);
-            }
-          }
-        }
-      }
-
       .price-inputs {
         display: flex;
         align-items: center;
         gap: 1.2rem;
-        margin-top: 2rem;
+        margin: 2rem 0;
 
         .price-input-group {
           flex: 1;
@@ -309,7 +260,7 @@
           transition: all 0.3s ease;
 
           &:focus-within {
-            border-color: #00a76f;
+            border-color: $color-primary-purple;
             background: white;
             box-shadow: 0 0 0 3px rgba(0, 167, 111, 0.1);
           }
@@ -395,7 +346,7 @@
 
           &:focus {
             outline: none;
-            border-color: #00a76f;
+            border-color: $color-primary-purple;
           }
         }
       }
@@ -421,7 +372,7 @@
       box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
 
       .add-to-cart {
-        background-color: #00a76f;
+        background-color: $color-primary-purple;
         color: white;
       }
     }
@@ -533,7 +484,7 @@
         height: 4.2rem;
 
         &:hover {
-          color: #00a76f;
+          color: $color-primary-purple;
         }
       }
 
@@ -581,7 +532,7 @@
         .current-price {
           font-size: 1.6rem;
           font-weight: 600;
-          color: #00a76f;
+          color: $color-primary-purple;
         }
 
         .original-price {
@@ -602,7 +553,7 @@
 
       .product-stock {
         font-size: 1.2rem;
-        color: #00a76f;
+        color: $color-primary-purple;
         display: flex;
         align-items: center;
         gap: 0.5rem;
@@ -627,7 +578,7 @@
         transition: all 0.3s ease;
 
         &:hover {
-          background: #00a76f;
+          background: $color-primary-purple;
           color: white;
         }
 
