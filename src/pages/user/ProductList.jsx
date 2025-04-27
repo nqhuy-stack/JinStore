@@ -176,8 +176,8 @@ const ProductList = () => {
 
   // Xử lý click sản phẩm
   const handleProductClick = (product) => {
-    if (!product || !product.id) return;
-    navigate(`/product/${product.id}`);
+    if (!product || !product._id) return;
+    navigate(`/product/${product._id}`);
   };
 
   // Hiển thị skeleton khi loading
@@ -196,20 +196,15 @@ const ProductList = () => {
       ));
   };
 
-  // Kiểm tra dữ liệu trả về từ API
-  useEffect(() => {
-    if (!loading && products.length === 0) {
-      console.log('Không có sản phẩm được trả về từ API hoặc có lỗi xảy ra');
-    }
-
-    if (!loading && categories.length === 0) {
-      console.log('Không có danh mục được trả về từ API hoặc có lỗi xảy ra');
-    }
-  }, [loading, products, categories]);
-
   // Tính toán sản phẩm được lọc
   const filteredProducts = useMemo(() => {
-    return products.filter((product) => product.name.toLowerCase().includes(searchTerm.toLowerCase()));
+    if (!products || !searchTerm) return [];
+    return products.filter(
+      (product) =>
+        product.name &&
+        typeof product.name === 'string' &&
+        product.name.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
   }, [products, searchTerm]);
 
   // Tính toán phân trang
@@ -344,7 +339,7 @@ const ProductList = () => {
                       product._idCategory.status === 'active' && (
                         <>
                           <div
-                            key={product.id}
+                            key={product._id}
                             onClick={(e) => {
                               e.preventDefault();
                               handleProductClick(product);

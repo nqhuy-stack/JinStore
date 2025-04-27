@@ -26,7 +26,7 @@ const ProductsCategoryList = ({ idCategory }) => {
   };
 
   const handleProductClick = (product) => {
-    navigate(`/product/${product.id}`);
+    navigate(`/product/${product._id}`);
   };
 
   console.log('idCategory nhận được:', idCategory);

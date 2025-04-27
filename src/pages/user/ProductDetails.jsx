@@ -10,13 +10,13 @@ import {
   faShieldAlt,
   faTruck,
   faUndo,
-  faShare,
   faExclamationTriangle,
   faCheck,
   //   faMugHot,
   //   faCookie,
 } from '@fortawesome/free-solid-svg-icons';
 import Breadcrumb from '@components/common/Breadcrumb';
+import { getProduct } from '@services/ProductService';
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -50,30 +50,15 @@ const ProductDetails = () => {
           return;
         }
 
-        // Tạm thời dùng dữ liệu mẫu
-        const mockProduct = {
-          id: parseInt(id),
-          name: 'Premium Coffee Beans',
-          price: 29.99,
-          originalPrice: 39.99,
-          images: [
-            'https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
-            'https://images.unsplash.com/photo-1559056199-641a0ac8b55e?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
-            'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80',
-          ],
-          category: 'Coffee',
-          rating: 4.5,
-          reviews: 128,
-          description: 'Carefully selected Arabica coffee beans roasted to perfection. Rich and full-bodied flavor.',
-          isOrganic: true,
-          onSale: true,
-          salePercentage: 25,
-          inStock: true,
-          stockQuantity: 50,
-        };
+        const data = await getProduct(id);
+
+        if (!data) {
+          setError('Không tìm thấy sản phẩm nây');
+          return;
+        }
 
         await new Promise((resolve) => setTimeout(resolve, 500));
-        setProduct(mockProduct);
+        setProduct(data);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -211,7 +196,7 @@ const ProductDetails = () => {
             </div>
 
             <div className="product-details__main-image">
-              <img src={product.images[selectedImage]} alt={product.name} />
+              <img src={product.images[selectedImage].url} alt={product.name} />
             </div>
 
             {product.images.length > 1 && (
@@ -222,7 +207,7 @@ const ProductDetails = () => {
                     className={`product-details__thumbnail ${selectedImage === index ? 'active' : ''}`}
                     onClick={() => setSelectedImage(index)}
                   >
-                    <img src={image} alt={`${product.name} thumbnail ${index + 1}`} />
+                    <img src={image.url} alt={`${product.name} thumbnail ${index + 1}`} />
                   </button>
                 ))}
               </div>
@@ -252,7 +237,7 @@ const ProductDetails = () => {
 
             <div className="product-details__price">
               <span className="current-price">
-                ${(product.price * (1 - (product.salePercentage || 0) / 100)).toFixed(2)}
+                {(product.price * (1 - (product.discount || 0) / 100)).toLocaleString()} VND
               </span>
               {product.originalPrice && <span className="original-price">${product.originalPrice}</span>}
             </div>
@@ -315,15 +300,6 @@ const ProductDetails = () => {
               </button>
             </div>
 
-            <div className="product-details__additional-actions">
-              <button>
-                <FontAwesomeIcon icon={faHeart} /> Add to Wishlist
-              </button>
-              <button>
-                <FontAwesomeIcon icon={faShare} /> Share
-              </button>
-            </div>
-
             <div className="product-details__info-blocks">
               <div className="info-block">
                 <FontAwesomeIcon icon={faTruck} />
@@ -365,23 +341,24 @@ const ProductDetails = () => {
               className={`tab-button ${activeTab === 'reviews' ? 'active' : ''}`}
               onClick={() => setActiveTab('reviews')}
             >
-              Reviews ({product.reviews})
+              Reviews ({product.averageRating})
             </button>
           </div>
 
           <div className="tabs__content">
             {activeTab === 'description' ? (
               <div className="description-content">
-                <h3>Product Description</h3>
+                <h3>Thông tin sản phẩm</h3>
                 <div className="description-text">
                   <p>{product.description}</p>
                   <div className="product-features">
-                    <h4>Key Features:</h4>
+                    <h4>Thông tin:</h4>
                     <ul>
-                      <li>Premium Quality</li>
-                      <li>100% Authentic</li>
-                      <li>Carefully Selected</li>
-                      <li>Best in Market</li>
+                      {product.information.map((key, value) => (
+                        <li key={value}>
+                          <strong>{key.key}:</strong> {key.value}
+                        </li>
+                      ))}
                     </ul>
                   </div>
                   {product.isOrganic && (
@@ -415,7 +392,6 @@ const ProductDetails = () => {
                 </div>
 
                 <div className="reviews-list">
-                  {/* Mock reviews - In a real app, these would come from an API */}
                   {[...Array(3)].map((_, index) => (
                     <div key={index} className="review-item">
                       <div className="review-header">

@@ -158,7 +158,7 @@ const ProductReviews = () => {
                           </button>
                           <button
                             className="admin__action-btn admin__action-btn--product"
-                            onClick={() => window.open(`/product/${review.product?._id}`, '_blank')}
+                            onClick={() => window.open(`/JinStore/product/${review.product?._id}`, '_blank')}
                             title="View Product"
                             disabled={!review.product?._id}
                           >
