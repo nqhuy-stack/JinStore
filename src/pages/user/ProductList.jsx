@@ -198,7 +198,7 @@ const ProductList = () => {
 
   // Tính toán sản phẩm được lọc
   const filteredProducts = useMemo(() => {
-    if (!products || !searchTerm) return [];
+    if (!products && !searchTerm) return [];
     return products.filter(
       (product) =>
         product.name &&
