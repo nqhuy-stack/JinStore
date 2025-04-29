@@ -1,20 +1,29 @@
 // File: src/pages/user/ProductList.jsx
 import { useState, useEffect, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { createAxios } from '@utils/createInstance.jsx';
+import { loginSuccess } from '@/redux/authSlice.jsx';
 import Pagination from '@components/common/Pagination';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faFilter, faTags, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
 import Breadcrumb from '@components/common/Breadcrumb';
 import { getProductsAll } from '@services/ProductService';
 import { getCategoriesAll } from '@services/CategoryService';
+import { addItemToCart } from '@services/CartService';
 
 const ProductList = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const slugCategory = queryParams.get('category');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+
+  const user = useSelector((state) => state.auth.login.currentUser);
+  const accessToken = user?.accessToken;
+  const axiosJWT = createAxios(user, dispatch, loginSuccess);
 
   const [priceStart, setPriceStart] = useState(null);
   const [priceEnd, setPriceEnd] = useState(null);
@@ -30,6 +39,7 @@ const ProductList = () => {
 
   // Lấy dữ liệu sản phẩm và danh mục khi component mount
   useEffect(() => {
+    window.scrollTo(0, 0);
     const fetchData = async () => {
       try {
         setLoading(true);
@@ -167,11 +177,20 @@ const ProductList = () => {
     setSearchTerm('');
     setError('');
   };
+
   // Xử lý thêm vào giỏ hàng
-  const handleAddToCart = (product) => {
-    if (!product) return;
-    console.log('Adding to cart:', product);
-    // Thêm code xử lý thêm vào giỏ hàng ở đây
+  // Xử lý thêm vào giỏ hàng
+  const handleAddToCart = async (product) => {
+    if (!product || !product._id) return;
+
+    console.log('Add to cart:', product._id);
+
+    const formData = {
+      productId: product._id,
+      quantity: 1,
+    };
+
+    await addItemToCart(formData, dispatch, accessToken, axiosJWT);
   };
 
   // Xử lý click sản phẩm
@@ -368,7 +387,7 @@ const ProductList = () => {
                               className="add-btn"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                handleAddToCart(product._id);
+                                handleAddToCart(product);
                               }}
                             >
                               Add

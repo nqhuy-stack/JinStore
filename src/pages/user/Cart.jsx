@@ -1,75 +1,75 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinus, faPlus, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import Breadcrumb from '@components/common/Breadcrumb';
+import { getCart } from '@services/CartService';
+import { createAxios } from '@utils/createInstance.jsx';
+import { loginSuccess } from '@/redux/authSlice.jsx';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Cart = () => {
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      name: 'Bell pepper',
-      image: '/images/products/bell-pepper.jpg',
-      price: 35.1,
-      originalPrice: 45.68,
-      quantity: 0,
-      soldBy: 'Fresho',
-      weight: '500 g',
-    },
-    {
-      id: 2,
-      name: 'Eggplant',
-      image: '/images/products/eggplant.jpg',
-      price: 52.95,
-      originalPrice: 68.49,
-      quantity: 0,
-      soldBy: 'Nesto',
-      weight: '250 g',
-    },
-    {
-      id: 3,
-      name: 'Onion',
-      image: '/images/products/onion.jpg',
-      price: 67.36,
-      originalPrice: 96.58,
-      quantity: 0,
-      soldBy: 'Basket',
-      weight: '750 g',
-    },
-  ]);
+  const dispatch = useDispatch();
 
+  const user = useSelector((state) => state.auth.login.currentUser);
+  const accessToken = user?.accessToken;
+  const axiosJWT = createAxios(user, dispatch, loginSuccess);
+  const [cartItems, setCartItems] = useState([]);
   const [couponCode, setCouponCode] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const handleQuantityChange = (id, change) => {
-    setCartItems((items) =>
-      items.map((item) => (item.id === id ? { ...item, quantity: Math.max(0, item.quantity + change) } : item)),
+  useEffect(() => {
+    fetchCartItems();
+  }, []);
+
+  const fetchCartItems = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const data = await getCart(accessToken, axiosJWT);
+
+      if (data && Array.isArray(data)) {
+        setCartItems(data);
+        console.log(data);
+      } else if (data && Array.isArray(data.items)) {
+        // In case the API returns an object with items array
+        setCartItems(data.items);
+      } else {
+        setError('Dữ liệu giỏ hàng không hợp lệ');
+      }
+    } catch (err) {
+      setError('Không thể tải giỏ hàng. Vui lòng thử lại sau.');
+      console.error('Error fetching cart:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return <div className="loading">Đang tải giỏ hàng...</div>;
+  }
+
+  if (error) {
+    return (
+      <div className="error-message">
+        <p>{error}</p>
+        <button onClick={fetchCartItems}>Thử lại</button>
+      </div>
     );
-  };
+  }
 
-  const calculateSubtotal = () => {
-    return cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  };
-
-  const shipping = 6.9;
-  const couponDiscount = 0.0;
-
-  const calculateTotal = () => {
-    return calculateSubtotal() + shipping - couponDiscount;
-  };
-
-  const handleRemoveItem = (id) => {
-    setCartItems((items) => items.filter((item) => item.id !== id));
-  };
-
-  const handleSaveForLater = (id) => {
-    // Implement save for later functionality
-    console.log('Save for later:', id);
-  };
-
-  const handleApplyCoupon = () => {
-    // Implement coupon application logic
-    console.log('Applying coupon:', couponCode);
-  };
+  if (cartItems.length === 0) {
+    return (
+      <div className="empty-cart">
+        <h2>Giỏ hàng của bạn đang trống</h2>
+        <Link to="/product" className="continue-shopping">
+          <FontAwesomeIcon icon={faArrowLeft} /> Tiếp tục mua sắm
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -78,7 +78,7 @@ const Cart = () => {
         <div className="cart__container">
           <div className="cart__items">
             {cartItems.map((item) => (
-              <div key={item.id} className="cart__item">
+              <div key={item._id} className="cart__item">
                 <div className="cart__item-image">
                   <img src={item.image} alt={item.name} />
                 </div>
@@ -99,14 +99,14 @@ const Cart = () => {
                   <div className="quantity-label">Qty</div>
                   <div className="quantity-controls">
                     <button
-                      onClick={() => handleQuantityChange(item.id, -1)}
+                      // onClick={() => handleQuantityChange(item._id, -1)}
                       className="quantity-btn"
-                      disabled={item.quantity <= 0}
+                      disabled={item.quantity <= 1}
                     >
                       <FontAwesomeIcon icon={faMinus} />
                     </button>
                     <span className="quantity-value">{item.quantity}</span>
-                    <button onClick={() => handleQuantityChange(item.id, 1)} className="quantity-btn">
+                    <button /* onClick={() => handleQuantityChange(item._id, 1)}  */ className="quantity-btn">
                       <FontAwesomeIcon icon={faPlus} />
                     </button>
                   </div>
@@ -118,12 +118,10 @@ const Cart = () => {
                 </div>
 
                 <div className="cart__item-actions">
-                  <button className="save-for-later" onClick={() => handleSaveForLater(item.id)}>
+                  <button className="save-for-later" /* onClick={() => handleSaveForLater(item._id)} */>
                     Save for later
                   </button>
-                  <button className="remove" onClick={() => handleRemoveItem(item.id)}>
-                    Remove
-                  </button>
+                  <button className="remove" /* onClick={() => handleRemoveItem(item._id)} */>Remove</button>
                 </div>
               </div>
             ))}
@@ -141,26 +139,26 @@ const Cart = () => {
                   value={couponCode}
                   onChange={(e) => setCouponCode(e.target.value)}
                 />
-                <button onClick={handleApplyCoupon}>Apply</button>
+                <button /* onClick={handleApplyCoupon} */>Apply</button>
               </div>
             </div>
 
             <div className="cart__totals">
               <div className="subtotal">
                 <span>Subtotal</span>
-                <span>${calculateSubtotal().toFixed(2)}</span>
+                <span>{/* ${calculateSubtotal().toFixed(2)} */}</span>
               </div>
               <div className="coupon-discount">
                 <span>Coupon Discount</span>
-                <span>(-) ${couponDiscount.toFixed(2)}</span>
+                <span>{/* (-) ${couponDiscount.toFixed(2)} */}</span>
               </div>
               <div className="shipping">
                 <span>Shipping</span>
-                <span>${shipping.toFixed(2)}</span>
+                <span>{/* ${shipping.toFixed(2)} */}</span>
               </div>
               <div className="total">
                 <span>Total (USD)</span>
-                <span className="total-amount">${calculateTotal().toFixed(2)}</span>
+                <span className="total-amount">{/* ${calculateTotal().toFixed(2)} */}</span>
               </div>
             </div>
             <Link to="/checkout">

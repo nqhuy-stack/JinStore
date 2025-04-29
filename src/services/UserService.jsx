@@ -27,7 +27,7 @@ export const getAllUsers = async (accessToken, axiosJWT) => {
       timeout: 10000,
       headers: authHeaders(accessToken),
     });
-    return response.data;
+    return response.data.users;
   } catch (error) {
     const errorMessage = error.response?.data?.message || 'Lỗi hệ thống!';
     toast.error(errorMessage, { duration: 2000 });

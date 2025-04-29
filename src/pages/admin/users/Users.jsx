@@ -138,7 +138,7 @@ const Users = () => {
                   <tr key={user._id}>
                     <td>
                       <img
-                        src={`${user.avatar}`}
+                        src={user.avatar}
                         alt={user.fullname}
                         className="admin__image-preview admin__image-preview--user"
                       />

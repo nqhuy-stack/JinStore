@@ -29,13 +29,12 @@ const Header = () => {
   };
 
   const getInitials = (name) => {
-    if (!name || typeof name !== 'string') return ''; // Kiểm tra nếu name không hợp lệ
-    const words = name.trim().split(/\s+/); // Tách chuỗi thành mảng các từ
-    const initials = words.map((word) => word.charAt(0).toUpperCase()); // Lấy chữ cái đầu và viết hoa
-    return initials.join('.') + '.'; // Ghép lại với dấu chấm
+    if (!name || typeof name !== 'string') return ''; 
+    const words = name.trim().split(/\s+/); 
+    const initials = words.map((word) => word.charAt(0).toUpperCase()); 
+    return initials.join('.') + '.';
   };
 
-  // Đóng dropdown khi click ra ngoài
   useEffect(() => {
     function handleClickOutside(event) {
       if (!event.target.closest('.header__account')) {
@@ -45,6 +44,10 @@ const Header = () => {
     document.addEventListener('click', handleClickOutside);
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
+
+  useEffect(()=>{
+    
+  })
 
   return (
     <Fragment>
