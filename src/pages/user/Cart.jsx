@@ -16,6 +16,7 @@ const Cart = () => {
   const axiosJWT = createAxios(user, dispatch, loginSuccess);
   const [cartItems, setCartItems] = useState([]);
   const [couponCode, setCouponCode] = useState('');
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -26,18 +27,24 @@ const Cart = () => {
   const fetchCartItems = async () => {
     try {
       setLoading(true);
-      setError(null);
 
-      const data = await getCart(accessToken, axiosJWT);
+      const response = await getCart(accessToken, axiosJWT);
 
-      if (data && Array.isArray(data)) {
-        setCartItems(data);
-        console.log(data);
-      } else if (data && Array.isArray(data.items)) {
-        // In case the API returns an object with items array
-        setCartItems(data.items);
+      // Kiểm tra nếu response có cấu trúc như trong ảnh
+      if (response.success && response.data) {
+        // Chuyển đổi object items thành array
+        const itemsArray = [];
+        for (let key in response.data) {
+          if (!isNaN(parseInt(key))) {
+            // Chuyển đổi dữ liệu từ format của API sang format component
+            const item = response.data[key];
+            itemsArray.push({ ...item });
+          }
+        }
+        setCartItems(itemsArray);
       } else {
-        setError('Dữ liệu giỏ hàng không hợp lệ');
+        // Nếu response đã là mảng, sử dụng trực tiếp
+        setCartItems(response);
       }
     } catch (err) {
       setError('Không thể tải giỏ hàng. Vui lòng thử lại sau.');
@@ -47,6 +54,48 @@ const Cart = () => {
     }
   };
 
+  const handleQuantityChange = (itemId, change) => {
+    // Placeholder for quantity change handler
+    console.log('Change quantity for item:', itemId, 'by', change);
+  };
+
+  const handleRemoveItem = (itemId) => {
+    // Placeholder for remove item handler
+    console.log('Remove item:', itemId);
+  };
+
+  const handleSaveForLater = (itemId) => {
+    // Placeholder for save for later handler
+    console.log('Save for later:', itemId);
+  };
+
+  const handleApplyCoupon = () => {
+    // Placeholder for apply coupon handler
+    console.log('Apply coupon:', couponCode);
+  };
+
+  const calculateSubtotal = () => {
+    return cartItems.reduce((total, item) => {
+      const discountedPrice = item.price - item.price * (item.discount / 100);
+      return total + discountedPrice * item.quantity;
+    }, 0);
+  };
+
+  const calculateCouponDiscount = () => {
+    // Placeholder for coupon discount calculation
+    return 0;
+  };
+
+  const calculateShipping = () => {
+    // Placeholder for shipping calculation
+    return calculateSubtotal() > 0 ? 30000 : 0; // Phí vận chuyển mặc định 30,000 đồng
+  };
+
+  const calculateTotal = () => {
+    return calculateSubtotal() - calculateCouponDiscount() + calculateShipping();
+  };
+
+  console.log('Cart items:', cartItems);
   if (loading) {
     return <div className="loading">Đang tải giỏ hàng...</div>;
   }
@@ -80,48 +129,54 @@ const Cart = () => {
             {cartItems.map((item) => (
               <div key={item._id} className="cart__item">
                 <div className="cart__item-image">
-                  <img src={item.image} alt={item.name} />
+                  <img src={item.images[0].url} alt={item.name} />
                 </div>
 
                 <div className="cart__item-details">
                   <h3 className="cart__item-name">{item.name}</h3>
-                  <p className="cart__item-seller">Sold By: {item.soldBy}</p>
-                  <p className="cart__item-weight">Quantity - {item.weight}</p>
+                  <p className="cart__item-seller"></p>
+                  <p className="cart__item-weight"></p>
 
                   <div className="cart__item-price">
-                    <span className="current-price">${item.price.toFixed(2)}</span>
-                    <span className="original-price">${item.originalPrice.toFixed(2)}</span>
-                    <span className="savings">You Save : ${(item.originalPrice - item.price).toFixed(2)}</span>
+                    <span className="current-price">
+                      {(item.price - item.price * (item.discount / 100)).toLocaleString()}/{item.unit}
+                    </span>
+                    <span className="original-price">{item.price.toLocaleString()}đồng</span>{' '}
+                    <span className="savings">
+                      Tiết kiệm : {(item.price - (item.price - item.price * (item.discount / 100))).toLocaleString()}
+                    </span>
                   </div>
                 </div>
 
                 <div className="cart__item-quantity">
-                  <div className="quantity-label">Qty</div>
+                  <div className="quantity-label">Số lượng</div>
                   <div className="quantity-controls">
                     <button
-                      // onClick={() => handleQuantityChange(item._id, -1)}
+                      /* onClick={() => handleQuantityChange(item._id, -1)} */
                       className="quantity-btn"
                       disabled={item.quantity <= 1}
                     >
                       <FontAwesomeIcon icon={faMinus} />
                     </button>
                     <span className="quantity-value">{item.quantity}</span>
-                    <button /* onClick={() => handleQuantityChange(item._id, 1)}  */ className="quantity-btn">
+                    <button /* onClick={() => handleQuantityChange(item._id, 1)} */ className="quantity-btn">
                       <FontAwesomeIcon icon={faPlus} />
                     </button>
                   </div>
                 </div>
 
                 <div className="cart__item-total">
-                  <div className="total-label">Total</div>
-                  <div className="total-value">${(item.price * item.quantity).toFixed(2)}</div>
+                  <div className="total-label">Thành tiền</div>
+                  <div className="total-value">
+                    {((item.price - item.price * (item.discount / 100)) * item.quantity).toLocaleString()}
+                  </div>
                 </div>
 
                 <div className="cart__item-actions">
                   <button className="save-for-later" /* onClick={() => handleSaveForLater(item._id)} */>
                     Save for later
                   </button>
-                  <button className="remove" /* onClick={() => handleRemoveItem(item._id)} */>Remove</button>
+                  <button className="remove" /*  onClick={() => handleRemoveItem(item._id)} */>Remove</button>
                 </div>
               </div>
             ))}
@@ -145,11 +200,11 @@ const Cart = () => {
 
             <div className="cart__totals">
               <div className="subtotal">
-                <span>Subtotal</span>
-                <span>{/* ${calculateSubtotal().toFixed(2)} */}</span>
+                <span>Thành tiền</span>
+                <span>{calculateSubtotal().toLocaleString()} đồng</span>
               </div>
               <div className="coupon-discount">
-                <span>Coupon Discount</span>
+                <span>Mã giảm giá</span>
                 <span>{/* (-) ${couponDiscount.toFixed(2)} */}</span>
               </div>
               <div className="shipping">
@@ -157,15 +212,15 @@ const Cart = () => {
                 <span>{/* ${shipping.toFixed(2)} */}</span>
               </div>
               <div className="total">
-                <span>Total (USD)</span>
-                <span className="total-amount">{/* ${calculateTotal().toFixed(2)} */}</span>
+                <span>Tổng</span>
+                <span className="total-amount">{calculateTotal().toLocaleString()} đồng</span>
               </div>
             </div>
             <Link to="/checkout">
-              <button className="checkout-btn">Process To Checkout</button>
+              <button className="checkout-btn">Thanh toán</button>
             </Link>
             <Link to="/product" className="return-link">
-              <FontAwesomeIcon icon={faArrowLeft} /> Return To Shopping
+              <FontAwesomeIcon icon={faArrowLeft} /> Tiếp tục mua hàng
             </Link>
           </div>
         </div>

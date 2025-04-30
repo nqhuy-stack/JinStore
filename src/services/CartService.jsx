@@ -1,5 +1,4 @@
 import { addStart, addSuccess, addFailed, resetAddState } from '@/redux/itemSlice.jsx';
-import axios from 'axios';
 import { toast } from 'react-hot-toast';
 
 const API_URL = import.meta.env.VITE_API_URL_V1 || import.meta.env.VITE_API_URL_V2;
@@ -55,9 +54,9 @@ export const addItemToCart = async (formData, dispatch, accessToken, axiosJWT) =
   );
 };
 
-export const getCart = async (accessToken) => {
+export const getCart = async (accessToken, axiosJWT) => {
   try {
-    const response = await axios.get(`${API_URL}/carts`, {
+    const response = await axiosJWT.get(`${API_URL}/carts`, {
       headers: authHeaders(accessToken),
     });
     return response.data;
