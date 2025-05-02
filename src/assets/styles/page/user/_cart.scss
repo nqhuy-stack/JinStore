@@ -25,22 +25,61 @@
     gap: 2rem;
   }
 
+  &__select-all {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #e2e8f0;
+    margin-bottom: 1rem;
+
+    input[type='checkbox'] {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      accent-color: $color-primary-purple;
+    }
+
+    span {
+      font-size: 1.6rem;
+      font-weight: 500;
+      color: #2d3748;
+    }
+  }
+
   &__item {
     display: grid;
-    grid-template-columns: 120px 1fr 150px 120px 150px;
+    grid-template-columns: 40px 80px 1fr 150px 150px 150px;
     gap: 2rem;
     align-items: center;
     padding-bottom: 2rem;
     border-bottom: 1px solid #e2e8f0;
 
     @media (max-width: 1200px) {
-      grid-template-columns: 100px 1fr 120px 100px 120px;
+      grid-template-columns: 40px 80px 1fr 120px 100px 120px;
       gap: 1rem;
     }
 
     @media (max-width: 768px) {
       grid-template-columns: 1fr;
       text-align: center;
+    }
+  }
+
+  &__item-checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    input[type='checkbox'] {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      accent-color: $color-primary-purple;
+    }
+
+    @media (max-width: 768px) {
+      margin-bottom: 1rem;
     }
   }
 
@@ -97,7 +136,7 @@
 
       .savings {
         font-size: 1.4rem;
-        color: #48bb78;
+        color: $color-primary-purple;
       }
     }
   }
@@ -116,6 +155,7 @@
       border-radius: 0.5rem;
       overflow: hidden;
       width: fit-content;
+      margin-bottom: 0.5rem;
 
       .quantity-btn {
         width: 36px;
@@ -125,6 +165,7 @@
         color: #2d3748;
         cursor: pointer;
         transition: all 0.2s;
+        user-select: none;
 
         &:hover:not(:disabled) {
           background: #edf2f7;
@@ -134,14 +175,44 @@
           color: #cbd5e0;
           cursor: not-allowed;
         }
+
+        &:active {
+          background: #e2e8f0;
+        }
       }
 
       .quantity-value {
         width: 50px;
+        height: 36px;
         text-align: center;
         font-size: 1.4rem;
         font-weight: 500;
         color: #2d3748;
+      }
+    }
+
+    .quick-quantity {
+      display: flex;
+      gap: 0.5rem;
+
+      button {
+        padding: 0.4rem 0.8rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 0.4rem;
+        background: white;
+        color: #4a5568;
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &:hover {
+          background: #f7fafc;
+          border-color: #cbd5e0;
+        }
+
+        &:active {
+          background: #edf2f7;
+        }
       }
     }
   }
@@ -235,7 +306,7 @@
 
       button {
         padding: 1rem 2rem;
-        background: #48bb78;
+        background: $color-primary-purple;
         color: white;
         border: none;
         border-radius: 0.5rem;
@@ -245,7 +316,7 @@
         transition: background 0.2s;
 
         &:hover {
-          background: #38a169;
+          background: $color-primary-purple-light;
         }
       }
     }
@@ -272,7 +343,7 @@
         border-top: 1px solid #e2e8f0;
 
         .total-amount {
-          color: #48bb78;
+          color: $color-primary-purple;
         }
       }
     }
@@ -281,18 +352,23 @@
   .checkout-btn {
     width: 100%;
     padding: 1.5rem;
-    background: #48bb78;
+    background: $color-primary-purple;
     color: white;
     border: none;
     border-radius: 0.5rem;
     font-size: 1.6rem;
     font-weight: 500;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.2s;
     margin-bottom: 1.5rem;
 
-    &:hover {
-      background: #38a169;
+    &:hover:not(:disabled) {
+      background: $color-primary-purple-light;
+    }
+
+    &:disabled {
+      background: #cbd5e0;
+      cursor: not-allowed;
     }
   }
 
@@ -314,8 +390,16 @@
   @media (max-width: 768px) {
     padding: 1rem;
 
+    &__select-all {
+      justify-content: center;
+    }
+
     &__item {
       padding: 1.5rem;
+
+      &-checkbox {
+        order: -1;
+      }
 
       &-image {
         width: 150px;

@@ -48,8 +48,9 @@ export const addItemToCart = async (formData, dispatch, accessToken, axiosJWT) =
       },
     },
     {
-      success: { duration: 2000 }, // Tùy chỉnh thời gian hiển thị cho success
-      error: { duration: 2000 }, // Tùy chỉnh thời gian hiển thị cho error
+      success: { duration: 2000 },
+      error: { duration: 2000 },
+      position: 'top-center',
     },
   );
 };
@@ -57,6 +58,28 @@ export const addItemToCart = async (formData, dispatch, accessToken, axiosJWT) =
 export const getCart = async (accessToken, axiosJWT) => {
   try {
     const response = await axiosJWT.get(`${API_URL}/carts`, {
+      headers: authHeaders(accessToken),
+    });
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || 'Lỗi hệ thống!';
+  }
+};
+
+export const deleteItemInCart = async (_id, accessToken, axiosJWT) => {
+  try {
+    const response = await axiosJWT.delete(`${API_URL}/carts/remove/${_id}`, {
+      headers: authHeaders(accessToken),
+    });
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || 'Lỗi hệ thống!';
+  }
+};
+
+export const updateItemInCart = async (formData, accessToken, axiosJWT) => {
+  try {
+    const response = await axiosJWT.patch(`${API_URL}/carts/update`, formData, {
       headers: authHeaders(accessToken),
     });
     return response.data;
