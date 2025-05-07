@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getCategoriesAll } from '@/services/CategoryService.jsx';
+// Import Swiper React components
+import { Swiper, SwiperSlide } from 'swiper/react';
+// Import Swiper styles
+import 'swiper/css';
+import 'swiper/css/pagination';
+// Import required modules
+import { Pagination, Navigation } from 'swiper/modules';
 
 const CategoryList = () => {
   const [categories, setCategories] = useState([]);
@@ -28,25 +35,56 @@ const CategoryList = () => {
   if (error) return <div>{error}</div>;
 
   return (
-    <nav className="section__content section__home-cate">
-      <ul>
+    <div className="section__content section__home-cate">
+      <Swiper
+        slidesPerView={2}
+        spaceBetween={20}
+        pagination={{
+          clickable: true,
+          dynamicBullets: true,
+        }}
+        navigation
+        loop
+        modules={[Pagination, Navigation]}
+        breakpoints={{
+          640: {
+            slidesPerView: 3,
+            spaceBetween: 10,
+          },
+          768: {
+            slidesPerView: 4,
+            spaceBetween: 10,
+          },
+          1024: {
+            slidesPerView: 6,
+            spaceBetween: 10,
+          },
+          1280: {
+            slidesPerView: 8,
+            spaceBetween: 10,
+          },
+        }}
+        className="category-swiper"
+      >
         {categories.map(
           ({ _id, name, description, image, slug, status }) =>
             status === 'active' && (
-              <li className="item-categories" key={_id}>
-                <Link className="link-categories" to={`/Product?category=${encodeURIComponent(slug)}`}>
-                  <img
-                    src={image?.url || '/placeholder-image.jpg'}
-                    alt={`${name} : ${description}`}
-                    className="category-image"
-                  />
-                  <span>{name}</span>
-                </Link>
-              </li>
+              <SwiperSlide key={_id} className="item-categories-wrapper">
+                <div className="item-categories">
+                  <Link className="link-categories" to={`/Product?category=${encodeURIComponent(slug)}`}>
+                    <img
+                      src={image?.url || '/placeholder-image.jpg'}
+                      alt={`${name} : ${description}`}
+                      className="category-image"
+                    />
+                    <span>{name}</span>
+                  </Link>
+                </div>
+              </SwiperSlide>
             ),
         )}
-      </ul>
-    </nav>
+      </Swiper>
+    </div>
   );
 };
 

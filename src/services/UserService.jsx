@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { toast } from 'react-hot-toast';
 
 const API_URL = import.meta.env.VITE_API_URL_V1 || import.meta.env.VITE_API_URL_V2;
@@ -31,6 +30,44 @@ export const getAllUsers = async (accessToken, axiosJWT) => {
   } catch (error) {
     const errorMessage = error.response?.data?.message || 'Lỗi hệ thống!';
     toast.error(errorMessage, { duration: 2000 });
+    throw new Error(errorMessage);
+  }
+};
+
+export const getInfoUser = async (accessToken, axiosJWT) => {
+  try {
+    const response = await axiosJWT.get(`${API_URL}/users/info-user`, {
+      timeout: 10000,
+      headers: authHeaders(accessToken),
+    });
+    return response.data;
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || 'Lỗi hệ thống!';
+    toast.error(errorMessage, { duration: 2000 });
+    throw new Error(errorMessage);
+  }
+};
+
+export const updateUser = async (formData, accessToken, axiosJWT) => {
+  try {
+    const response = await axiosJWT.patch(`${API_URL}/users/info-user/update`, formData, {
+      headers: formDataHeaders(accessToken),
+    });
+    return response.data;
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || 'Lỗi hệ thống!';
+    throw new Error(errorMessage);
+  }
+};
+
+export const uploadAvatar = async (formData, accessToken, axiosJWT) => {
+  try {
+    const response = await axiosJWT.patch(`${API_URL}/users/info-user/update`, formData, {
+      headers: formDataHeaders(accessToken),
+    });
+    return response.data;
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || 'Lỗi hệ thống!';
     throw new Error(errorMessage);
   }
 };

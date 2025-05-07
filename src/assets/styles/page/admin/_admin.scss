@@ -15,7 +15,6 @@ $admin-transition: all 0.3s ease;
 
 // Admin Layout
 .admin {
-  font-family: 'Poppins', sans-serif;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -384,14 +383,14 @@ $admin-transition: all 0.3s ease;
       font-size: 1.4rem;
       font-weight: 500;
       color: #fff;
-      background: #28a745;
+      background: $color-primary-purple;
       border: none;
       border-radius: 4px;
       cursor: pointer;
       transition: background-color 0.3s ease;
 
       &:hover {
-        background: darken(#28a745, 10%);
+        background: darken($color-primary-purple, 10%);
       }
     }
 
@@ -401,14 +400,14 @@ $admin-transition: all 0.3s ease;
       font-size: 1.4rem;
       font-weight: 500;
       color: #fff;
-      background: #28a745;
+      background: $color-primary-purple;
       border: none;
       border-radius: 4px;
       cursor: pointer;
       transition: background-color 0.3s ease;
 
       &:hover {
-        background: darken(#28a745, 10%);
+        background: darken($color-primary-purple, 10%);
       }
     }
 
@@ -449,7 +448,7 @@ $admin-transition: all 0.3s ease;
       font-family: 'Poppins', sans-serif;
       font-weight: 500;
       color: #fff;
-      background: #28a745;
+      background: $color-primary-purple;
       border: none;
       border-radius: 0.4rem;
       cursor: pointer;
@@ -460,7 +459,7 @@ $admin-transition: all 0.3s ease;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
       &:hover {
-        background: darken(#28a745, 10%);
+        background: darken($color-primary-purple, 10%);
         transform: translateY(-2px);
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
       }
@@ -575,7 +574,7 @@ $admin-transition: all 0.3s ease;
       }
 
       .admin__form-button {
-        background-color: #28a745;
+        background-color: $color-primary-purple;
         color: white;
         padding: 10px 20px;
         border: none;
@@ -587,7 +586,7 @@ $admin-transition: all 0.3s ease;
         margin-left: auto;
         display: block;
         &:hover {
-          background-color: darken(#28a745, 10%);
+          background-color: darken($color-primary-purple, 10%);
         }
       }
     }
@@ -761,7 +760,7 @@ $admin-transition: all 0.3s ease;
 
         .admin__stat-trend {
           font-size: 1.2rem;
-          color: #28a745;
+          color: $color-primary-purple;
           &.down {
             color: #ff4d4d;
           }
@@ -1009,9 +1008,9 @@ $admin-transition: all 0.3s ease;
         }
 
         &--published {
-          color: #28a745; // Màu xanh lá cho trạng thái Published
+          color: $color-primary-purple; // Màu xanh lá cho trạng thái Published
           &:hover {
-            color: darken(#28a745, 10%);
+            color: darken($color-primary-purple, 10%);
           }
         }
 
@@ -1094,10 +1093,10 @@ $admin-transition: all 0.3s ease;
 
       &--tracking {
         padding: 5px 10px;
-        background-color: #28a745;
+        background-color: $color-primary-purple;
         color: white;
         &:hover {
-          background-color: darken(#28a745, 10%);
+          background-color: darken($color-primary-purple, 10%);
         }
       }
     }

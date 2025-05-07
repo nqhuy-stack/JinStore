@@ -42,10 +42,10 @@ function FormLogin() {
       {isLoading ? (
         <PageLoad zIndex="9999" />
       ) : (
-        <form className="account-form" onSubmit={handleSubmit}>
-          <div className="account__field">
+        <form className="block__form" onSubmit={handleSubmit}>
+          <div className="form__field">
             <label>Username Or Email*</label>
-            <div className="account__field-input">
+            <div className="form__field-input">
               <input
                 type="text"
                 name="usernameOrEmail"
@@ -55,9 +55,9 @@ function FormLogin() {
               />
             </div>
           </div>
-          <div className="account__field">
+          <div className="form__field">
             <label>Password *</label>
-            <div className="account__field-input">
+            <div className="form__field-input">
               <input
                 type={showPassword ? 'text' : 'password'}
                 name="password"

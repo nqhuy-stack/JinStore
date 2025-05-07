@@ -48,10 +48,10 @@ function FormRegister() {
 
   return (
     <Fragment>
-      <form className="account-form" onSubmit={handleSubmit}>
-        <div className="account__field">
+      <form className="block__form" onSubmit={handleSubmit}>
+        <div className="form__field">
           <label>Fullname *</label>
-          <div className="account__field-input">
+          <div className="form__field-input">
             <input
               type="text"
               name="fullname"
@@ -61,9 +61,9 @@ function FormRegister() {
             />
           </div>
         </div>
-        <div className="account__field">
+        <div className="form__field">
           <label>Username *</label>
-          <div className="account__field-input">
+          <div className="form__field-input">
             <input
               type="text"
               name="username"
@@ -73,15 +73,15 @@ function FormRegister() {
             />
           </div>
         </div>
-        <div className="account__field">
+        <div className="form__field">
           <label>Email address *</label>
-          <div className="account__field-input">
+          <div className="form__field-input">
             <input type="email" name="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} required />
           </div>
         </div>
-        <div className="account__field">
+        <div className="form__field">
           <label>Mật khẩu *</label>
-          <div className="account__field-input">
+          <div className="form__field-input">
             <input
               type={showPassword ? 'text' : 'password'}
               name="password"
@@ -94,9 +94,9 @@ function FormRegister() {
             </Button>
           </div>
         </div>
-        <div className="account__field">
+        <div className="form__field">
           <label>Xác nhận mật khẩu *</label>
-          <div className="account__field-input">
+          <div className="form__field-input">
             <input
               type={showConfirmPassword ? 'text' : 'password'}
               name="password"

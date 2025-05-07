@@ -12,72 +12,14 @@
   margin: 0 auto;
   padding: 0 20px;
 }
+
 .error-message {
   color: #ff4d4d;
   font-size: 1.4rem;
   margin-bottom: 15px;
 }
 
-.social__login {
-  &-other {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 15px;
-  }
-
-  &-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    padding: 10px 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background: white;
-    width: 100%;
-    font-size: 1.4rem;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    &:hover {
-      background-color: #cccccc;
-    }
-    img {
-      width: 30px;
-      height: 100%;
-    }
-  }
-}
-
-.form-describe {
-  flex: 1;
-  padding-right: 5rem;
-  max-width: 480px;
-
-  &__logo {
-    margin-bottom: 3rem;
-
-    img {
-      width: 200px;
-      height: auto;
-    }
-  }
-
-  &__title {
-    font-size: 3.2rem;
-    font-weight: 700;
-    color: $color-dark-text;
-    margin-bottom: 2rem;
-  }
-
-  &__text {
-    font-size: 1.6rem;
-    line-height: 1.6;
-    color: $color-dark-text;
-  }
-}
-
+// NOTE: custom select
 .custom-select {
   padding: 5px 10px;
   border-color: $color-primary-purple;
@@ -91,5 +33,56 @@
   & option {
     background-color: white;
     color: black;
+  }
+}
+
+// NOTE: form
+.block__form {
+  margin-bottom: 15px;
+  width: 100%;
+  .form__field {
+    width: 100%;
+    text-align: left;
+    margin-bottom: 15px;
+
+    label {
+      display: block; /* Đảm bảo label không bị dính vào input */
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+
+    &-input {
+      border: 1px solid #a5a5a5;
+      border-radius: 8px;
+      overflow: hidden;
+      @include flexbox(center, space-between, row, flex, nowrap);
+      width: 100%;
+      input {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        background: #fff;
+        box-sizing: border-box;
+      }
+      .see-password {
+        width: 16px;
+        height: 16px;
+        border: none;
+        padding: 22px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border-left: 1px solid #a5a5a5;
+
+        .icon-eye {
+          font-size: 1.9rem;
+          margin: 0;
+          position: absolute;
+        }
+      }
+    }
   }
 }

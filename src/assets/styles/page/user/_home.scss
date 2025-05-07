@@ -120,21 +120,32 @@
     .section__content {
       width: 100%;
       &.section__home-cate {
-        ul {
-          @include flexbox(stretch, space-between, row, flex, nowrap);
-          align-self: stretch;
+        .category-swiper {
+          width: 100%;
+          padding-bottom: 30px; // Để chừa chỗ cho bullets
+
+          .swiper-slide {
+            height: auto;
+            display: flex;
+            justify-content: center;
+          }
+
+          .swiper-pagination {
+            bottom: 0;
+          }
 
           .item-categories {
             @include size(calc(10% + 20px), calc($container / 10 + 50px));
             border: 1px solid rgb(243, 243, 243);
             background-color: #ffffff;
             position: relative;
+            width: 100%; // Đảm bảo rằng nó lấp đầy slide
 
             &:hover {
               border-color: rgba(0, 0, 0, 0.12);
               box-shadow: 0 0 0.8125rem 0 rgba(0, 0, 0, 0.05);
               transform: translateZ(0);
-              z-index: 2; // Tăng z-index nếu cần
+              z-index: 2;
             }
 
             .link-categories {
@@ -145,11 +156,13 @@
               position: relative;
 
               img.category-image {
+                position: relative;
                 width: 100%;
-                height: auto;
+                height: 100%;
                 max-height: 120px;
                 object-fit: contain;
-                margin-bottom: 10px;
+                margin: auto 0;
+                margin-top: 10px;
               }
 
               span {
@@ -168,7 +181,7 @@
                 -webkit-box-orient: vertical;
                 overflow: hidden;
                 text-overflow: ellipsis;
-                min-height: 50px; // Thay height cố định
+                min-height: 50px;
               }
             }
           }

@@ -144,6 +144,12 @@ const Admin = () => {
                 <span>Đánh giá</span>
               </Link>
             </li>
+            <li className="admin__menu-item ">
+              <Link to="/">
+                <i className="fas fa-home"></i>
+                <span>Trang người dùng</span>
+              </Link>
+            </li>
           </ul>
         </aside>
         <main className="admin__main">

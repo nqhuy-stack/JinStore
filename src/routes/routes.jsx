@@ -1,4 +1,5 @@
 import Home from '@pages/user/Home.jsx';
+import InfoUser from '@pages/user/InfoUser.jsx';
 import Login from '@pages/user/Login.jsx';
 import Register from '@pages/user/Register.jsx';
 import ResetPassword from '@pages/user/ResetPassword.jsx';
@@ -36,6 +37,10 @@ const routes = [
   {
     path: '/',
     page: Home,
+  },
+  {
+    path: '/info-user',
+    page: InfoUser,
   },
   {
     path: '/login',

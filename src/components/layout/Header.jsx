@@ -29,9 +29,9 @@ const Header = () => {
   };
 
   const getInitials = (name) => {
-    if (!name || typeof name !== 'string') return ''; 
-    const words = name.trim().split(/\s+/); 
-    const initials = words.map((word) => word.charAt(0).toUpperCase()); 
+    if (!name || typeof name !== 'string') return '';
+    const words = name.trim().split(/\s+/);
+    const initials = words.map((word) => word.charAt(0).toUpperCase());
     return initials.join('.') + '.';
   };
 
@@ -45,9 +45,7 @@ const Header = () => {
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
-  useEffect(()=>{
-    
-  })
+  useEffect(() => {});
 
   return (
     <Fragment>
@@ -115,21 +113,21 @@ const Header = () => {
                       <>
                         {user.isAdmin && (
                           <Link to="/admin" onClick={() => setIsOpen(false)}>
-                            Admin Panel
+                            Quản lý trang web
                           </Link>
                         )}
-                        <Link to="/info" onClick={() => setIsOpen(false)}>
-                          Info User
+                        <Link to="/info-user" onClick={() => setIsOpen(false)}>
+                          Thông tin người dùng
                         </Link>
-                        <Link onClick={handleLogout}>Logout</Link>
+                        <Link onClick={handleLogout}>Đăng xuất</Link>
                       </>
                     ) : (
                       <>
                         <Link to="/login" onClick={() => setIsOpen(false)}>
-                          Sign In
+                          Đăng nhập
                         </Link>
                         <Link to="/register" onClick={() => setIsOpen(false)}>
-                          Create an Account
+                          Tạo tài khoản
                         </Link>
                       </>
                     )}
