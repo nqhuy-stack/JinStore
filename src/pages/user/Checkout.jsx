@@ -1,12 +1,16 @@
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMapMarkerAlt, faTruck, faWallet, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faMapMarkerAlt, faWallet, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import Breadcrumb from '@components/common/Breadcrumb';
+import { useLocation, Link } from 'react-router-dom';
 
 const Checkout = () => {
   const [selectedAddress, setSelectedAddress] = useState('home');
-  const [selectedDelivery, setSelectedDelivery] = useState('standard');
   const [selectedPayment, setSelectedPayment] = useState('cod');
+  const location = useLocation();
+
+  // Lấy dữ liệu sản phẩm đã chọn và thông tin tóm tắt từ Cart
+  const { selectedProducts = [], summary = {} } = location.state || {};
 
   const addresses = {
     home: {
@@ -25,29 +29,39 @@ const Checkout = () => {
     },
   };
 
-  const orderItems = [
-    { id: 1, name: 'Bell pepper', quantity: 1, price: 32.34, image: '/images/products/bell-pepper.jpg' },
-    { id: 2, name: 'Eggplant', quantity: 3, price: 12.23, image: '/images/products/eggplant.jpg' },
-    { id: 3, name: 'Onion', quantity: 2, price: 18.27, image: '/images/products/onion.jpg' },
-    { id: 4, name: 'Potato', quantity: 1, price: 26.9, image: '/images/products/potato.jpg' },
-    { id: 5, name: 'Baby Chili', quantity: 1, price: 19.28, image: '/images/products/baby-chili.jpg' },
-    { id: 6, name: 'Broccoli', quantity: 2, price: 29.69, image: '/images/products/broccoli.jpg' },
-  ];
+  // Sử dụng các giá trị từ summary hoặc tính toán lại nếu không có
+  const subtotal =
+    summary.subtotal || selectedProducts.reduce((sum, item) => sum + item.discountedPrice * item.quantity, 0);
+  const shipping = summary.shipping || 30000;
+  const couponDiscount = summary.couponDiscount || 0;
+  const tax = Math.round(subtotal * 0.1); // giả sử thuế 10%
+  const total = summary.total || subtotal + shipping + tax - couponDiscount;
 
-  const subtotal = 111.81;
-  const shipping = 8.9;
-  const tax = 29.498;
-  const couponDiscount = 23.1;
-  const total = 19.28;
+  // Xử lý đặt hàng
+  const handlePlaceOrder = () => {
+    console.log('Placing order with:');
+    console.log('- Products:', selectedProducts);
+    console.log('- Address:', addresses[selectedAddress]);
+    console.log('- Payment:', selectedPayment);
+    console.log('- Total:', total);
+    // Tại đây sẽ gọi API để tạo đơn hàng
+    alert('Đặt hàng thành công!');
+  };
 
-  const availableOffers = [
-    'Combo: BB Royal Almond/Badam Californian, Extra Bold 100 gm...',
-    'combo: Royal Cashew Californian, Extra Bold 100 gm + BB Royal Honey 500 gm',
-  ];
+  if (selectedProducts.length === 0) {
+    return (
+      <div className="empty-checkout">
+        <h2>Không có sản phẩm nào được chọn để thanh toán</h2>
+        <Link to="/cart" className="return-to-cart">
+          <FontAwesomeIcon icon={faArrowLeft} /> Quay lại giỏ hàng
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <>
-      <Breadcrumb items={[{ text: 'Cart' }, { text: 'Checkout' }]} />
+      <Breadcrumb items={[{ text: 'Cart', link: '/cart' }, { text: 'Checkout' }]} />
       <div className="checkout">
         <div className="checkout__container">
           <div className="checkout__main">
@@ -55,7 +69,7 @@ const Checkout = () => {
             <section className="checkout__section">
               <div className="section__header">
                 <FontAwesomeIcon icon={faMapMarkerAlt} />
-                <h2>Delivery Address</h2>
+                <h2>Địa chỉ giao hàng</h2>
               </div>
               <div className="address__options">
                 {Object.entries(addresses).map(([key, address]) => (
@@ -79,45 +93,11 @@ const Checkout = () => {
               </div>
             </section>
 
-            {/* Delivery Option Section */}
-            <section className="checkout__section">
-              <div className="section__header">
-                <FontAwesomeIcon icon={faTruck} />
-                <h2>Delivery Option</h2>
-              </div>
-              <div className="delivery__options">
-                <label className="delivery__option">
-                  <input
-                    type="radio"
-                    name="delivery"
-                    value="standard"
-                    checked={selectedDelivery === 'standard'}
-                    onChange={(e) => setSelectedDelivery(e.target.value)}
-                  />
-                  <div className="option__content">
-                    <span>Standard Delivery Option</span>
-                  </div>
-                </label>
-                <label className="delivery__option">
-                  <input
-                    type="radio"
-                    name="delivery"
-                    value="future"
-                    checked={selectedDelivery === 'future'}
-                    onChange={(e) => setSelectedDelivery(e.target.value)}
-                  />
-                  <div className="option__content">
-                    <span>Future Delivery Option</span>
-                  </div>
-                </label>
-              </div>
-            </section>
-
             {/* Payment Option Section */}
             <section className="checkout__section">
               <div className="section__header">
                 <FontAwesomeIcon icon={faWallet} />
-                <h2>Payment Option</h2>
+                <h2>Phương thức thanh toán</h2>
               </div>
               <div className="payment__options">
                 <label className="payment__option">
@@ -178,58 +158,60 @@ const Checkout = () => {
 
           {/* Order Summary Section */}
           <aside className="checkout__summary">
-            <h2>Order Summary</h2>
+            <h2>Tóm tắt đơn hàng</h2>
             <div className="order__items">
-              {orderItems.map((item) => (
-                <div key={item.id} className="order__item">
-                  <img src={item.image} alt={item.name} />
+              {selectedProducts.map((item) => (
+                <div key={item._id} className="order__item">
+                  <img src={(item.images && item.images[0] && item.images[0].url) || ''} alt={item.name} />
                   <div className="item__details">
-                    <span className="item__name">{item.name}</span>
-                    <span className="item__quantity">X {item.quantity}</span>
+                    <span
+                      className="item__name"
+                      style={{ display: 'block', marginBottom: '0.5rem', fontSize: '1.8rem' }}
+                    >
+                      {item.name}
+                    </span>
+                    <div className="item__info">
+                      <span className="item__quantity" style={{ display: 'block', marginBottom: '0.5rem' }}>
+                        Số lượng: {item.quantity}
+                      </span>
+                      <span className="item__price" style={{ display: 'block', fontSize: '1.4rem' }}>
+                        Đơn giá: {item.discountedPrice?.toLocaleString()}đ
+                      </span>
+                    </div>
                   </div>
-                  <span className="item__price">${item.price}</span>
+                  <span className="item__total">{item.totalPrice?.toLocaleString()}đ</span>
                 </div>
               ))}
             </div>
 
             <div className="order__totals">
               <div className="total__row">
-                <span>Subtotal</span>
-                <span>${subtotal}</span>
+                <span>Thành tiền</span>
+                <span>{subtotal.toLocaleString()}đ</span>
               </div>
               <div className="total__row">
-                <span>Shipping</span>
-                <span>${shipping}</span>
+                <span>Phí vận chuyển</span>
+                <span>{shipping.toLocaleString()}đ</span>
               </div>
-              <div className="total__row">
-                <span>Tax</span>
-                <span>${tax}</span>
-              </div>
-              <div className="total__row coupon">
-                <span>Coupon/Code</span>
-                <span className="discount">$-{couponDiscount}</span>
-              </div>
+              {couponDiscount > 0 && (
+                <div className="total__row coupon">
+                  <span>Mã giảm giá</span>
+                  <span className="discount">-{couponDiscount.toLocaleString()}đ</span>
+                </div>
+              )}
               <div className="total__row final">
-                <span>Total (USD)</span>
-                <span>${total}</span>
+                <span>Tổng thanh toán</span>
+                <span>{total.toLocaleString()}đ</span>
               </div>
             </div>
 
-            {availableOffers.length > 0 && (
-              <div className="available__offers">
-                <div className="offers__header">
-                  <FontAwesomeIcon icon={faInfoCircle} />
-                  <span>Available Offers</span>
-                </div>
-                <ul className="offers__list">
-                  {availableOffers.map((offer, index) => (
-                    <li key={index}>{offer}</li>
-                  ))}
-                </ul>
-              </div>
-            )}
+            <button className="place-order__btn" onClick={handlePlaceOrder}>
+              Đặt hàng
+            </button>
 
-            <button className="place-order__btn">Place Order</button>
+            <Link to="/cart" className="return-to-cart btn btn-cancel">
+              <FontAwesomeIcon icon={faArrowLeft} /> Quay lại giỏ hàng
+            </Link>
           </aside>
         </div>
       </div>

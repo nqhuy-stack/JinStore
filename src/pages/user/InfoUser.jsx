@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
-import { FaUser, FaLock, FaHistory, FaBell, FaMapMarkerAlt, FaCreditCard, FaCamera } from 'react-icons/fa';
+import { FaUser, FaLock, FaHistory, FaMapMarkerAlt, FaCreditCard, FaCamera } from 'react-icons/fa';
 import ProfileTab from './InfoUser/ProfileTab';
+import AddressTab from './InfoUser/AddressTab';
 import { getInfoUser, uploadAvatar } from '../../services/UserService';
 import { createAxios } from '@utils/createInstance.jsx';
 import { loginSuccess } from '@/redux/authSlice.jsx';
@@ -83,7 +84,6 @@ const InfoUser = () => {
     { id: 'profile', label: 'Thông tin cá nhân', icon: <FaUser /> },
     { id: 'password', label: 'Đổi mật khẩu', icon: <FaLock /> },
     { id: 'orders', label: 'Lịch sử đơn hàng', icon: <FaHistory /> },
-    { id: 'notifications', label: 'Thông báo', icon: <FaBell /> },
     { id: 'addresses', label: 'Sổ địa chỉ', icon: <FaMapMarkerAlt /> },
     { id: 'payment', label: 'Phương thức thanh toán', icon: <FaCreditCard /> },
   ];
@@ -97,12 +97,8 @@ const InfoUser = () => {
         return <PasswordTab />;
       case 'orders':
         return <OrdersTab />;
-      case 'wishlist':
-        return <WishlistTab />;
-      case 'notifications':
-        return <NotificationsTab />;
       case 'addresses':
-        return <AddressesTab />;
+        return <AddressTab />;
       case 'payment':
         return <PaymentTab />;
       default:

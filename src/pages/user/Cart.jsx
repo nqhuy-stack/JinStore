@@ -15,6 +15,7 @@ const Cart = () => {
   const accessToken = user?.accessToken;
   const axiosJWT = createAxios(user, dispatch, loginSuccess);
   const [cartItems, setCartItems] = useState([]);
+
   const [selectedItems, setSelectedItems] = useState([]);
   const [couponCode, setCouponCode] = useState('');
 
@@ -30,6 +31,7 @@ const Cart = () => {
       setLoading(true);
 
       const response = await getCart(accessToken, axiosJWT);
+      console.log(response);
 
       // Kiểm tra nếu response có cấu trúc như trong ảnh
       if (response.success && response.data) {
@@ -138,17 +140,29 @@ const Cart = () => {
   };
 
   const calculateCouponDiscount = () => {
-    // Placeholder for coupon discount calculation
     return 0;
   };
 
   const calculateShipping = () => {
-    // Placeholder for shipping calculation
-    return calculateSubtotal() > 0 ? 30000 : 0; // Phí vận chuyển mặc định 30,000 đồng
+    return calculateSubtotal() > 0 ? 30000 : 0;
   };
 
   const calculateTotal = () => {
     return calculateSubtotal() - calculateCouponDiscount() + calculateShipping();
+  };
+
+  // Tạo mảng chứa thông tin đầy đủ của các sản phẩm đã chọn để chuyển sang checkout
+  const getSelectedProductsData = () => {
+    return cartItems
+      .filter((item) => selectedItems.includes(item._id))
+      .map((item) => {
+        const discountedPrice = item.price - item.price * (item.discount / 100);
+        return {
+          ...item,
+          discountedPrice: discountedPrice, // Thêm giá đã giảm
+          totalPrice: discountedPrice * item.quantity, // Thêm tổng giá cho sản phẩm
+        };
+      });
   };
 
   console.log('Cart items:', cartItems);
@@ -206,11 +220,11 @@ const Cart = () => {
 
                   <div className="cart__item-price">
                     <span className="current-price">
-                      {(item.price - item.price * (item.discount / 100)).toLocaleString()}/{item.unit}
+                      {(item.price - item.price * (item.discount / 100)).toLocaleString()}đ/{item.unit}
                     </span>
                     <span className="original-price">{item.price.toLocaleString()}đồng</span>{' '}
                     <span className="savings">
-                      Tiết kiệm : {(item.price - (item.price - item.price * (item.discount / 100))).toLocaleString()}
+                      Tiết kiệm : {(item.price - (item.price - item.price * (item.discount / 100))).toLocaleString()}đ
                     </span>
                   </div>
                 </div>
@@ -241,7 +255,7 @@ const Cart = () => {
                 <div className="cart__item-total">
                   <div className="total-label">Thành tiền</div>
                   <div className="total-value">
-                    {((item.price - item.price * (item.discount / 100)) * item.quantity).toLocaleString()}
+                    {((item.price - item.price * (item.discount / 100)) * item.quantity).toLocaleString()}đ
                   </div>
                 </div>
 
@@ -266,7 +280,7 @@ const Cart = () => {
                   value={couponCode}
                   onChange={(e) => setCouponCode(e.target.value)}
                 />
-                <button /* onClick={handleApplyCoupon} */>Apply</button>
+                <button onClick={handleApplyCoupon}>Apply</button>
               </div>
             </div>
 
@@ -277,18 +291,29 @@ const Cart = () => {
               </div>
               <div className="coupon-discount">
                 <span>Mã giảm giá</span>
-                <span>{/* (-) ${couponDiscount.toFixed(2)} */}</span>
+                <span>{calculateCouponDiscount().toLocaleString()} đồng</span>
               </div>
               <div className="shipping">
                 <span>Phí vận chuyển</span>
-                <span>{/* ${shipping.toFixed(2)} */}</span>
+                <span>{calculateShipping().toLocaleString()} đồng</span>
               </div>
               <div className="total">
                 <span>Tổng</span>
                 <span className="total-amount">{calculateTotal().toLocaleString()} đồng</span>
               </div>
             </div>
-            <Link to="/checkout" state={{ selectedItems }}>
+            <Link
+              to="/checkout"
+              state={{
+                selectedProducts: getSelectedProductsData(),
+                summary: {
+                  subtotal: calculateSubtotal(),
+                  couponDiscount: calculateCouponDiscount(),
+                  shipping: calculateShipping(),
+                  total: calculateTotal(),
+                },
+              }}
+            >
               <button className="checkout-btn" disabled={selectedItems.length === 0}>
                 Thanh toán ({selectedItems.length} sản phẩm)
               </button>

@@ -37,7 +37,7 @@
 
       svg {
         font-size: 2rem;
-        color: #00a76f;
+        color: $color-primary-purple;
       }
 
       h2 {
@@ -62,7 +62,7 @@
       display: none;
 
       &:checked + .address__card {
-        border-color: #00a76f;
+        border-color: $color-primary-purple;
         background-color: #f0fdf4;
       }
     }
@@ -77,7 +77,7 @@
     .address__type {
       display: inline-block;
       padding: 0.4rem 1rem;
-      background-color: #00a76f;
+      background-color: $color-primary-purple;
       color: white;
       border-radius: 0.5rem;
       font-size: 1.2rem;
@@ -114,7 +114,7 @@
       display: none;
 
       &:checked + .option__content {
-        border-color: #00a76f;
+        border-color: $color-primary-purple;
         background-color: #f0fdf4;
       }
     }
@@ -140,7 +140,7 @@
       .know-more {
         background: none;
         border: none;
-        color: #00a76f;
+        color: $color-primary-purple;
         font-size: 1.4rem;
         cursor: pointer;
         padding: 0;
@@ -224,7 +224,7 @@
 
         &.coupon {
           .discount {
-            color: #00a76f;
+            color: $color-primary-purple;
           }
         }
 
@@ -252,7 +252,7 @@
         margin-bottom: 1rem;
 
         svg {
-          color: #00a76f;
+          color: $color-primary-purple;
         }
 
         span {
@@ -278,7 +278,7 @@
             content: '•';
             position: absolute;
             left: 0.8rem;
-            color: #00a76f;
+            color: $color-primary-purple;
           }
         }
       }
@@ -287,7 +287,7 @@
     .place-order__btn {
       width: 100%;
       padding: 1.5rem;
-      background: #00a76f;
+      background: $color-primary-purple;
       color: white;
       border: none;
       border-radius: 0.8rem;
@@ -297,7 +297,27 @@
       transition: background 0.3s ease;
 
       &:hover {
-        background: darken(#00a76f, 5%);
+        background: darken($color-primary-purple, 5%);
+      }
+    }
+
+    .btn.return-to-cart {
+      margin-top: 1rem;
+      display: block;
+      text-align: center;
+      width: 100% !important;
+      background-color: #718096;
+      opacity: 0.7;
+      color: white;
+      border: none;
+      border-radius: 0.8rem;
+      font-size: 1.6rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.3s ease;
+
+      &:hover {
+        background: darken(#718096, 10%);
       }
     }
   }

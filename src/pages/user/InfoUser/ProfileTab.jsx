@@ -100,7 +100,7 @@ const ProfileTab = ({ infoUser }) => {
   };
 
   return (
-    <div className="profile__tab">
+    <div className="profile__tab profile__tab-info">
       <div className="profile__tab-header">
         <h2 className="header__title">Thông tin cá nhân</h2>
         {!isEditing && (
