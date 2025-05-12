@@ -11,6 +11,7 @@ import { createAxios } from '../../../utils/createInstance';
 import { loginSuccess } from '../../../redux/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
+import PageLoad from '../../PageLoad';
 
 function AddressTab() {
   const dispatch = useDispatch();
@@ -81,6 +82,7 @@ function AddressTab() {
 
   const fetchAddresses = async () => {
     try {
+      setLoading(true);
       const response = await getAddresses(accessToken, axiosJWT);
       if (response) {
         setAddresses(response);
@@ -88,6 +90,8 @@ function AddressTab() {
       }
     } catch (error) {
       console.error('Error fetching addresses:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -278,7 +282,7 @@ function AddressTab() {
           </div>
         ))
       ) : (
-        <p>Không có địa chỉ nào. Vui lòng thêm địa chỉ mới.</p>
+        <PageLoad zIndex={1} />
       )}
 
       {showAddressModal && (

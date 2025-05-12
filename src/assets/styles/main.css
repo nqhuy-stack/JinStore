@@ -641,10 +641,9 @@ html {
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  font-family: "Poppins", sans-serif;
 }
-
-.modal-content {
+.modal-overlay .modal-content {
+  position: relative;
   background: #ffffff;
   padding: 20px;
   border-radius: 8px;
@@ -653,27 +652,26 @@ html {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   animation: fadeIn 0.3s ease;
 }
-
-.modal-title {
+.modal-overlay .modal-content .modal-title {
   font-size: 1.8rem;
   font-weight: 600;
   color: #000000;
   margin-bottom: 10px;
 }
-
-.modal-message {
+.modal-overlay .modal-content .modal-message {
   font-size: 1.4rem;
   color: #6b7280;
   margin-bottom: 20px;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
 }
-
-.modal-buttons {
+.modal-overlay .modal-content .modal-buttons {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
 }
-
-.modal-btn {
+.modal-overlay .modal-content .modal-buttons .modal-btn {
   padding: 8px 16px;
   border: none;
   border-radius: 4px;
@@ -682,26 +680,26 @@ html {
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
 }
-.modal-btn--cancel {
+.modal-overlay .modal-content .modal-buttons .modal-btn--cancel {
   background: #ccc;
   color: #fff;
 }
-.modal-btn--cancel:hover {
+.modal-overlay .modal-content .modal-buttons .modal-btn--cancel:hover {
   background: #b3b3b3;
   transform: translateY(-2px);
 }
-.modal-btn--cancel:active {
+.modal-overlay .modal-content .modal-buttons .modal-btn--cancel:active {
   transform: translateY(0);
 }
-.modal-btn--confirm {
+.modal-overlay .modal-content .modal-buttons .modal-btn--confirm {
   background: #ff4d4d;
   color: #fff;
 }
-.modal-btn--confirm:hover {
+.modal-overlay .modal-content .modal-buttons .modal-btn--confirm:hover {
   background: #ff1a1a;
   transform: translateY(-2px);
 }
-.modal-btn--confirm:active {
+.modal-overlay .modal-content .modal-buttons .modal-btn--confirm:active {
   transform: translateY(0);
 }
 
@@ -2067,6 +2065,7 @@ html {
   width: -moz-fit-content;
   width: fit-content;
   margin-bottom: 0.5rem;
+  /* Firefox */
 }
 .cart__item-quantity .quantity-controls .quantity-btn {
   width: 36px;
@@ -2097,6 +2096,16 @@ html {
   font-size: 1.4rem;
   font-weight: 500;
   color: #2d3748;
+  outline: none;
+  border: none;
+}
+.cart__item-quantity .quantity-controls input[type=number]::-webkit-inner-spin-button,
+.cart__item-quantity .quantity-controls input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.cart__item-quantity .quantity-controls input[type=number] {
+  -moz-appearance: textfield;
 }
 .cart__item-quantity .quick-quantity {
   display: flex;

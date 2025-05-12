@@ -126,12 +126,12 @@ const Categories = () => {
   //NOTE: Handle Edit
   const handleEditCategory = (id) => {
     console.log(`✏️ Navigating to edit category: ${id}`);
-    navigate(`/admin/categories/form/${id}?mode=edit`);
+    navigate(`/admin/categories/edit/${id}`);
   };
   //NOTE: Handle Add
   const handleAddCategory = () => {
     console.log('➕ Navigating to add new category');
-    navigate('/admin/categories/form?mode=add');
+    navigate('/admin/categories/add');
   };
 
   const totalPages = Math.ceil(categories.length / itemsPerPage);

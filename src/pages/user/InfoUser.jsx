@@ -1,36 +1,51 @@
 import { useEffect, useState } from 'react';
-import { FaUser, FaLock, FaHistory, FaMapMarkerAlt, FaCreditCard, FaCamera } from 'react-icons/fa';
-import ProfileTab from './InfoUser/ProfileTab';
-import AddressTab from './InfoUser/AddressTab';
+import { FaUser, FaLock, FaHistory, FaMapMarkerAlt, FaCamera } from 'react-icons/fa';
 import { getInfoUser, uploadAvatar } from '../../services/UserService';
 import { createAxios } from '@utils/createInstance.jsx';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
+import PageLoad from '../PageLoad';
+import { useNavigate } from 'react-router-dom';
 
+import ProfileTab from './InfoUser/ProfileTab';
+import AddressTab from './InfoUser/AddressTab';
 // Component chính
 const InfoUser = () => {
   const [activeTab, setActiveTab] = useState('profile');
 
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.login.currentUser);
   const accessToken = user?.accessToken;
   const axiosJWT = createAxios(user, dispatch, loginSuccess);
 
   const [infoUser, setInfoUser] = useState({});
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoading(true);
         const data = await getInfoUser(accessToken, axiosJWT);
         if (data.success) {
           setInfoUser(data.user);
         }
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchData();
+  }, []);
+
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash) {
+      const tabId = hash.substring(1); // Loại bỏ dấu #
+      setActiveTab(tabId);
+    }
   }, []);
 
   const handleImageChange = async (e) => {
@@ -85,7 +100,6 @@ const InfoUser = () => {
     { id: 'password', label: 'Đổi mật khẩu', icon: <FaLock /> },
     { id: 'orders', label: 'Lịch sử đơn hàng', icon: <FaHistory /> },
     { id: 'addresses', label: 'Sổ địa chỉ', icon: <FaMapMarkerAlt /> },
-    { id: 'payment', label: 'Phương thức thanh toán', icon: <FaCreditCard /> },
   ];
 
   // Render tab content dựa trên tab đang active
@@ -99,13 +113,13 @@ const InfoUser = () => {
         return <OrdersTab />;
       case 'addresses':
         return <AddressTab />;
-      case 'payment':
-        return <PaymentTab />;
       default:
         return <ProfileTab />;
     }
   };
-
+  if (loading) {
+    return <PageLoad zIndex={1} />;
+  }
   return (
     <div className="info-user">
       <div className="info-user__sidebar">
@@ -134,7 +148,10 @@ const InfoUser = () => {
             <button
               key={item.id}
               className={`menu-item ${activeTab === item.id ? 'active' : ''}`}
-              onClick={() => setActiveTab(item.id)}
+              onClick={() => {
+                setActiveTab(item.id);
+                navigate(`/info-user#${item.id === 'profile' ? '' : item.id}`);
+              }}
               aria-label={item.label}
             >
               {item.icon}

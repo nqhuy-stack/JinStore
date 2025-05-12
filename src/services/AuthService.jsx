@@ -44,10 +44,7 @@ export const login = async (user, dispatch, navigate) => {
 export const logOut = async (dispatch, id, navigate, accessToken, axiosJWT) => {
   dispatch(logoutStart());
   try {
-    // Xóa dữ liệu local trước
-    localStorage.removeItem('persist:root');
-
-    // Chỉ gọi API logout nếu có id và accessToken
+    // Gọi API logout trước
     if (id && accessToken && axiosJWT) {
       try {
         await axiosJWT.post(
@@ -68,6 +65,9 @@ export const logOut = async (dispatch, id, navigate, accessToken, axiosJWT) => {
         });
       }
     }
+
+    // Sau đó mới xóa dữ liệu local
+    localStorage.removeItem('persist:root');
 
     // Dispatch action và thông báo
     dispatch(logoutSuccess());

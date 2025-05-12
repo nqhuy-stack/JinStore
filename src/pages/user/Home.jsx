@@ -9,6 +9,7 @@ import ProductsCategoryList from '@/components/features/products/ProdCateList.js
 
 import fullBanner from '@assets/images/banner/full-banner.png';
 import moveRight from '@assets/icons/icon-move-right.svg';
+import PageLoad from '../PageLoad';
 
 function Home() {
   const [category, setCategory] = useState([]);
@@ -17,6 +18,7 @@ function Home() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
 
   useEffect(() => {
     const fetchCategories = async () => {

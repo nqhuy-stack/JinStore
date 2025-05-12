@@ -56,7 +56,7 @@ const Admin = () => {
     } else if (path.includes('/admin/categories')) {
       items.push({ text: 'Categories', link: '/admin/categories' });
 
-      if (path.includes(`/form?mode='add'`)) {
+      if (path.includes(`/add`)) {
         items.push({ text: 'Add Category' });
       } else if (path.includes('/edit/')) {
         const id = path.split('/').pop();
@@ -73,6 +73,8 @@ const Admin = () => {
       items.push({ text: 'Users' });
     } else if (path.includes('/admin/product-reviews')) {
       items.push({ text: 'Product Reviews' });
+    } else if (path.includes('/admin/discounts')) {
+      items.push({ text: 'Discounts' });
     }
 
     return items;
@@ -120,8 +122,8 @@ const Admin = () => {
                 <span>Danh mục</span>
               </Link>
             </li>
-            <li className={`admin__menu-item ${location.pathname === '/admin/discount' ? 'active' : ''}`}>
-              <Link to="/admin/discount">
+            <li className={`admin__menu-item ${location.pathname === '/admin/discounts' ? 'active' : ''}`}>
+              <Link to="/admin/discounts">
                 <i className="fa-solid fa-tag"></i>
                 <span>Mã giảm giá</span>
               </Link>

@@ -2,9 +2,17 @@ import { useEffect, useState } from 'react';
 import { getProductsByIdCategory } from '@/services/ProductService';
 import { useNavigate } from 'react-router-dom';
 import ProductCard from '@components/common/ProductCard';
+import { useDispatch, useSelector } from 'react-redux';
+import { createAxios } from '@utils/createInstance.jsx';
+import { loginSuccess } from '@/redux/authSlice.jsx';
+import { addItemToCart } from '@services/CartService';
 
 const ProductsCategoryList = ({ idCategory }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.login.currentUser);
+  const accessToken = user?.accessToken;
+  const axiosJWT = createAxios(user, dispatch, loginSuccess);
   const [filteredProducts, setProducts] = useState([]);
 
   useEffect(() => {
@@ -21,8 +29,17 @@ const ProductsCategoryList = ({ idCategory }) => {
     fetchProducts();
   }, [idCategory]);
 
-  const handleAddToCart = (id) => {
-    console.log('Add to cart:', id);
+  const handleAddToCart = async (product) => {
+    if (!product || !product._id) return;
+
+    console.log('Add to cart:', product._id);
+
+    const formData = {
+      productId: product._id,
+      quantity: 1,
+    };
+
+    await addItemToCart(formData, dispatch, accessToken, axiosJWT);
   };
 
   const handleProductClick = (product) => {

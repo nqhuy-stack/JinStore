@@ -7,6 +7,8 @@ import { getCart, deleteItemInCart, updateItemInCart } from '@services/CartServi
 import { createAxios } from '@utils/createInstance.jsx';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { useDispatch, useSelector } from 'react-redux';
+import NotFound from './NotFound';
+import PageLoad from '../PageLoad';
 
 const Cart = () => {
   const dispatch = useDispatch();
@@ -167,16 +169,11 @@ const Cart = () => {
 
   console.log('Cart items:', cartItems);
   if (loading) {
-    return <div className="loading">Đang tải giỏ hàng...</div>;
+    return <PageLoad zIndex={1} />;
   }
 
   if (error) {
-    return (
-      <div className="error-message">
-        <p>{error}</p>
-        <button onClick={fetchCartItems}>Thử lại</button>
-      </div>
-    );
+    return <NotFound />;
   }
 
   if (cartItems.length === 0) {

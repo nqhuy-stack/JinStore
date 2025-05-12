@@ -41,7 +41,7 @@ const ProductCard = ({ products, handleAddToCart, handleProductClick }) => {
                       className="add-btn"
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleAddToCart(product._id);
+                        handleAddToCart(product);
                       }}
                     >
                       Add
