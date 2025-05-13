@@ -204,6 +204,7 @@ html {
   display: block; /* Đảm bảo label không bị dính vào input */
   margin-bottom: 5px;
   font-weight: 500;
+  color: black;
 }
 .block__form .form__field-input {
   border: 1px solid #a5a5a5;
@@ -222,6 +223,14 @@ html {
   border: none;
   background: #fff;
   box-sizing: border-box;
+  color: black;
+  font-size: 1.4rem;
+  font-weight: 0;
+  letter-spacing: 1.2px;
+}
+.block__form .form__field-input input:disabled {
+  border: none;
+  background-color: #e7e7e7;
 }
 .block__form .form__field-input .see-password {
   width: 16px;
@@ -4325,6 +4334,11 @@ html {
     padding: 16px;
     width: 95%;
   }
+}
+
+.profile__tab-change-password .account-main {
+  width: 480px;
+  margin: auto;
 }
 
 .admin {

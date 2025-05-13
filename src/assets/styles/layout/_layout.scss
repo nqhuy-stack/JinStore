@@ -49,6 +49,7 @@
       display: block; /* Đảm bảo label không bị dính vào input */
       margin-bottom: 5px;
       font-weight: 500;
+      color: black;
     }
 
     &-input {
@@ -63,6 +64,14 @@
         border: none;
         background: #fff;
         box-sizing: border-box;
+        color: black;
+        font-size: 1.4rem;
+        font-weight: 00;
+        letter-spacing: 1.2px;
+        &:disabled {
+          border: none;
+          background-color: #e7e7e7;
+        }
       }
       .see-password {
         width: 16px;

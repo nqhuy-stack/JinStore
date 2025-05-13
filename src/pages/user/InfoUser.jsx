@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 
 import ProfileTab from './InfoUser/ProfileTab';
 import AddressTab from './InfoUser/AddressTab';
+import ChangePasswordTab from './InfoUser/ChangePasswordTab';
 // Component chính
 const InfoUser = () => {
   const [activeTab, setActiveTab] = useState('profile');
@@ -108,7 +109,7 @@ const InfoUser = () => {
       case 'profile':
         return <ProfileTab infoUser={infoUser} />;
       case 'password':
-        return <PasswordTab />;
+        return <ChangePasswordTab />;
       case 'orders':
         return <OrdersTab />;
       case 'addresses':

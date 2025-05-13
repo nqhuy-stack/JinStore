@@ -127,10 +127,10 @@ const FormForgotPassword = () => {
     <Fragment>
       {error && <div className="error-message">{error}</div>}
       {step === 1 && (
-        <form className="account-form" onSubmit={handleSendOtp}>
-          <div className="account__field">
+        <form className="block__form" onSubmit={handleSendOtp}>
+          <div className="form__field">
             <label>Email address *</label>
-            <div className="account__field-input">
+            <div className="form__field-input">
               <input
                 type="email"
                 name="email"
@@ -147,7 +147,7 @@ const FormForgotPassword = () => {
       )}
 
       {step === 2 && (
-        <form className="account-form" onSubmit={handleVerifyOtp}>
+        <form className="block-form" onSubmit={handleVerifyOtp}>
           <div className="account-field">
             <label>Nhập mã OTP được gửi đến email của bạn *</label>
             <div>
@@ -198,10 +198,10 @@ const FormForgotPassword = () => {
       )}
 
       {step === 3 && (
-        <form className="account-form" onSubmit={handleResetPassword}>
-          <div className="account__field">
+        <form className="block-form" onSubmit={handleResetPassword}>
+          <div className="form__field">
             <label>Mật khẩu *</label>
-            <div className="account__field-input">
+            <div className="form__field-input">
               <input
                 type={showPassword ? 'text' : 'password'}
                 name="password"
@@ -214,9 +214,9 @@ const FormForgotPassword = () => {
               </Button>
             </div>
           </div>
-          <div className="account__field">
+          <div className="form__field">
             <label>Xác nhận mật khẩu *</label>
-            <div className="account__field-input">
+            <div className="form__field-input">
               <input
                 type={showConfirmPassword ? 'text' : 'password'}
                 name="password"

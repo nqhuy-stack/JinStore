@@ -18,6 +18,7 @@ const ProfileTab = ({ infoUser }) => {
 
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.login.currentUser);
+  const hasPassword = user?.hasPassword;
   const accessToken = user?.accessToken;
   const axiosJWT = createAxios(user, dispatch, loginSuccess);
 
@@ -39,6 +40,12 @@ const ProfileTab = ({ infoUser }) => {
       setDateBirth('');
     }
   }, [infoUser]);
+
+  const obfuscateEmail = (email) => {
+    const [user, domain] = email.split('@');
+    const obfuscatedUser = user.length > 2 ? user[0] + '***' + user[user.length - 1] : user[0] + '*';
+    return `${obfuscatedUser}@${domain}`;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -131,7 +138,7 @@ const ProfileTab = ({ infoUser }) => {
               type="text"
               name="username"
               value={username}
-              disabled
+              disabled={hasPassword}
               onChange={(e) => setUsername(e.target.value)}
             />
           </div>
@@ -140,7 +147,13 @@ const ProfileTab = ({ infoUser }) => {
         <div className="form__field">
           <label>Email</label>
           <div className="form__field-input">
-            <input type="email" name="email" value={email} disabled onChange={(e) => setEmail(e.target.value)} />
+            <input
+              type="email"
+              name="email"
+              value={obfuscateEmail(email)}
+              disabled
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </div>
         </div>
 
