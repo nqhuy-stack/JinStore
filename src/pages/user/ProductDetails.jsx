@@ -4,9 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faStar,
   faCartPlus,
-  faHeart,
   faSpinner,
-  faLeaf,
   faShieldAlt,
   faTruck,
   faUndo,
@@ -17,22 +15,28 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import Breadcrumb from '@components/common/Breadcrumb';
 import { getProduct } from '@services/ProductService';
+import { addItemToCart } from '@services/CartService';
+import { useDispatch, useSelector } from 'react-redux';
+import { createAxios } from '@utils/createInstance.jsx';
+import { loginSuccess } from '@/redux/authSlice.jsx';
+import { toast } from 'react-toastify';
+import ProductsCategoryList from '@/components/features/products/ProdCateList.jsx';
 
 const ProductDetails = () => {
   const { id } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
   const [error, setError] = useState(null);
-  const [specialOffer, setSpecialOffer] = useState({
-    hours: 24,
-    minutes: 0,
-    seconds: 0,
-  });
   const [activeTab, setActiveTab] = useState('description');
+
+  const user = useSelector((state) => state.auth.login.currentUser);
+  const accessToken = user?.accessToken;
+  const axiosJWT = createAxios(user, dispatch, loginSuccess);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -59,6 +63,7 @@ const ProductDetails = () => {
 
         await new Promise((resolve) => setTimeout(resolve, 500));
         setProduct(data);
+        console.log(data);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -69,39 +74,6 @@ const ProductDetails = () => {
     fetchProduct();
   }, [id, location.state]);
 
-  // Timer effect
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setSpecialOffer((prev) => {
-        if (prev.hours === 0 && prev.minutes === 0 && prev.seconds === 0) {
-          clearInterval(timer);
-          return prev;
-        }
-
-        let newHours = prev.hours;
-        let newMinutes = prev.minutes;
-        let newSeconds = prev.seconds - 1;
-
-        if (newSeconds < 0) {
-          newSeconds = 59;
-          newMinutes -= 1;
-        }
-        if (newMinutes < 0) {
-          newMinutes = 59;
-          newHours -= 1;
-        }
-
-        return {
-          hours: newHours,
-          minutes: newMinutes,
-          seconds: newSeconds,
-        };
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, []);
-
   // Add scroll to top effect when product ID changes
   useEffect(() => {
     window.scrollTo({
@@ -111,44 +83,79 @@ const ProductDetails = () => {
   }, [id]);
 
   const handleQuantityChange = (value) => {
-    const newQuantity = Math.max(1, Math.min(product.stockQuantity, quantity + value));
+    const newQuantity = Math.max(1, Math.min(product.quantity, quantity + value));
     setQuantity(newQuantity);
   };
 
   const handleQuantityInput = (e) => {
     const value = parseInt(e.target.value) || 0;
-    const newQuantity = Math.max(1, Math.min(product.stockQuantity, value));
+    const newQuantity = Math.max(1, Math.min(product.quantity, value));
     setQuantity(newQuantity);
   };
 
-  //   const handleAddToCart = () => {
-  //     if (!product.inStock) return;
-  //     // TODO: Implement add to cart functionality
-  //     console.log('Adding to cart:', { ...product, quantity });
-  //   };
+  const handleAddToCart = async (product) => {
+    if (!product || !product._id) return;
 
-  //   const handleBuyNow = () => {
-  //     if (!product.inStock) return;
-  //     // TODO: Implement buy now functionality
-  //     console.log('Buying now:', { ...product, quantity });
-  //   };
+    console.log('Add to cart:', product._id);
 
-  // Tạo hàm helper để xác định icon dựa trên category
-  //   const getCategoryIcon = (category) => {
-  //     if (!category) return faMugHot;
+    const formData = {
+      productId: product._id,
+      quantity: quantity,
+    };
 
-  //     const categoryLower = category.toLowerCase();
-  //     if (categoryLower.includes('coffee')) return faMugHot;
-  //     if (categoryLower.includes('tea')) return faMugHot;
-  //     if (categoryLower.includes('bakery')) return faCookie;
-  //     if (categoryLower.includes('snack')) return faCookie;
-
-  //     return faMugHot; // Default icon
-  //   };
-
-  const handleRelatedProductClick = (productId) => {
-    navigate(`/product/${productId}`);
+    await addItemToCart(formData, dispatch, accessToken, axiosJWT);
   };
+
+  const handleBuyNow = () => {
+    if (!product || !product._id) {
+      toast.error('Không thể mua sản phẩm này');
+      return;
+    }
+
+    const discountedPrice = product.discountedPrice || product.price;
+    const totalPrice = discountedPrice * quantity;
+
+    const selectedProduct = {
+      _id: product._id,
+      name: product.name,
+      images: product.images || [],
+      discountedPrice,
+      quantity,
+      totalPrice,
+    };
+
+    const subtotal = totalPrice;
+    const shipping = 30000;
+    const couponDiscount = 0;
+    const tax = Math.round(subtotal * 0.1);
+    const total = subtotal + shipping + tax - couponDiscount;
+
+    const summary = {
+      subtotal,
+      shipping,
+      couponDiscount,
+      tax,
+      total,
+    };
+
+    navigate('/checkout', {
+      state: {
+        selectedProducts: [selectedProduct],
+        summary,
+      },
+    });
+  };
+
+  if (!product) {
+    return (
+      <div className="product-details">
+        <div className="loading-spinner">
+          <FontAwesomeIcon icon={faSpinner} spin size="3x" />
+          <p>Loading product details...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (loading) {
     return (
@@ -180,18 +187,10 @@ const ProductDetails = () => {
       {product && <Breadcrumb items={[{ text: 'Products', link: '/product' }, { text: product.name }]} />}
       <div className="product-details">
         <div className="product-details__container">
-          {/* Images Section */}
           <div className="product-details__images">
             <div className="product-details__badges">
-              {product.onSale && (
-                <span className="product-details__badge product-details__badge--sale">
-                  -{product.salePercentage}% OFF
-                </span>
-              )}
-              {product.isOrganic && (
-                <span className="product-details__badge product-details__badge--organic">
-                  <FontAwesomeIcon icon={faLeaf} /> Organic
-                </span>
+              {product.discount && (
+                <span className="product-details__badge product-details__badge--sale">-{product.discount}% OFF</span>
               )}
             </div>
 
@@ -214,7 +213,6 @@ const ProductDetails = () => {
             )}
           </div>
 
-          {/* Info Section */}
           <div className="product-details__info">
             <h1 className="product-details__title">{product.name}</h1>
 
@@ -224,78 +222,48 @@ const ProductDetails = () => {
                   <FontAwesomeIcon
                     key={index}
                     icon={faStar}
-                    className={index < Math.floor(product.rating) ? 'filled' : ''}
+                    className={index < Math.floor(product.averageRating) ? 'filled' : ''}
                   />
                 ))}
-                <span>{product.rating}</span>
+                <span>{product.averageRating}</span>
               </div>
               <span className="divider">•</span>
               <span>{product.reviews} Reviews</span>
             </div>
 
-            <p className="product-details__description">{product.description}</p>
-
             <div className="product-details__price">
               <span className="current-price">
-                {(product.price * (1 - (product.discount || 0) / 100)).toLocaleString()} VND
+                {(product.price - product.price * (product.discount / 100)).toLocaleString()}đ/{product.unit}
               </span>
-              {product.originalPrice && <span className="original-price">${product.originalPrice}</span>}
+              <span className="original-price">{product.price.toLocaleString()}đồng</span>
             </div>
 
-            {product.onSale && (
-              <div className="product-details__special-offer">
-                <h3>Special Offer Ends In:</h3>
-                <div className="timer">
-                  <div className="timer-block">
-                    <span>{String(specialOffer.hours).padStart(2, '0')}</span>
-                    <label>Hours</label>
-                  </div>
-                  <div className="timer-block">
-                    <span>{String(specialOffer.minutes).padStart(2, '0')}</span>
-                    <label>Minutes</label>
-                  </div>
-                  <div className="timer-block">
-                    <span>{String(specialOffer.seconds).padStart(2, '0')}</span>
-                    <label>Seconds</label>
-                  </div>
-                </div>
-              </div>
-            )}
-
             <div className="product-details__stock-status">
-              {product.inStock ? (
+              {product.quantity ? (
                 <span className="in-stock">
-                  <FontAwesomeIcon icon={faCheck} /> In Stock ({product.stockQuantity} available)
+                  <FontAwesomeIcon icon={faCheck} /> Còn ({product.quantity} {product.unit})
                 </span>
               ) : (
                 <span className="out-of-stock">
-                  <FontAwesomeIcon icon={faExclamationTriangle} /> Out of Stock
+                  <FontAwesomeIcon icon={faExclamationTriangle} /> hết hàng
                 </span>
               )}
             </div>
 
             <div className="product-details__actions">
               <div className="quantity-selector">
-                <button onClick={() => handleQuantityChange(-1)} disabled={quantity <= 1}>
+                <button onClick={() => handleQuantityChange(-1)} disabled={product.quantity <= 1}>
                   -
                 </button>
-                <input
-                  type="number"
-                  value={quantity}
-                  onChange={handleQuantityInput}
-                  min="1"
-                  max={product.stockQuantity}
-                />
-                <button onClick={() => handleQuantityChange(1)} disabled={quantity >= product.stockQuantity}>
-                  +
-                </button>
+                <input type="number" value={quantity} onChange={handleQuantityInput} min="1" max={product.quantity} />
+                <button onClick={() => handleQuantityChange(1)}>+</button>
               </div>
 
-              <button className="add-to-cart" disabled={!product.inStock}>
+              <button className="add-to-cart" disabled={product.quantity <= 0} onClick={() => handleAddToCart(product)}>
                 <FontAwesomeIcon icon={faCartPlus} /> Add to Cart
               </button>
 
-              <button className="buy-now" disabled={!product.inStock}>
+              <button className="buy-now" disabled={product.quantity <= 0} onClick={handleBuyNow}>
                 Buy Now
               </button>
             </div>
@@ -328,20 +296,19 @@ const ProductDetails = () => {
           </div>
         </div>
 
-        {/* Description and Reviews Section */}
         <div className="product-details__tabs">
           <div className="tabs__header">
             <button
               className={`tab-button ${activeTab === 'description' ? 'active' : ''}`}
               onClick={() => setActiveTab('description')}
             >
-              Description
+              Thông tin
             </button>
             <button
               className={`tab-button ${activeTab === 'reviews' ? 'active' : ''}`}
               onClick={() => setActiveTab('reviews')}
             >
-              Reviews ({product.averageRating})
+              Đánh giá ({product.averageRating})
             </button>
           </div>
 
@@ -350,7 +317,23 @@ const ProductDetails = () => {
               <div className="description-content">
                 <h3>Thông tin sản phẩm</h3>
                 <div className="description-text">
-                  <p>{product.description}</p>
+                  <div>
+                    {product.description.split('\n').map((paragraph, index) => {
+                      const match = paragraph.match(/^(.+?):\s*(.*)$/); // tách phần in đậm trước dấu :
+                      return (
+                        <p key={index} className="mb-4 leading-relaxed text-[16px] text-gray-800">
+                          {match ? (
+                            <>
+                              <strong>{match[1]}:</strong> {match[2]}
+                            </>
+                          ) : (
+                            paragraph
+                          )}
+                        </p>
+                      );
+                    })}
+                  </div>
+
                   <div className="product-features">
                     <h4>Thông tin:</h4>
                     <ul>
@@ -361,20 +344,13 @@ const ProductDetails = () => {
                       ))}
                     </ul>
                   </div>
-                  {product.isOrganic && (
-                    <div className="organic-info">
-                      <FontAwesomeIcon icon={faLeaf} />
-                      <h4>Organic Product</h4>
-                      <p>This product is certified organic and meets all organic farming standards.</p>
-                    </div>
-                  )}
                 </div>
               </div>
             ) : (
               <div className="reviews-content">
                 <div className="reviews-summary">
                   <div className="rating-overview">
-                    <h3>Customer Reviews</h3>
+                    <h3>Đánh giá từ khách hàng</h3>
                     <div className="average-rating">
                       <span className="rating-number">{product.rating}</span>
                       <div className="stars">
@@ -412,136 +388,14 @@ const ProductDetails = () => {
                     </div>
                   ))}
                 </div>
-
-                <div className="write-review">
-                  <button className="write-review-button">
-                    <FontAwesomeIcon icon={faStar} /> Write a Review
-                  </button>
-                </div>
               </div>
             )}
           </div>
         </div>
 
-        {/* Related Products Section */}
         <div className="product-details__related">
-          <h2 className="related__title">Related Products</h2>
-          <div className="related__products">
-            {[
-              {
-                id: 1,
-                name: 'Large Garden Spinach & Herb Wrap Tortillas - 15oz,5ct',
-                price: 27.9,
-                originalPrice: 32.9,
-                discount: '15%',
-                rating: 3,
-                reviews: 3,
-                image: 'https://example.com/spinach.jpg',
-                inStock: true,
-              },
-              {
-                id: 2,
-                name: 'Peach - each',
-                price: 0.75,
-                originalPrice: 1.75,
-                discount: '55%',
-                rating: 3,
-                reviews: 3,
-                image: 'https://example.com/peach.jpg',
-                inStock: true,
-              },
-              {
-                id: 3,
-                name: 'Yellow Potatoes Whole Fresh, 5lb Bag',
-                price: 0.5,
-                originalPrice: 1.99,
-                discount: '75%',
-                rating: 3,
-                reviews: 3,
-                image: 'https://example.com/potatoes.jpg',
-                inStock: true,
-              },
-              {
-                id: 4,
-                name: 'Fresh Cauliflower, Each',
-                price: 12.79,
-                originalPrice: 14.79,
-                discount: '14%',
-                rating: 2,
-                reviews: 2,
-                image: 'https://example.com/cauliflower.jpg',
-                inStock: true,
-              },
-              {
-                id: 5,
-                name: 'Fresh Broccoli Crowns, Each',
-                price: 11.54,
-                originalPrice: 17.88,
-                discount: '35%',
-                rating: 3,
-                reviews: 3,
-                image: 'https://example.com/broccoli.jpg',
-                inStock: true,
-              },
-              {
-                id: 6,
-                name: 'Fresh Purple Eggplant',
-                price: 2.99,
-                originalPrice: 3.99,
-                discount: '25%',
-                rating: 3,
-                reviews: 3,
-                image: 'https://example.com/eggplant.jpg',
-                inStock: true,
-              },
-            ].map((relatedProduct) => (
-              <div
-                key={relatedProduct.id}
-                className="related__product-card"
-                onClick={() => handleRelatedProductClick(relatedProduct.id)}
-                style={{ cursor: 'pointer' }}
-              >
-                <div className="product-card__image">
-                  <img src={relatedProduct.image} alt={relatedProduct.name} />
-                  {relatedProduct.discount && <span className="discount-badge">{relatedProduct.discount}</span>}
-                  <button
-                    className="wishlist-button"
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevent triggering parent click
-                      // Add wishlist functionality here
-                    }}
-                  >
-                    <FontAwesomeIcon icon={faHeart} />
-                  </button>
-                </div>
-                <div className="product-card__content">
-                  <h3 className="product-name">{relatedProduct.name}</h3>
-                  <div className="product-rating">
-                    <div className="stars">
-                      {[...Array(5)].map((_, index) => (
-                        <FontAwesomeIcon
-                          key={index}
-                          icon={faStar}
-                          className={index < relatedProduct.rating ? 'filled' : ''}
-                        />
-                      ))}
-                    </div>
-                    <span className="review-count">({relatedProduct.reviews})</span>
-                  </div>
-                  <div className="product-price">
-                    <span className="current-price">${relatedProduct.price.toFixed(2)}</span>
-                    {relatedProduct.originalPrice && (
-                      <span className="original-price">${relatedProduct.originalPrice.toFixed(2)}</span>
-                    )}
-                  </div>
-                  <button className="add-to-cart-btn" disabled={!relatedProduct.inStock}>
-                    <FontAwesomeIcon icon={faCartPlus} />
-                    {relatedProduct.inStock ? 'Add to Cart' : 'Out of Stock'}
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
+          <h2 className="related__title">Sản phẩm liên quan</h2>
+          <ProductsCategoryList idCategory={product._idCategory._id} />
         </div>
       </div>
     </>

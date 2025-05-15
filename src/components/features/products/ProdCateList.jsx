@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createAxios } from '@utils/createInstance.jsx';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { addItemToCart } from '@services/CartService';
+import toast from 'react-hot-toast';
 
 const ProductsCategoryList = ({ idCategory }) => {
   const navigate = useNavigate();
@@ -32,14 +33,29 @@ const ProductsCategoryList = ({ idCategory }) => {
   const handleAddToCart = async (product) => {
     if (!product || !product._id) return;
 
-    console.log('Add to cart:', product._id);
-
     const formData = {
       productId: product._id,
       quantity: 1,
     };
 
-    await addItemToCart(formData, dispatch, accessToken, axiosJWT);
+    if (!accessToken || user === null) {
+      toast.dismiss();
+      toast('Vui lòng đăng nhập', {
+        icon: '⚠️',
+        style: {
+          borderRadius: '10px',
+          background: '#333',
+          color: '#fff',
+        },
+        duration: 2000,
+        position: 'top-center',
+      });
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000);
+    } else {
+      await addItemToCart(formData, dispatch, accessToken, axiosJWT);
+    }
   };
 
   const handleProductClick = (product) => {

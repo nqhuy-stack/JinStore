@@ -219,7 +219,7 @@ const Checkout = () => {
               )}
             </button>
 
-            <Link to="/cart" className="return-to-cart btn btn-cancel">
+            <Link to="/cart" className="btn return-to-cart btn-cancel">
               <FontAwesomeIcon icon={faArrowLeft} /> Quay lại giỏ hàng
             </Link>
           </aside>

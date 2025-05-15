@@ -518,6 +518,7 @@ $admin-transition: all 0.3s ease;
             width: 100% !important;
           }
         }
+
         label {
           display: block;
           font-size: 1.3rem;
@@ -525,6 +526,28 @@ $admin-transition: all 0.3s ease;
           margin-bottom: 5px;
           color: #000000;
           max-width: fit-content;
+        }
+
+        &.checkbox {
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+          width: 100%;
+
+          input {
+            cursor: pointer;
+            margin-right: 8px;
+            width: fit-content;
+
+            &:checked {
+              accent-color: #1a73e8;
+            }
+          }
+
+          label {
+            margin-bottom: 0;
+            font-weight: normal;
+          }
         }
 
         .label__image,

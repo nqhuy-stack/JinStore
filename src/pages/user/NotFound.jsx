@@ -9,12 +9,12 @@ function NotFound() {
         <div className="notfound">
           <div className="notfound__content">
             <img className="img-notfound" src={img_404} alt="Images Not Found" />
-            <span className="notfound__title">That Page Cant Be Found</span>
+            <span className="notfound__title">Trang này không tồn tại</span>
             <p className="notfound__subtext">
-              It looks like nothing was found at this location. Maybe try to search for what you are looking for?
+              Có vẻ như không có gì được tìm thấy tại vị trí này. Có thể cố gắng tìm kiếm những gì bạn đang tìm kiếm?
             </p>
             <Link to="/" className="btn btn-back-home">
-              Go to HomePage
+              Trang chủ
             </Link>
           </div>
         </div>

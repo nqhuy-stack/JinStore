@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinus, faPlus, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import Breadcrumb from '@components/common/Breadcrumb';
@@ -9,9 +9,11 @@ import { loginSuccess } from '@/redux/authSlice.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import NotFound from './NotFound';
 import PageLoad from '../PageLoad';
+import cartEmpty from '@assets/icons/cart-empty.svg';
 
 const Cart = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const user = useSelector((state) => state.auth.login.currentUser);
   const accessToken = user?.accessToken;
@@ -33,7 +35,6 @@ const Cart = () => {
       setLoading(true);
 
       const response = await getCart(accessToken, axiosJWT);
-      console.log(response);
 
       // Kiểm tra nếu response có cấu trúc như trong ảnh
       if (response.success && response.data) {
@@ -108,6 +109,11 @@ const Cart = () => {
     setCartItems((prevItems) => prevItems.filter((item) => item._id !== itemId));
   };
 
+  const handleProductClick = (product) => {
+    if (!product || !product._id) return;
+    navigate(`/product/${product._id}`);
+  };
+
   const handleApplyCoupon = () => {
     // Placeholder for apply coupon handler
     console.log('Apply coupon:', couponCode);
@@ -167,24 +173,12 @@ const Cart = () => {
       });
   };
 
-  console.log('Cart items:', cartItems);
   if (loading) {
     return <PageLoad zIndex={1} />;
   }
 
   if (error) {
     return <NotFound />;
-  }
-
-  if (cartItems.length === 0) {
-    return (
-      <div className="empty-cart">
-        <h2>Giỏ hàng của bạn đang trống</h2>
-        <Link to="/product" className="continue-shopping">
-          <FontAwesomeIcon icon={faArrowLeft} /> Tiếp tục mua sắm
-        </Link>
-      </div>
-    );
   }
 
   return (
@@ -194,90 +188,99 @@ const Cart = () => {
         <div className="cart__container">
           <div className="cart__items">
             <div className="cart__select-all">
-              <input type="checkbox" checked={selectedItems.length === cartItems.length} onChange={handleSelectAll} />
+              <input
+                type="checkbox"
+                checked={cartItems.length !== 0 && selectedItems.length === cartItems.length}
+                onChange={handleSelectAll}
+              />
               <span>Chọn tất cả</span>
             </div>
-            {cartItems.map((item) => (
-              <div key={item._id} className="cart__item">
-                <div className="cart__item-checkbox">
-                  <input
-                    type="checkbox"
-                    checked={selectedItems.includes(item._id)}
-                    onChange={() => handleSelectItem(item._id)}
-                  />
-                </div>
-                <div className="cart__item-image">
-                  <img src={item.images[0].url} alt={item.name} />
-                </div>
-
-                <div className="cart__item-details">
-                  <h3 className="cart__item-name">{item.name}</h3>
-                  <p className="cart__item-seller"></p>
-                  <p className="cart__item-weight"></p>
-
-                  <div className="cart__item-price">
-                    <span className="current-price">
-                      {(item.price - item.price * (item.discount / 100)).toLocaleString()}đ/{item.unit}
-                    </span>
-                    <span className="original-price">{item.price.toLocaleString()}đồng</span>{' '}
-                    <span className="savings">
-                      Tiết kiệm : {(item.price - (item.price - item.price * (item.discount / 100))).toLocaleString()}đ
-                    </span>
-                  </div>
-                </div>
-
-                <div className="cart__item-quantity">
-                  <div className="quantity-label">Số lượng</div>
-                  <div className="quantity-controls">
-                    <button
-                      onClick={() => handleQuantityChange(item._id, -1, item.quantity)}
-                      className="quantity-btn"
-                      disabled={item.quantity <= 1}
-                    >
-                      <FontAwesomeIcon icon={faMinus} />
-                    </button>
+            {cartItems.length !== 0 ? (
+              cartItems.map((item) => (
+                <div key={item._id} className="cart__item">
+                  <div className="cart__item-checkbox">
                     <input
-                      type="number"
-                      className="quantity-value"
-                      value={item.quantity}
-                      onChange={(e) => handleQuantityInput(item._id, e.target.value)}
-                      min="1"
+                      type="checkbox"
+                      checked={selectedItems.includes(item._id)}
+                      onChange={() => handleSelectItem(item._id)}
                     />
-                    <button onClick={() => handleQuantityChange(item._id, 1, item.quantity)} className="quantity-btn">
-                      <FontAwesomeIcon icon={faPlus} />
+                  </div>
+                  <div className="cart__item-image">
+                    <img src={item.images[0].url} alt={item.name} />
+                  </div>
+
+                  <div className="cart__item-details">
+                    <h3 className="cart__item-name">{item.name}</h3>
+                    <p className="cart__item-seller"></p>
+                    <p className="cart__item-weight"></p>
+
+                    <div className="cart__item-price">
+                      <span className="current-price">
+                        {(item.price - item.price * (item.discount / 100)).toLocaleString()}đ/{item.unit}
+                      </span>
+                      <span className="original-price">{item.price.toLocaleString()}đồng</span>{' '}
+                      <span className="savings">
+                        Tiết kiệm : {(item.price - (item.price - item.price * (item.discount / 100))).toLocaleString()}đ
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="cart__item-quantity">
+                    <div className="quantity-label">Số lượng</div>
+                    <div className="quantity-controls">
+                      <button
+                        onClick={() => handleQuantityChange(item._id, -1, item.quantity)}
+                        className="quantity-btn"
+                        disabled={item.quantity <= 1}
+                      >
+                        <FontAwesomeIcon icon={faMinus} />
+                      </button>
+                      <input
+                        type="number"
+                        className="quantity-value"
+                        value={item.quantity}
+                        onChange={(e) => handleQuantityInput(item._id, e.target.value)}
+                        min="1"
+                      />
+                      <button onClick={() => handleQuantityChange(item._id, 1, item.quantity)} className="quantity-btn">
+                        <FontAwesomeIcon icon={faPlus} />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="cart__item-total">
+                    <div className="total-label">Thành tiền</div>
+                    <div className="total-value">
+                      {((item.price - item.price * (item.discount / 100)) * item.quantity).toLocaleString()}đ
+                    </div>
+                  </div>
+
+                  <div className="cart__item-actions">
+                    <button className="remove" onClick={() => handleRemoveItem(item._id)}>
+                      Remove
                     </button>
+                    <button onClick={() => handleProductClick(item)}>Xem chi tiết</button>
                   </div>
                 </div>
-
-                <div className="cart__item-total">
-                  <div className="total-label">Thành tiền</div>
-                  <div className="total-value">
-                    {((item.price - item.price * (item.discount / 100)) * item.quantity).toLocaleString()}đ
-                  </div>
-                </div>
-
-                <div className="cart__item-actions">
-                  <button className="remove" onClick={() => handleRemoveItem(item._id)}>
-                    Remove
-                  </button>
-                </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <img className='img__cart-empty' src={cartEmpty} alt="Cart Empty" />
+            )}
           </div>
 
           <div className="cart__summary">
-            <h2>Cart Total</h2>
+            <h2>Giỏ hàng chi tiết</h2>
 
             <div className="cart__coupon">
-              <div className="coupon-label">Coupon Apply</div>
+              <div className="coupon-label">Áp dụng mã giảm giá</div>
               <div className="coupon-input">
                 <input
                   type="text"
-                  placeholder="Enter Coupon Code Here..."
+                  placeholder="Tìm kiếm mã giảm giá ở đây..."
                   value={couponCode}
                   onChange={(e) => setCouponCode(e.target.value)}
                 />
-                <button onClick={handleApplyCoupon}>Apply</button>
+                <button onClick={handleApplyCoupon}>Áp dụng</button>
               </div>
             </div>
 

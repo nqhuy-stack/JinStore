@@ -216,13 +216,14 @@ const AddDiscount = () => {
               </div>
             </div>
             <div className="admin__form-row">
-              <div className="admin__form-field">
-                <label className="checkbox-label">
-                  <input
-                    type="checkbox"
-                    checked={newDiscount.isActive}
-                    onChange={(e) => setNewDiscount({ ...newDiscount, isActive: e.target.checked })}
-                  />
+              <div className="admin__form-field checkbox">
+                <input
+                  id="discount-isActive"
+                  type="checkbox"
+                  checked={newDiscount.isActive}
+                  onChange={(e) => setNewDiscount({ ...newDiscount, isActive: e.target.checked })}
+                />
+                <label htmlFor="discount-isActive" className="checkbox-label">
                   Kích hoạt mã giảm giá
                 </label>
               </div>

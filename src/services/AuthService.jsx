@@ -42,6 +42,7 @@ export const login = async (user, dispatch, navigate) => {
     toast.dismiss();
     toast.success('Đăng nhập thành công!', {
       autoClose: 1,
+      position: 'top-center',
     });
     if (res.data.isAdmin) {
       navigate('/admin');
@@ -89,6 +90,7 @@ export const logOut = async (dispatch, id, navigate, accessToken, axiosJWT) => {
     toast.dismiss();
     toast.success('Đăng xuất thành công!', {
       autoClose: 1000,
+      position: 'top-center',
     });
 
     // Điều hướng về trang chủ
@@ -113,6 +115,7 @@ export const register = async (user, dispatch, navigate) => {
     toast.dismiss();
     toast.success('Đăng ký thành công!', {
       autoClose: 1000,
+      position: 'top-center',
     });
 
     navigate('/login');
@@ -129,9 +132,9 @@ export const sendOtp = async (email) => await axios.post(`${API_URL}/otp/send-ot
 
 export const verifyOtp = async (email, otp) => await axios.post(`${API_URL}/otp/verify-otp`, { email, otp });
 
-export const resetPassword = async (email, passwordOld, password, confirmPassword) => {
+export const resetPassword = async (email, password, confirmPassword) => {
   try {
-    await axios.patch(`${API_URL}/users/reset-password`, { email, passwordOld, password, confirmPassword });
+    await axios.patch(`${API_URL}/users/reset-password`, { email, password, confirmPassword });
   } catch (error) {
     console.error('Error calling logout API:', error);
     toast.dismiss();
@@ -150,6 +153,7 @@ export const changePassword = async (formData, accessToken, axiosJWT) => {
       toast.dismiss();
       toast.success(response.data.message, {
         autoClose: 1000,
+        position: 'top-center',
       });
     }
     return response.data;

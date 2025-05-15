@@ -13,6 +13,7 @@ export const loginGoogle = async (navigate, dispatch) => {
     toast.dismiss();
     toast.success('Đăng nhập thành công!', {
       autoClose: 1000,
+      position: 'top-center',
     });
     const { accessToken, ...user } = res.data;
     dispatch(loginSuccess({ ...user, accessToken }));

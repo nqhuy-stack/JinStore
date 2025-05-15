@@ -32,25 +32,6 @@ const Products = () => {
   const itemsPerPage = 10;
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const data = await getProductsAll();
-        setOriginalProducts(data);
-
-        if (data && Array.isArray(data)) {
-          setProducts(data);
-        } else {
-          setError('Dữ liệu danh mục không hợp lệ');
-        }
-      } catch {
-        setError('Không thể tải danh mục. Vui lòng thử lại sau.');
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchProducts();
   }, []);
 
@@ -84,6 +65,26 @@ const Products = () => {
     };
     fetchCategories();
   }, []);
+
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const data = await getProductsAll();
+      setOriginalProducts(data);
+
+      if (data && Array.isArray(data)) {
+        setProducts(data);
+      } else {
+        setError('Dữ liệu danh mục không hợp lệ');
+      }
+    } catch {
+      setError('Không thể tải danh mục. Vui lòng thử lại sau.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleFilter = (e) => {
     const _idCategory = e.target.value;
@@ -127,8 +128,7 @@ const Products = () => {
     setLoading(true);
     try {
       await deleteProduct(idProdDel, accessToken, axiosJWT);
-      setProducts((prev) => prev.filter((prod) => prod._id !== idProdDel));
-      setOriginalProducts((prev) => prev.filter((prod) => prod._id !== idProdDel));
+      fetchProducts();
 
       const activeProducts = products.filter((prod) => prod.isActive);
       const newTotalPages = Math.ceil(activeProducts.length / itemsPerPage);

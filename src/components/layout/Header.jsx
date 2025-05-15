@@ -5,14 +5,16 @@ import { Link, useNavigate } from 'react-router-dom';
 import Button from '@components/common/Button.jsx';
 import jsonNavbar from '@json/navbar.jsx';
 import { logOut } from '@services/AuthService.jsx';
-import { logoutSuccess } from '@/redux/authSlice.jsx';
+import { logoutSuccess, loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
+import { getCart } from '@services/CartService';
 
 import logoFull from '@assets/images/logo/logo-full.svg';
 import iconLocation from '@assets/icons/iconlocation.svg';
 import iconSearch from '@assets/icons/iconsearch.svg';
 import iconCart from '@assets/icons/iconcart.svg';
 import iconUser from '@assets/icons/iconuser.svg';
+import toast from 'react-hot-toast';
 
 const Header = () => {
   const user = useSelector((state) => state.auth.login.currentUser);
@@ -20,12 +22,85 @@ const Header = () => {
   const accessToken = user?.accessToken;
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const axiosJWT = createAxios(user, dispatch, logoutSuccess);
+  const axiosJWT_V2 = createAxios(user, dispatch, logoutSuccess);
+  const axiosJWT_V1 = createAxios(user, dispatch, loginSuccess);
 
+  const [lengthItems, setLengthItems] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
 
+  useEffect(() => {
+    fetchCartItems(); // chạy 1 lần khi load Header
+  }, []);
+
+  const fetchCartItems = async () => {
+    try {
+      if (user && accessToken && axiosJWT_V1) {
+        const res = await getCart(accessToken, axiosJWT_V1);
+        const count = res?.itemCount || 0;
+        sessionStorage.setItem('itemCount', count.toString());
+        setLengthItems(count);
+      } else {
+        // fallback khi chưa có token (vẫn lấy từ session)
+        const storedCount = parseInt(sessionStorage.getItem('itemCount') || '0', 10);
+        setLengthItems(storedCount);
+      }
+    } catch (err) {
+      console.error('Lỗi khi lấy giỏ hàng:', err);
+      setLengthItems(0);
+    }
+  };
+
+  // ✅ Khi mount, lắng nghe sự kiện itemCountChanged và window focus
+  useEffect(() => {
+    // Khi window focus (tab trở lại), cập nhật lại cart
+    const handleFocus = () => {
+      const storedCount = parseInt(sessionStorage.getItem('itemCount') || '0', 10);
+      setLengthItems(storedCount);
+    };
+
+    // Khi có sự kiện itemCountChanged được phát ra (từ add/delete/update)
+    const handleItemCountChanged = (e) => {
+      setLengthItems(e.detail); // e.detail là số lượng mới
+    };
+
+    // Lần đầu mount
+    handleFocus();
+
+    // Đăng ký sự kiện
+    window.addEventListener('focus', handleFocus);
+    window.addEventListener('itemCountChanged', handleItemCountChanged);
+
+    return () => {
+      // Hủy đăng ký sự kiện
+      window.removeEventListener('focus', handleFocus);
+      window.removeEventListener('itemCountChanged', handleItemCountChanged);
+    };
+  }, []);
+
   const handleLogout = () => {
-    logOut(dispatch, id, navigate, accessToken, axiosJWT);
+    logOut(dispatch, id, navigate, accessToken, axiosJWT_V2);
+    sessionStorage.removeItem('itemCount'); // ✅ Xóa itemCount khỏi sessionStorage
+    window.dispatchEvent(new CustomEvent('itemCountChanged', { detail: 0 })); // ✅ Cập nhật ngay cho Header
+    setLengthItems(0); // ✅ Cập nhật state ngay
+  };
+
+  const handleCart = () => {
+    if (!user) {
+      toast.dismiss();
+      toast('Vui lý đăng nhập', {
+        icon: '⚠️',
+        style: {
+          borderRadius: '10px',
+          background: '#333',
+          color: '#fff',
+        },
+        duration: 2000,
+        position: 'top-center',
+      });
+      setTimeout(() => {
+        navigate('/login');
+      }, 1000);
+    }
   };
 
   const getInitials = (name) => {
@@ -123,7 +198,7 @@ const Header = () => {
                       </>
                     ) : (
                       <>
-                        <Link to="/login" onClick={() => setIsOpen(false)}>
+                        <Link to="login" onClick={() => setIsOpen(false)}>
                           Đăng nhập
                         </Link>
                         <Link to="/register" onClick={() => setIsOpen(false)}>
@@ -134,10 +209,10 @@ const Header = () => {
                   </div>
                 )}
               </div>
-              <Link to="/cart">
+              <Link to={user && '/cart'} onClick={handleCart}>
                 <div className="header__cart">
-                  <img src={iconCart} alt="iconcart-shopping" />
-                  <span className="header__count">0</span>
+                  <img src={iconCart} alt="icon cart-shopping" />
+                  <span className="header__count">{lengthItems}</span>
                 </div>
               </Link>
             </div>

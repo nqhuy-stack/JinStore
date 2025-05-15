@@ -16,9 +16,11 @@ function Home() {
 
   //COMMENT: sang trang mới sẻ tự cộng cuộn lên đầu
   useEffect(() => {
-    window.scrollTo(0, 0);
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
   }, []);
-
 
   useEffect(() => {
     const fetchCategories = async () => {

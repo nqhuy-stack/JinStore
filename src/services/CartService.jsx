@@ -35,7 +35,11 @@ export const addItemToCart = async (formData, dispatch, accessToken, axiosJWT) =
         headers: authHeaders(accessToken),
       });
       dispatch(addSuccess(res.data));
-      dispatch(resetAddState());
+      const itemCount = res.data.itemCount;
+      if (typeof itemCount !== 'undefined') {
+        sessionStorage.setItem('itemCount', itemCount.toString());
+        window.dispatchEvent(new CustomEvent('itemCountChanged', { detail: itemCount }));
+      }
       return res.data;
     },
     {
@@ -60,6 +64,12 @@ export const getCart = async (accessToken, axiosJWT) => {
     const response = await axiosJWT.get(`${API_URL}/carts`, {
       headers: authHeaders(accessToken),
     });
+    const itemCount = response.data.itemCount;
+    if (typeof itemCount !== 'undefined') {
+      sessionStorage.setItem('itemCount', itemCount.toString());
+      window.dispatchEvent(new CustomEvent('itemCountChanged', { detail: itemCount }));
+    }
+
     return response.data;
   } catch (error) {
     throw error.response?.data || 'Lỗi hệ thống!';
@@ -71,6 +81,12 @@ export const deleteItemInCart = async (_id, accessToken, axiosJWT) => {
     const response = await axiosJWT.delete(`${API_URL}/carts/remove/${_id}`, {
       headers: authHeaders(accessToken),
     });
+    const itemCount = response.data.itemCount;
+    if (typeof itemCount !== 'undefined') {
+      sessionStorage.setItem('itemCount', itemCount.toString());
+      window.dispatchEvent(new CustomEvent('itemCountChanged', { detail: itemCount }));
+    }
+
     return response.data;
   } catch (error) {
     throw error.response?.data || 'Lỗi hệ thống!';

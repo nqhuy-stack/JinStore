@@ -11,6 +11,7 @@ import Breadcrumb from '@components/common/Breadcrumb';
 import { getProductsAll } from '@services/ProductService';
 import { getCategoriesAll } from '@services/CategoryService';
 import { addItemToCart } from '@services/CartService';
+import toast from 'react-hot-toast';
 
 const ProductList = () => {
   const dispatch = useDispatch();
@@ -39,7 +40,6 @@ const ProductList = () => {
 
   // Lấy dữ liệu sản phẩm và danh mục khi component mount
   useEffect(() => {
-    window.scrollTo(0, 0);
     const fetchData = async () => {
       try {
         setLoading(true);
@@ -68,6 +68,10 @@ const ProductList = () => {
     } else {
       setProducts([]); // không tìm thấy thì gán mảng rỗng
     }
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
   }, [slugCategory, categories, originalProducts]);
 
   // Lọc sản phẩm theo danh mục
@@ -189,8 +193,24 @@ const ProductList = () => {
       productId: product._id,
       quantity: 1,
     };
-
-    await addItemToCart(formData, dispatch, accessToken, axiosJWT);
+    if (!accessToken || user === null) {
+      toast.dismiss();
+      toast('Vui lòng đăng nhập', {
+        icon: '⚠️',
+        style: {
+          borderRadius: '10px',
+          background: '#333',
+          color: '#fff',
+        },
+        duration: 2000,
+        position: 'top-center',
+      });
+      setTimeout(() => {
+        navigate('/login');
+      }, 2000);
+    } else {
+      await addItemToCart(formData, dispatch, accessToken, axiosJWT);
+    }
   };
 
   // Xử lý click sản phẩm
