@@ -6,6 +6,7 @@ import { getCategoriesAll } from '@/services/CategoryService';
 import ReusableSection from '@components/common/ReusableSection.jsx';
 import CategoryList from '@components/features/category/CateList.jsx';
 import ProductsCategoryList from '@/components/features/products/ProdCateList.jsx';
+import BannerMini from '@json/bannerMini';
 
 import fullBanner from '@assets/images/banner/full-banner.png';
 import moveRight from '@assets/icons/icon-move-right.svg';
@@ -62,12 +63,7 @@ function Home() {
             category.isOutstanding === true &&
             category.status === 'active' && (
               <>
-                <div className="home__cashBack">
-                  <h1 className="cashBack-title">Get 10% Cashback! Min Order of 300.000</h1>
-                  <p className="cashBack-subtitle">
-                    Use code: <span className="code">GROCERY1920</span>
-                  </p>
-                </div>
+                <BannerMini />
                 <ReusableSection title={category.name} key={category._id} linkTo={`product?category=${category.slug}`}>
                   <ProductsCategoryList idCategory={category._id} />
                 </ReusableSection>

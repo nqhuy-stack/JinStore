@@ -48,9 +48,34 @@ export const getInfoUser = async (accessToken, axiosJWT) => {
   }
 };
 
+export const getInfoUserById = async (id, accessToken, axiosJWT) => {
+  try {
+    const response = await axiosJWT.get(`${API_URL}/users/info-user/${id}`, {
+      timeout: 10000,
+      headers: authHeaders(accessToken),
+    });
+    return response.data;
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || 'Lỗi hệ thống!';
+    toast.error(errorMessage, { duration: 2000 });
+    throw new Error(errorMessage);
+  }
+};
+
 export const updateUser = async (formData, accessToken, axiosJWT) => {
   try {
     const response = await axiosJWT.patch(`${API_URL}/users/info-user/update`, formData, {
+      headers: formDataHeaders(accessToken),
+    });
+    return response.data;
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || 'Lỗi hệ thống!';
+    throw new Error(errorMessage);
+  }
+};
+export const updateUserById = async (id, formData, accessToken, axiosJWT) => {
+  try {
+    const response = await axiosJWT.patch(`${API_URL}/users/info-user/update/${id}`, formData, {
       headers: formDataHeaders(accessToken),
     });
     return response.data;
@@ -63,6 +88,18 @@ export const updateUser = async (formData, accessToken, axiosJWT) => {
 export const uploadAvatar = async (formData, accessToken, axiosJWT) => {
   try {
     const response = await axiosJWT.patch(`${API_URL}/users/info-user/update`, formData, {
+      headers: formDataHeaders(accessToken),
+    });
+    return response.data;
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || 'Lỗi hệ thống!';
+    throw new Error(errorMessage);
+  }
+};
+
+export const uploadAvatarById = async (id, formData, accessToken, axiosJWT) => {
+  try {
+    const response = await axiosJWT.patch(`${API_URL}/users/info-user/update/${id}`, formData, {
       headers: formDataHeaders(accessToken),
     });
     return response.data;

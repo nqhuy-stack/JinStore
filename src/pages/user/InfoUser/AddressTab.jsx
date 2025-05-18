@@ -6,16 +6,21 @@ import {
   setDefaultAddress,
   updateAddress,
   deleteAddress,
+  getAddressesByUserId,
 } from '../../../services/AddressService';
 import { createAxios } from '../../../utils/createInstance';
 import { loginSuccess } from '../../../redux/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import axios from 'axios';
 import PageLoad from '../../PageLoad';
+import { useParams } from 'react-router-dom';
 
 function AddressTab() {
+  const { id } = useParams();
+  console.log(id);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.login.currentUser);
+  const userId = user?._id;
   const accessToken = user?.accessToken;
   const axiosJWT = createAxios(user, dispatch, loginSuccess);
   const [showAddressModal, setShowAddressModal] = useState(false);
@@ -83,10 +88,18 @@ function AddressTab() {
   const fetchAddresses = async () => {
     try {
       setLoading(true);
-      const response = await getAddresses(accessToken, axiosJWT);
-      if (response) {
-        setAddresses(response);
-        console.log('Addresses loaded:', response);
+      if (id) {
+        const response = await getAddressesByUserId(id, accessToken, axiosJWT);
+        if (response) {
+          setAddresses(response);
+          console.log('Addresses loaded:', response);
+        }
+      } else {
+        const response = await getAddresses(accessToken, axiosJWT);
+        if (response) {
+          setAddresses(response);
+          console.log('Addresses loaded:', response);
+        }
       }
     } catch (error) {
       console.error('Error fetching addresses:', error);
@@ -239,9 +252,11 @@ function AddressTab() {
     <div className="profile__tab profile__tab-address">
       <div className="profile__tab-header">
         <h2 className="header__title">Địa chỉ người dùng</h2>
-        <Button type="button" className="btn btn-add" onClick={handleOpenModal}>
-          Thêm địa chỉ mới
-        </Button>
+        {id === userId && (
+          <Button type="button" className="btn btn-add" onClick={handleOpenModal}>
+            Thêm địa chỉ mới
+          </Button>
+        )}
       </div>
 
       {addresses && addresses.length > 0 ? (

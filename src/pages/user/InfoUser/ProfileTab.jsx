@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
-import { updateUser } from '@services/UserService';
+import { updateUser, updateUserById } from '@services/UserService';
 import { createAxios } from '@utils/createInstance.jsx';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
 import Button from '@components/common/Button';
+import { useParams } from 'react-router-dom';
 
 const ProfileTab = ({ infoUser }) => {
+  const { id } = useParams();
   const [isEditing, setIsEditing] = useState(false);
   const [data, setData] = useState(null);
   const [fullname, setFullname] = useState('');
@@ -23,6 +25,7 @@ const ProfileTab = ({ infoUser }) => {
   const axiosJWT = createAxios(user, dispatch, loginSuccess);
 
   useEffect(() => {
+    if (!infoUser) return; // Tránh lỗi nếu infoUser chưa có
     setData(infoUser);
     setFullname(infoUser.fullname || '');
     setUsername(infoUser.username || '');
@@ -89,7 +92,11 @@ const ProfileTab = ({ infoUser }) => {
     }
 
     // Gọi API cập nhật thông tin ở đây
-    await updateUser(formData, accessToken, axiosJWT);
+    if (id) {
+      updateUserById(id, formData, accessToken, axiosJWT);
+    } else {
+      await updateUser(formData, accessToken, axiosJWT);
+    }
     setIsEditing(!isEditing);
     toast.success('Cập nhật thông tin thành công!', {
       duration: 3000,
@@ -164,7 +171,7 @@ const ProfileTab = ({ infoUser }) => {
               type="tel"
               name="phone"
               value={phone}
-              disabled={!isEditing}
+              disabled={id ?? !isEditing}
               onChange={(e) => setPhone(e.target.value)}
             />
           </div>

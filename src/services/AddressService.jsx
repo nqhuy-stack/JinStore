@@ -49,6 +49,33 @@ export const getAddresses = async (accessToken, axiosJWT) => {
   }
 };
 
+export const getAddressesByUserId = async (id, accessToken, axiosJWT) => {
+  try {
+    const response = await axiosJWT.get(`${API_URL}/addresses/user/all/${id}`, {
+      timeout: 15000,
+      headers: authHeaders(accessToken),
+    });
+    console.log('Data address', response.data);
+
+    // Sắp xếp địa chỉ với isDefault = true lên đầu
+    if (response.data.data && Array.isArray(response.data.data)) {
+      const sortedAddresses = [...response.data.data].sort((a, b) => {
+        // Địa chỉ mặc định lên đầu
+        if (a.isDefault && !b.isDefault) return -1;
+        if (!a.isDefault && b.isDefault) return 1;
+        return 0;
+      });
+      return sortedAddresses;
+    }
+
+    return response.data.data;
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || 'Lỗi hệ thống!';
+    toast.error(errorMessage, { duration: 2000 });
+    throw new Error(errorMessage);
+  }
+};
+
 // Thêm địa chỉ mới
 export const addAddress = async (addressData, accessToken, axiosJWT, dispatch) => {
   dispatch(addStart());

@@ -23,7 +23,7 @@ function Register() {
           </div>
           <SocialAccount />
           <p>
-            Already have an account? <Link to="/login">Sign In</Link>
+            Bạn đã có tài khoảng? <Link to="/login">Sign In</Link>
           </p>
         </div>
       </section>

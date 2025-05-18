@@ -56,7 +56,7 @@ function FormLogin() {
             </div>
           </div>
           <div className="form__field">
-            <label>Password *</label>
+            <label>Mật khẩu *</label>
             <div className="form__field-input">
               <input
                 type={showPassword ? 'text' : 'password'}
@@ -71,7 +71,7 @@ function FormLogin() {
             </div>
           </div>
           <span className="link-resetPassword">
-            <Link to="/resetPassword">Forgot password ?</Link>
+            <Link to="/resetPassword">Quên mật khẩu ?</Link>
           </span>
           <Button type="submit" className="btn btn__submit-account" loading={isLoading}>
             Login

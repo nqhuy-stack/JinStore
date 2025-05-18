@@ -7,7 +7,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 // Import required modules
-import { Pagination, Navigation } from 'swiper/modules';
+import { Pagination } from 'swiper/modules'; // ❌ Đã bỏ Navigation
 
 const CategoryList = () => {
   const [categories, setCategories] = useState([]);
@@ -43,9 +43,8 @@ const CategoryList = () => {
           clickable: true,
           dynamicBullets: true,
         }}
-        navigation
         loop
-        modules={[Pagination, Navigation]}
+        modules={[Pagination]}
         breakpoints={{
           640: {
             slidesPerView: 3,

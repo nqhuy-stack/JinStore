@@ -188,38 +188,4 @@
       }
     }
   }
-
-  &__cashBack {
-    @include flexbox(center, center, column, flex, nowrap);
-    gap: 13px;
-    width: 100%;
-    padding: 17px 0;
-    border-radius: 5px;
-    background: url('@assets/images/banner/section2banner.jpg') lightgray 0px -22.254px / 100% 131.836% no-repeat;
-    background-size: cover;
-    background-position: center center;
-    background-repeat: no-repeat;
-    filter: blur(0px);
-
-    .cashBack-title {
-      color: #f8f9fa;
-      text-align: center;
-      font-size: 3rem;
-      font-style: normal;
-      font-weight: 700;
-      line-height: 45px; /* 150% */
-    }
-
-    .cashBack-subtitle {
-      color: white;
-      text-align: center;
-      font-size: 14px;
-      font-style: normal;
-      font-weight: 500;
-      line-height: 16.8px; /* 120% */
-
-      padding: 12px 17px;
-      border: 2px dashed rgba(255, 255, 255, 0.5);
-    }
-  }
 }

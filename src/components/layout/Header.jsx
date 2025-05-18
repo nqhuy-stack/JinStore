@@ -87,7 +87,7 @@ const Header = () => {
   const handleCart = () => {
     if (!user) {
       toast.dismiss();
-      toast('Vui lý đăng nhập', {
+      toast('Vui lòng đăng nhập', {
         icon: '⚠️',
         style: {
           borderRadius: '10px',
@@ -125,31 +125,6 @@ const Header = () => {
   return (
     <Fragment>
       <header className="header">
-        {/*         
-        <section className="header__top">
-          <div className="header__top-content">
-            <div className="header__top-left">
-              <a className="header__top-item__link" href="#">
-                About Us
-              </a>
-              <a className="header__top-item__link" href="#">
-                My account
-              </a>
-              <a className="header__top-item__link" href="#">
-                Wishlist
-              </a>
-              <span className="header__delivery-time">
-                We deliver to you every day from
-                <span className="highlight">7:00 to 23:00</span>
-              </span>
-            </div>
-            <div className="header__top-right">
-              <span className="header__language">English</span>
-              <span className="header__currency">USD</span>
-              <a href="#">Order Tracking</a>
-            </div>
-          </div>
-        </section> */}
         <section className="header__main">
           <div className="header__main-content">
             <div className="header__logo">
@@ -160,9 +135,9 @@ const Header = () => {
             <div className="header__location">
               <img src={iconLocation} alt="local" />
               <span className="header__location-text">
-                Deliver to
+                Giao hàng
                 <br />
-                <strong>all</strong>
+                <strong>toàn quốc</strong>
               </span>
             </div>
             <div className="header__search">

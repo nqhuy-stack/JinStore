@@ -17,7 +17,8 @@ import ProductDetails from '@pages/user/ProductDetails';
 
 import Admin from '@pages/admin/Admin';
 import Users from '@pages/admin/users/Users';
-// import AddUser from '@pages/admin/users/AddUser';
+import ViewUser from '@pages/admin/users/ViewUser';
+import EditUser from '@pages/admin/users/EditUser';
 import Dashboard from '@pages/admin/Dashboard';
 
 import Orders from '@pages/admin/orders/Orders';
@@ -116,7 +117,8 @@ const routes = [
       /*       { path: 'categories/form', page: CategoryForm },
       { path: 'categories/form/:id', page: CategoryForm }, */
       { path: 'users', page: Users },
-      // { path: 'users/add', page: AddUser },
+      { path: 'users/view/:id', page: ViewUser },
+      { path: 'users/edit/:id', page: EditUser },
     ],
   },
 ];

@@ -1,22 +1,24 @@
 import { useEffect, useState } from 'react';
-import { FaUser, FaLock, FaHistory, FaMapMarkerAlt, FaCamera } from 'react-icons/fa';
-import { getInfoUser, uploadAvatar } from '../../services/UserService';
+import { FaUser, FaHistory, FaMapMarkerAlt, FaCamera } from 'react-icons/fa';
+import { getInfoUserById, uploadAvatarById } from '@services/UserService';
 import { createAxios } from '@utils/createInstance.jsx';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
-import PageLoad from '../PageLoad';
-import { useNavigate } from 'react-router-dom';
+import PageLoad from '@pages/PageLoad';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 
-import ProfileTab from './InfoUser/ProfileTab';
-import AddressTab from './InfoUser/AddressTab';
-import ChangePasswordTab from './InfoUser/ChangePasswordTab';
+import ProfileTab from '@pages/user/InfoUser/ProfileTab';
+import AddressTab from '@pages/user/InfoUser/AddressTab';
+
 // Component chính
-const InfoUser = () => {
-  const [activeTab, setActiveTab] = useState('profile');
-
+const ViewUser = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { id } = useParams();
+  const location = useLocation();
+
+  const [activeTab, setActiveTab] = useState('profile');
   const user = useSelector((state) => state.auth.login.currentUser);
   const accessToken = user?.accessToken;
   const axiosJWT = createAxios(user, dispatch, loginSuccess);
@@ -28,7 +30,7 @@ const InfoUser = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const data = await getInfoUser(accessToken, axiosJWT);
+        const data = await getInfoUserById(id, accessToken, axiosJWT);
         if (data.success) {
           setInfoUser(data.user);
         }
@@ -67,7 +69,7 @@ const InfoUser = () => {
         console.log(file);
         formData.append('avatar', file);
 
-        const response = await uploadAvatar(formData, accessToken, axiosJWT);
+        const response = await uploadAvatarById(id, formData, accessToken, axiosJWT);
 
         if (response.success) {
           toast.success('Cập nhật ảnh đại diện thành công!', {
@@ -97,29 +99,29 @@ const InfoUser = () => {
 
   const menuItems = [
     { id: 'profile', label: 'Thông tin cá nhân', icon: <FaUser /> },
-    { id: 'password', label: 'Đổi mật khẩu', icon: <FaLock /> },
     { id: 'orders', label: 'Lịch sử đơn hàng', icon: <FaHistory /> },
     { id: 'addresses', label: 'Sổ địa chỉ', icon: <FaMapMarkerAlt /> },
   ];
 
   // Render tab content dựa trên tab đang active
   const renderTabContent = () => {
+    console.log('activeTab:', activeTab);
     switch (activeTab) {
       case 'profile':
         return <ProfileTab infoUser={infoUser} />;
-      case 'password':
-        return <ChangePasswordTab />;
       case 'orders':
         return <OrdersTab />;
       case 'addresses':
         return <AddressTab />;
       default:
-        return <ProfileTab />;
+        return <ProfileTab infoUser={infoUser} />;
     }
   };
+
   if (loading) {
     return <PageLoad zIndex={1} />;
   }
+
   return (
     <div className="info-user">
       <div className="info-user__sidebar">
@@ -150,7 +152,7 @@ const InfoUser = () => {
               className={`menu-item ${activeTab === item.id ? 'active' : ''}`}
               onClick={() => {
                 setActiveTab(item.id);
-                navigate(`/info-user${item.id === 'profile' ? '' : `?tab=${item.id}`}`);
+                navigate(`/admin/users/view/${id}${item.id === 'profile' ? '' : `?tab=${item.id}`}`);
               }}
               aria-label={item.label}
             >
@@ -166,4 +168,4 @@ const InfoUser = () => {
   );
 };
 
-export default InfoUser;
+export default ViewUser;

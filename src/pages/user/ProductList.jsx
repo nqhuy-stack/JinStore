@@ -38,6 +38,13 @@ const ProductList = () => {
 
   const itemsPerPage = 20;
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }, []);
+
   // Lấy dữ liệu sản phẩm và danh mục khi component mount
   useEffect(() => {
     const fetchData = async () => {
@@ -259,8 +266,8 @@ const ProductList = () => {
       <div className="product-list">
         <div className="product-list__header">
           <div className="product-list__header-content">
-            <h2 className="title">Our Products</h2>
-            <p className="subtitle">Discover our curated selection of premium products</p>
+            <h2 className="title">Sản phẩm của chúng tôi</h2>
+            <p className="subtitle">Khám phá lựa chọn các sản phẩm cao cấp của chúng tôi</p>
           </div>
           <div className="product-list__search">
             <FontAwesomeIcon icon={faSearch} className="search-icon" />

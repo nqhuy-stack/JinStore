@@ -50,7 +50,7 @@ function FormRegister() {
     <Fragment>
       <form className="block__form" onSubmit={handleSubmit}>
         <div className="form__field">
-          <label>Fullname *</label>
+          <label>Tên đầy đủ *</label>
           <div className="form__field-input">
             <input
               type="text"
@@ -74,7 +74,7 @@ function FormRegister() {
           </div>
         </div>
         <div className="form__field">
-          <label>Email address *</label>
+          <label>Email *</label>
           <div className="form__field-input">
             <input type="email" name="email" placeholder="Email" onChange={(e) => setEmail(e.target.value)} required />
           </div>

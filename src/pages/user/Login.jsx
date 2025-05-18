@@ -27,7 +27,7 @@ const Login = () => {
           </div>
           <SocialAccount />
           <p>
-            Don&apos;t have an account? <Link to="/register">Sign up</Link>
+            Bạn chưa có tài khoản? <Link to="/register">Sign up</Link>
           </p>
         </div>
       </section>
