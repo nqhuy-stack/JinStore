@@ -2,7 +2,7 @@ import { Fragment, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 
-import Button from '@components/common/Button.jsx';
+import Button from '@components/common/utils/Button.jsx';
 import jsonNavbar from '@json/navbar.jsx';
 import { logOut } from '@services/AuthService.jsx';
 import { logoutSuccess, loginSuccess } from '@/redux/authSlice.jsx';

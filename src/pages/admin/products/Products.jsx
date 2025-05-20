@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import Modal from '@components/common/Modal';
+import Modal from '@components/common/ui/Modal';
 import { loginSuccess } from '@/redux/authSlice.jsx';
-import Pagination from '@components/common/Pagination';
+import Pagination from '@components/common/ui/Pagination';
 import { createAxios } from '@utils/createInstance.jsx';
 import { getProductsAll, editProduct, deleteProduct } from '@services/ProductService';
 import { getCategoriesAll } from '@services/CategoryService';

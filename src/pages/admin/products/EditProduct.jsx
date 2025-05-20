@@ -7,7 +7,7 @@ import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
 import PageLoad from '@pages/pageLoad';
 import toast from 'react-hot-toast';
-import Modal from '@components/common/Modal';
+import Modal from '@components/common/ui/Modal';
 
 const EditProduct = () => {
   //NOTE: navigate and dispatch

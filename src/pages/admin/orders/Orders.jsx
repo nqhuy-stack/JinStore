@@ -1,8 +1,8 @@
 // File: src/pages/admin/Orders.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Modal from '@components/common/Modal';
-import Pagination from '@components/common/Pagination'; // Thêm import Pagination
+import Modal from '@components/common/ui/Modal';
+import Pagination from '@components/common/ui/Pagination'; // Thêm import Pagination
 import * as XLSX from 'xlsx';
 
 const Orders = () => {

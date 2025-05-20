@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import Button from '@components/common/Button';
+import Button from '@components/common/utils/Button';
 import {
   getAddresses,
   addAddress,
@@ -20,7 +20,6 @@ function AddressTab() {
   console.log(id);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.login.currentUser);
-  const userId = user?._id;
   const accessToken = user?.accessToken;
   const axiosJWT = createAxios(user, dispatch, loginSuccess);
   const [showAddressModal, setShowAddressModal] = useState(false);
@@ -96,6 +95,7 @@ function AddressTab() {
         }
       } else {
         const response = await getAddresses(accessToken, axiosJWT);
+        console.log();
         if (response) {
           setAddresses(response);
           console.log('Addresses loaded:', response);
@@ -252,14 +252,20 @@ function AddressTab() {
     <div className="profile__tab profile__tab-address">
       <div className="profile__tab-header">
         <h2 className="header__title">Địa chỉ người dùng</h2>
-        {id === userId && (
+        {id ? (
+          <></>
+        ) : (
           <Button type="button" className="btn btn-add" onClick={handleOpenModal}>
             Thêm địa chỉ mới
           </Button>
         )}
       </div>
 
-      {addresses && addresses.length > 0 ? (
+      {loading ? (
+        <PageLoad />
+      ) : (
+        addresses &&
+        addresses.length > 0 &&
         addresses.map((address) => (
           <div className="contact-card" key={address._id}>
             <div className="contact-header">
@@ -296,12 +302,10 @@ function AddressTab() {
             </div>
           </div>
         ))
-      ) : (
-        <PageLoad zIndex={1} />
       )}
 
       {showAddressModal && (
-        <div className="address-modal">
+        <div className="modal-overlay">
           <div className="address-modal-content">
             <div className="modal-header">
               <h2>Thêm địa chỉ mới</h2>

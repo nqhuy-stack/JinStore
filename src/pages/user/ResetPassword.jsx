@@ -1,8 +1,8 @@
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 
-import FormForgotPassword from '@components/common/FormForgotPassword.jsx';
-import FormDescribe from '@components/common/formDescribe';
+import FormForgotPassword from '@components/common/forms/FormForgotPassword.jsx';
+import FormDescribe from '@components/common/forms/FormDescribe';
 
 function Register() {
   return (

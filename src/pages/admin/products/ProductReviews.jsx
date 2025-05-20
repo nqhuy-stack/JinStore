@@ -1,6 +1,6 @@
 // File: src/pages/admin/ProductReviews.jsx
 import { useState, useEffect } from 'react';
-import Pagination from '@components/common/Pagination';
+import Pagination from '@components/common/ui/Pagination';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 

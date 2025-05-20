@@ -1,4 +1,4 @@
-import Button from '@components/common/Button';
+import Button from '@components/common/utils/Button';
 import { Fragment, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { changePassword } from '@services/AuthService.jsx';

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Modal from '@components/common/Modal';
+import Modal from '@components/common/ui/Modal';
 import { addDiscount } from '@services/DiscountService';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess } from '@/redux/authSlice.jsx';
@@ -13,6 +13,7 @@ const AddDiscount = () => {
   const [newDiscount, setNewDiscount] = useState({
     code: '',
     discount: '',
+    activation: '',
     expiration: '',
     quantityLimit: '',
     isActive: '',
@@ -31,6 +32,7 @@ const AddDiscount = () => {
   const [touchedFields, setTouchedFields] = useState({
     code: false,
     discount: false,
+    activation: false,
     expiration: false,
     quantityLimit: false,
     isActive: true,
@@ -56,6 +58,7 @@ const AddDiscount = () => {
       const formData = {
         code: newDiscount.code.trim(),
         discount: Number(newDiscount.discount),
+        activation: new Date(newDiscount.activation).toISOString(),
         expiration: new Date(newDiscount.expiration).toISOString(),
         quantityLimit: Number(newDiscount.quantityLimit),
         isActive: Boolean(newDiscount.isActive),
@@ -68,6 +71,7 @@ const AddDiscount = () => {
       setNewDiscount({
         code: '',
         discount: '',
+        activation: '',
         expiration: '',
         quantityLimit: '',
         isActive: true,
@@ -111,6 +115,8 @@ const AddDiscount = () => {
         return 'tên mã giảm giá';
       case 'discount':
         return 'giảm giá';
+      case 'activation ':
+        return 'Ngày kích hoạt';
       case 'expiration':
         return 'Ngày đến hạn';
       case 'isActive':
@@ -175,17 +181,38 @@ const AddDiscount = () => {
               </div>
 
               <div className="admin__form-field">
+                <label htmlFor="discount-activation">
+                  Ngày kích hoạt <span className="required">*</span>
+                </label>
+                <input
+                  type="date"
+                  id="discount-activation"
+                  value={newDiscount.activation}
+                  onChange={(e) => setNewDiscount({ ...newDiscount, activation: e.target.value })}
+                  onBlur={() => handleBlur('activation')}
+                  required
+                  min={moment().format('YYYY-MM-DD')}
+                  placeholder="Nhập ngày kích hoạt"
+                />
+                {touchedFields.activation && !newDiscount.activation && (
+                  <div className="field-error" style={{ color: '#dc3545', marginTop: '5px', fontSize: '1.4rem' }}>
+                    Vui lòng nhập ngày kích hoạt
+                  </div>
+                )}
+              </div>
+
+              <div className="admin__form-field">
                 <label htmlFor="discount-expiration">
                   Ngày hết hạn <span className="required">*</span>
                 </label>
                 <input
-                  type="datetime-local"
+                  type="date"
                   id="discount-expiration"
                   value={newDiscount.expiration}
                   onChange={(e) => setNewDiscount({ ...newDiscount, expiration: e.target.value })}
                   onBlur={() => handleBlur('expiration')}
                   required
-                  min={moment().format('YYYY-MM-DDTHH:mm')}
+                  min={moment().format('YYYY-MM-DD')}
                   placeholder="Nhập ngày hết hạn"
                 />
                 {touchedFields.expiration && !newDiscount.expiration && (
@@ -193,7 +220,16 @@ const AddDiscount = () => {
                     Vui lòng nhập ngày hết hạn
                   </div>
                 )}
+                {/* Kiểm tra logic ngày hết hạn phải sau ngày kích hoạt */}
+                {newDiscount.activation &&
+                  newDiscount.expiration &&
+                  newDiscount.expiration <= newDiscount.activation && (
+                    <div className="field-error" style={{ color: '#dc3545', marginTop: '5px', fontSize: '1.4rem' }}>
+                      Ngày hết hạn phải sau ngày kích hoạt
+                    </div>
+                  )}
               </div>
+
               <div className="admin__form-field">
                 <label htmlFor="discount-quantity">
                   Số lượng <span className="required">*</span>

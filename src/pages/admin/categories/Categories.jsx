@@ -3,8 +3,8 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import Modal from '@components/common/Modal';
-import Pagination from '@components/common/Pagination';
+import Modal from '@components/common/ui/Modal';
+import Pagination from '@components/common/ui/Pagination';
 import { getCategoriesAll, editCategory, deleteCategory } from '@services/CategoryService';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';

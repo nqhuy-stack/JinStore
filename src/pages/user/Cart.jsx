@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMinus, faPlus, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import Breadcrumb from '@components/common/Breadcrumb';
+import Breadcrumb from '@components/common/ui/Breadcrumb';
 import { getCart, deleteItemInCart, updateItemInCart } from '@services/CartService';
 import { createAxios } from '@utils/createInstance.jsx';
 import { loginSuccess } from '@/redux/authSlice.jsx';
@@ -107,6 +107,7 @@ const Cart = () => {
   const handleRemoveItem = async (itemId) => {
     await deleteItemInCart(itemId, accessToken, axiosJWT);
     setCartItems((prevItems) => prevItems.filter((item) => item._id !== itemId));
+    handleSelectItem(itemId);
   };
 
   const handleProductClick = (product) => {
@@ -264,7 +265,7 @@ const Cart = () => {
                 </div>
               ))
             ) : (
-              <img className='img__cart-empty' src={cartEmpty} alt="Cart Empty" />
+              <img className="img__cart-empty" src={cartEmpty} alt="Cart Empty" />
             )}
           </div>
 

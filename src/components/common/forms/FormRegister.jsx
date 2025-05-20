@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { register } from '@services/AuthService.jsx';
 import { LuEye, LuEyeClosed } from 'react-icons/lu';
 
-import Button from '@components/common/Button';
+import Button from '@components/common/utils/Button.jsx';
 function FormRegister() {
   const [fullname, setFullname] = useState('');
   const [username, setUsername] = useState('');

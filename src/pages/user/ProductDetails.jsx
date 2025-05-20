@@ -13,7 +13,7 @@ import {
   //   faMugHot,
   //   faCookie,
 } from '@fortawesome/free-solid-svg-icons';
-import Breadcrumb from '@components/common/Breadcrumb';
+import Breadcrumb from '@components/common/ui/Breadcrumb';
 import { getProduct } from '@services/ProductService';
 import { addItemToCart } from '@services/CartService';
 import { useDispatch, useSelector } from 'react-redux';

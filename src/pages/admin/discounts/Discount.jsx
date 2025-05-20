@@ -3,8 +3,8 @@ import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import Modal from '@components/common/Modal';
-import Pagination from '@components/common/Pagination';
+import Modal from '@components/common/ui/Modal';
+import Pagination from '@components/common/ui/Pagination';
 import { getAllDiscount, toggleDiscountStatus, deleteDiscount } from '@services/DiscountService';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
@@ -138,7 +138,7 @@ const Discount = () => {
   const totalPages = Math.ceil(discount.length / itemsPerPage);
   const currentDiscounts = discount.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-  const formatDate = (isoDate) => moment(isoDate).format('DD/MM/YYYY HH:mm:ss');
+  const formatDate = (isoDate) => moment(isoDate).format('DD/MM/YYYY');
 
   // Check if discount is expired
   const isExpired = (expirationDate) => {
@@ -179,6 +179,7 @@ const Discount = () => {
                   <th className="th-status">Trạng thái</th>
                   <th className="th-code">Mã giảm giá</th>
                   <th className="th-discount">Giảm giá (%)</th>
+                  <th className="th-activation">Hết hạn</th>
                   <th className="th-expiration">Hết hạn</th>
                   <th className="th-quantity">Đã dùng/Giới hạn</th>
                   <th className="th-option">Tùy chỉnh</th>
@@ -208,6 +209,7 @@ const Discount = () => {
                       </td>
                       <td className="td-code">{item.code}</td>
                       <td className="td-discount">{item.discount}%</td>
+                      <td className="td-activation">{formatDate(item.activation)}</td>
                       <td className="td-expiration">{formatDate(item.expiration)}</td>
                       <td className="td-quantity">
                         {item.quantityUsed}/{item.quantityLimit}

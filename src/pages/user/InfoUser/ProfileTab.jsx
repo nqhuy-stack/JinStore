@@ -4,7 +4,7 @@ import { createAxios } from '@utils/createInstance.jsx';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
-import Button from '@components/common/Button';
+import Button from '@components/common/utils/Button';
 import { useParams } from 'react-router-dom';
 
 const ProfileTab = ({ infoUser }) => {
@@ -145,7 +145,7 @@ const ProfileTab = ({ infoUser }) => {
               type="text"
               name="username"
               value={username}
-              disabled={hasPassword}
+              disabled={!isEditing || hasPassword}
               onChange={(e) => setUsername(e.target.value)}
             />
           </div>

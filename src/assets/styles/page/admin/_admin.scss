@@ -431,12 +431,6 @@ $admin-transition: all 0.3s ease;
           color: #6b7280;
         }
       }
-
-      .custom-select {
-        &.select-category {
-          max-width: 100%;
-        }
-      }
     }
 
     // Nút "Add New" (dùng trong Products, Users, Categories)
@@ -611,6 +605,7 @@ $admin-transition: all 0.3s ease;
         textarea,
         select {
           width: 100%;
+          max-width: 100%;
           padding: 10px;
           border: 1px solid #ccc;
           border-radius: 5px;

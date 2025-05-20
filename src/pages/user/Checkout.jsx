@@ -1,39 +1,27 @@
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMapMarkerAlt, faWallet, faArrowLeft, faSpinner } from '@fortawesome/free-solid-svg-icons';
-import Breadcrumb from '@components/common/Breadcrumb';
+import { faMapMarkerAlt, faWallet, faArrowLeft, faSpinner, faShoppingBag } from '@fortawesome/free-solid-svg-icons';
+import Breadcrumb from '@components/common/ui/Breadcrumb';
+import ModalAddress from '@components/common/ui/ModalAddress';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const Checkout = () => {
-  const [selectedAddress, setSelectedAddress] = useState('home');
-  const [selectedPayment, setSelectedPayment] = useState('cod');
+  // State management
+  const [showAddressModal, setShowAddressModal] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState(null);
+  const [selectedPayment, setSelectedPayment] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
+
+  // Router hooks
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Lấy dữ liệu sản phẩm đã chọn và thông tin tóm tắt từ Cart
+  // Get cart data from location state or redirect if empty
   const { selectedProducts = [], summary = {} } = location.state || {};
 
-  const addresses = {
-    home: {
-      name: 'Jack Jennas',
-      address: '8424 James Lane South San Francisco, CA 94080',
-      pinCode: '+380',
-      phone: '+ 380 (0564) 53-29-68',
-      type: 'Home',
-    },
-    office: {
-      name: 'Jack Jennas',
-      address: 'Nakhimovskiy R-N / Lastovaya Ul., bld. 5/A, appt. 12',
-      pinCode: '+380',
-      phone: '+ 380 (0564) 53-29-68',
-      type: 'Office',
-    },
-  };
-
-  // Validate form
+  // Form validation
   const validateForm = () => {
     const newErrors = {};
     if (!selectedAddress) {
@@ -46,15 +34,7 @@ const Checkout = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Sử dụng các giá trị từ summary hoặc tính toán lại nếu không có
-  const subtotal =
-    summary.subtotal || selectedProducts.reduce((sum, item) => sum + item.discountedPrice * item.quantity, 0);
-  const shipping = summary.shipping || 30000;
-  const couponDiscount = summary.couponDiscount || 0;
-  const tax = Math.round(subtotal * 0.1); // giả sử thuế 10%
-  const total = summary.total || subtotal + shipping + tax - couponDiscount;
-
-  // Xử lý đặt hàng
+  // Handle order placement
   const handlePlaceOrder = async () => {
     if (!validateForm()) {
       toast.error('Vui lòng kiểm tra lại thông tin đơn hàng');
@@ -63,15 +43,15 @@ const Checkout = () => {
 
     try {
       setIsLoading(true);
-      // Giả lập API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // TODO: Replace with actual API call to your backend
+      // const response = await placeOrder({
+      //   products: selectedProducts,
+      //   addressId: selectedAddress.id,
+      //   paymentMethod: selectedPayment,
+      //   summary: summary
+      // });
 
-      console.log('Placing order with:');
-      console.log('- Products:', selectedProducts);
-      console.log('- Address:', addresses[selectedAddress]);
-      console.log('- Payment:', selectedPayment);
-      console.log('- Total:', total);
-
+      // Success handling
       toast.success('Đặt hàng thành công!');
       navigate('/order-success');
     } catch (error) {
@@ -82,6 +62,36 @@ const Checkout = () => {
     }
   };
 
+  // Placeholder data for address and payment methods
+  const addresses = [
+    {
+      id: 'addr1',
+      name: 'Nguyễn Văn A',
+      streetAddress: '123 Đường Lê Lợi, Phường Bến Nghé, Quận 1, TP HCM',
+      phone: '0901234567',
+    },
+    {
+      id: 'addr2',
+      name: 'Nguyễn Văn A',
+      streetAddress: '456 Đường Nguyễn Huệ, Phường Bến Nghé, Quận 1, TP HCM',
+      phone: '0907654321',
+    },
+  ];
+
+  const paymentMethods = [
+    {
+      id: 'cod',
+      name: 'Thanh toán khi nhận hàng (COD)',
+      description: 'Thanh toán bằng tiền mặt khi nhận được hàng',
+    },
+    {
+      id: 'vnpay',
+      name: 'Ví VNPay',
+      description: 'Thanh toán trực tuyến qua cổng thanh toán VNPay',
+    },
+  ];
+
+  // Redirect if no products are selected
   if (selectedProducts.length === 0) {
     return (
       <div className="empty-checkout">
@@ -94,7 +104,7 @@ const Checkout = () => {
   }
 
   return (
-    <div>
+    <>
       <Breadcrumb items={[{ text: 'Cart', link: '/cart' }, { text: 'Checkout' }]} />
       <div className="checkout">
         <div className="checkout__container">
@@ -102,68 +112,69 @@ const Checkout = () => {
             {/* Delivery Address Section */}
             <section className="checkout__section">
               <div className="section__header">
-                <FontAwesomeIcon icon={faMapMarkerAlt} />
-                <h2>Địa chỉ giao hàng</h2>
+                <div className="section__title">
+                  <FontAwesomeIcon icon={faMapMarkerAlt} />
+                  <h2>Địa chỉ giao hàng</h2>
+                </div>
+                <div className="section__button">
+                  <button className="btn btn-change__address" onClick={() => setShowAddressModal(true)}>
+                    {selectedAddress ? 'Thay đổi' : 'Chọn địa chỉ'}
+                  </button>
+                </div>
+                {showAddressModal && (
+                  <ModalAddress
+                    addresses={addresses}
+                    onClose={() => setShowAddressModal(false)}
+                    onSelect={(addr) => {
+                      setSelectedAddress(addr);
+                      setShowAddressModal(false);
+                    }}
+                  />
+                )}
               </div>
               {errors.address && <div className="error-message">{errors.address}</div>}
               <div className="address__options">
-                {Object.entries(addresses).map(([key, address]) => (
-                  <label key={key} className="address__option">
-                    <input
-                      type="radio"
-                      name="address"
-                      value={key}
-                      checked={selectedAddress === key}
-                      onChange={(e) => setSelectedAddress(e.target.value)}
-                    />
-                    <div className="address__card">
-                      <div className="address__type">{address.type}</div>
-                      <h3>{address.name}</h3>
-                      <p>{address.address}</p>
-                      <p>Pin Code: {address.pinCode}</p>
-                      <p>Phone: {address.phone}</p>
-                    </div>
-                  </label>
-                ))}
+                {selectedAddress && (
+                  <div className="address__card selected">
+                    <h3>
+                      {selectedAddress.name} | {selectedAddress.phone}
+                    </h3>
+                    <p>{selectedAddress.streetAddress}</p>
+                  </div>
+                )}
+                {!selectedAddress && (
+                  <div className="address__empty">
+                    <p>Vui lòng chọn địa chỉ giao hàng</p>
+                  </div>
+                )}
               </div>
             </section>
 
-            {/* Payment Option Section */}
+            {/* Order Items Section */}
             <section className="checkout__section">
               <div className="section__header">
-                <FontAwesomeIcon icon={faWallet} />
-                <h2>Phương thức thanh toán</h2>
+                <div className="section__title">
+                  <FontAwesomeIcon icon={faShoppingBag} />
+                  <h2>Sản phẩm</h2>
+                </div>
               </div>
-              {errors.payment && <div className="error-message">{errors.payment}</div>}
-              <div className="payment__options">
-                {[
-                  {
-                    value: 'cod',
-                    label: 'Cash On Delivery',
-                    note: 'Pay digitally with SMS Pay Link. Cash may not be accepted in COVID restricted areas.',
-                  },
-                  { value: 'card', label: 'Credit or Debit Card' },
-                  { value: 'netbanking', label: 'Net Banking' },
-                  { value: 'wallet', label: 'My Wallet' },
-                ].map((option) => (
-                  <label key={option.value} className="payment__option">
-                    <input
-                      type="radio"
-                      name="payment"
-                      value={option.value}
-                      checked={selectedPayment === option.value}
-                      onChange={(e) => setSelectedPayment(e.target.value)}
-                    />
-                    <div className="option__content">
-                      <span>{option.label}</span>
-                      {option.note && (
-                        <p className="payment__note">
-                          {option.note}
-                          <button className="know-more">Know more</button>
-                        </p>
-                      )}
+              <div className="order__items">
+                {selectedProducts.map((item) => (
+                  <div key={item._id || item.id} className="order__item">
+                    <div className="item__image">
+                      <img src={(item.images && item.images[0] && item.images[0].url) || ''} alt={item.name} />
                     </div>
-                  </label>
+                    <div className="item__details">
+                      <span className="item__name">{item.name}</span>
+                      <div className="item__info">
+                        <span className="item__quantity">Số lượng: {item.quantity}</span>
+                        <span className="item__price">Đơn giá: {item.discountedPrice?.toLocaleString()}đ</span>
+                      </div>
+                    </div>
+                    <span className="item__total">
+                      {(item.totalPrice || item.discountedPrice * item.quantity)?.toLocaleString()}đ
+                    </span>
+                  </div>
                 ))}
               </div>
             </section>
@@ -172,44 +183,53 @@ const Checkout = () => {
           {/* Order Summary Section */}
           <aside className="checkout__summary">
             <h2>Tóm tắt đơn hàng</h2>
-            <div className="order__items">
-              {selectedProducts.map((item) => (
-                <div key={item._id} className="order__item">
-                  <img src={(item.images && item.images[0] && item.images[0].url) || ''} alt={item.name} />
-                  <div className="item__details">
-                    <span className="item__name">{item.name}</span>
-                    <div className="item__info">
-                      <span className="item__quantity">Số lượng: {item.quantity}</span>
-                      <span className="item__price">Đơn giá: {item.discountedPrice?.toLocaleString()}đ</span>
-                    </div>
-                  </div>
-                  <span className="item__total">{item.totalPrice?.toLocaleString()}đ</span>
-                </div>
-              ))}
-            </div>
-
             <div className="order__totals">
               <div className="total__row">
                 <span>Thành tiền</span>
-                <span>{subtotal.toLocaleString()}đ</span>
+                <span>{summary.subtotal?.toLocaleString()}đ</span>
               </div>
               <div className="total__row">
                 <span>Phí vận chuyển</span>
-                <span>{shipping.toLocaleString()}đ</span>
+                <span>{summary.shipping?.toLocaleString()}đ</span>
               </div>
-              {couponDiscount > 0 && (
+              {summary.couponDiscount > 0 && (
                 <div className="total__row coupon">
                   <span>Mã giảm giá</span>
-                  <span className="discount">-{couponDiscount.toLocaleString()}đ</span>
+                  <span className="discount">-{summary.couponDiscount?.toLocaleString()}đ</span>
                 </div>
               )}
               <div className="total__row final">
                 <span>Tổng thanh toán</span>
-                <span>{total.toLocaleString()}đ</span>
+                <span>{summary.total?.toLocaleString()}đ</span>
+              </div>
+
+              <div className="total__row payment">
+                {errors.payment && <div className="error-message">{errors.payment}</div>}
+                <div className="payment__options">
+                  {paymentMethods.map((method) => (
+                    <div key={method.id} className="payment__option">
+                      <input
+                        id={method.id}
+                        type="radio"
+                        name="payment"
+                        value={method.id}
+                        checked={selectedPayment === method.id}
+                        onChange={(e) => setSelectedPayment(e.target.value)}
+                      />
+                      <label htmlFor={method.id} className="option__content">
+                        <span>{method.name}</span>
+                      </label>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 
-            <button className="place-order__btn" onClick={handlePlaceOrder} disabled={isLoading}>
+            <button
+              className="place-order__btn"
+              onClick={handlePlaceOrder}
+              disabled={isLoading || !selectedAddress || !selectedPayment}
+            >
               {isLoading ? (
                 <>
                   <FontAwesomeIcon icon={faSpinner} spin /> Đang xử lý...
@@ -219,13 +239,13 @@ const Checkout = () => {
               )}
             </button>
 
-            <Link to="/cart" className="btn return-to-cart btn-cancel">
+            <Link to="/cart" className="return-link">
               <FontAwesomeIcon icon={faArrowLeft} /> Quay lại giỏ hàng
             </Link>
           </aside>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -1,4 +1,4 @@
-import Button from '@components/common/Button';
+import Button from '@components/common/utils/Button';
 import { Fragment, useState, useEffect } from 'react';
 import OtpInput from 'react-otp-input';
 import { useNavigate } from 'react-router-dom';

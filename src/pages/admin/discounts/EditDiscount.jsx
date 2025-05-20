@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import Modal from '@components/common/Modal';
+import Modal from '@components/common/ui/Modal';
 import { editDiscount, getDiscountById } from '@services/DiscountService';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess } from '@/redux/authSlice.jsx';
@@ -13,6 +13,7 @@ const EditDiscount = () => {
   const [newDiscount, setNewDiscount] = useState({
     code: '',
     discount: '',
+    activation: '',
     expiration: '',
     quantityLimit: '',
     isActive: '',
@@ -32,6 +33,7 @@ const EditDiscount = () => {
   const [touchedFields, setTouchedFields] = useState({
     code: false,
     discount: false,
+    activation: false,
     expiration: false,
     quantityLimit: false,
     isActive: true,
@@ -44,7 +46,8 @@ const EditDiscount = () => {
         setNewDiscount({
           code: data.code,
           discount: data.discount,
-          expiration: moment(data.expiration).format('YYYY-MM-DDTHH:mm'),
+          activation: moment(data.activation).format('YYYY-MM-DD'),
+          expiration: moment(data.expiration).format('YYYY-MM-DD'),
           quantityLimit: data.quantityLimit,
           isActive: data.isActive,
         });
@@ -54,6 +57,7 @@ const EditDiscount = () => {
         setNewDiscount({
           code: '',
           discount: '',
+          activation: '',
           expiration: '',
           quantityLimit: '',
           isActive: '',
@@ -87,6 +91,7 @@ const EditDiscount = () => {
       const formData = {
         code: newDiscount.code.trim(),
         discount: Number(newDiscount.discount),
+        activation: new Date(newDiscount.activation).toISOString(),
         expiration: new Date(newDiscount.expiration).toISOString(),
         quantityLimit: Number(newDiscount.quantityLimit),
         isActive: Boolean(newDiscount.isActive),
@@ -99,6 +104,7 @@ const EditDiscount = () => {
       setNewDiscount({
         code: '',
         discount: '',
+        activation: '',
         expiration: '',
         quantityLimit: '',
         isActive: true,
@@ -142,6 +148,8 @@ const EditDiscount = () => {
         return 'tên mã giảm giá';
       case 'discount':
         return 'giảm giá';
+      case 'activation':
+        return 'Ngày kích hoạt';
       case 'expiration':
         return 'Ngày đến hạn';
       case 'isActive':
@@ -204,19 +212,39 @@ const EditDiscount = () => {
                   </div>
                 )}
               </div>
+              <div className="admin__form-field">
+                <label htmlFor="discount-activation">
+                  Ngày kích hoạt <span className="required">*</span>
+                </label>
+                <input
+                  type="date"
+                  id="discount-activation"
+                  value={newDiscount.activation}
+                  onChange={(e) => setNewDiscount({ ...newDiscount, activation: e.target.value })}
+                  onBlur={() => handleBlur('activation')}
+                  required
+                  min={moment().format('YYYY-MM-DD')}
+                  placeholder="Nhập ngày kích hoạt"
+                />
+                {touchedFields.activation && !newDiscount.activation && (
+                  <div className="field-error" style={{ color: '#dc3545', marginTop: '5px', fontSize: '1.4rem' }}>
+                    Vui lòng nhập ngày kích hoạt
+                  </div>
+                )}
+              </div>
 
               <div className="admin__form-field">
                 <label htmlFor="discount-expiration">
                   Ngày hết hạn <span className="required">*</span>
                 </label>
                 <input
-                  type="datetime-local"
+                  type="date"
                   id="discount-expiration"
                   value={newDiscount.expiration}
                   onChange={(e) => setNewDiscount({ ...newDiscount, expiration: e.target.value })}
                   onBlur={() => handleBlur('expiration')}
                   required
-                  min={moment().format('YYYY-MM-DDTHH:mm')}
+                  min={moment().format('YYYY-MM-DD')}
                   placeholder="Nhập ngày hết hạn"
                 />
                 {touchedFields.expiration && !newDiscount.expiration && (
@@ -224,6 +252,14 @@ const EditDiscount = () => {
                     Vui lòng nhập ngày hết hạn
                   </div>
                 )}
+                {/* Kiểm tra logic ngày hết hạn phải sau ngày kích hoạt */}
+                {newDiscount.activation &&
+                  newDiscount.expiration &&
+                  newDiscount.expiration <= newDiscount.activation && (
+                    <div className="field-error" style={{ color: '#dc3545', marginTop: '5px', fontSize: '1.4rem' }}>
+                      Ngày hết hạn phải sau ngày kích hoạt
+                    </div>
+                  )}
               </div>
               <div className="admin__form-field">
                 <label htmlFor="discount-quantity">

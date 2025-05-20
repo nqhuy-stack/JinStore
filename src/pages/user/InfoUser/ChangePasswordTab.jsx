@@ -1,4 +1,4 @@
-import FormChangePassword from '@components/common/FormChangePassword';
+import FormChangePassword from '@components/common/forms/FormChangePassword';
 import { useSelector } from 'react-redux';
 function ChangePasswordTab() {
   const user = useSelector((state) => state.auth.login.currentUser);

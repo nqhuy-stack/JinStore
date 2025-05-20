@@ -25,6 +25,8 @@
   border-color: $color-primary-purple;
   background-color: #e6f7f5;
   color: #00c4b4;
+  width: fit-content;
+  min-width: 100px;
   &:focus {
     outline: none;
     box-shadow: none;
@@ -94,4 +96,17 @@
       }
     }
   }
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5); // Nửa trong suốt, đồng bộ với admin
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }

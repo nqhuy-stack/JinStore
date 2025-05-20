@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Pagination from '@components/common/Pagination';
+import Pagination from '@components/common/ui/Pagination';
 import { getAllUsers } from '@services/UserService';
 import { useDispatch, useSelector } from 'react-redux';
 import { createAxios } from '@utils/createInstance.jsx';

@@ -5,7 +5,7 @@ import { logoutSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
 import logoFull from '@assets/images/logo/logo-full.svg';
 import { useState, useMemo } from 'react';
-import Breadcrumb from '@components/common/Breadcrumb';
+import Breadcrumb from '@components/common/ui/Breadcrumb';
 
 const Admin = () => {
   const location = useLocation();

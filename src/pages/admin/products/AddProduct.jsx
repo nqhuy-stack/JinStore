@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Modal from '@components/common/Modal';
+import Modal from '@components/common/ui/Modal';
 import { getCategoriesAll } from '@services/CategoryService';
 import { addProducts } from '@services/ProductService';
 import { useDispatch, useSelector } from 'react-redux';
