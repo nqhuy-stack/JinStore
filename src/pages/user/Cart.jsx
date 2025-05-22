@@ -250,7 +250,7 @@ const Cart = () => {
                 </div>
               ))
             ) : (
-              <img className="img__cart-empty" src={cartEmpty} alt="Cart Empty" />
+              <img className="img__empty" src={cartEmpty} alt="Cart Empty" />
             )}
           </div>
 

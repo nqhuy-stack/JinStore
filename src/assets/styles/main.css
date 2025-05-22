@@ -313,6 +313,11 @@ html {
   color: #634c9f;
 }
 
+.img__empty {
+  max-width: 160px;
+  margin: auto;
+}
+
 .header {
   position: sticky;
   top: 0;
@@ -1977,10 +1982,6 @@ html {
   display: flex;
   flex-direction: column;
   gap: 2rem;
-}
-.cart__items .img__cart-empty {
-  max-width: 160px;
-  margin: auto;
 }
 .cart__select-all {
   display: flex;

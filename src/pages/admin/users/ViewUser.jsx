@@ -10,6 +10,7 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom';
 
 import ProfileTab from '@pages/user/InfoUser/ProfileTab';
 import AddressTab from '@pages/user/InfoUser/AddressTab';
+import OrderTrackingTab from '@pages/user/InfoUser/OrderTrackingTab';
 
 // Component chính
 const ViewUser = () => {
@@ -110,7 +111,7 @@ const ViewUser = () => {
       case 'profile':
         return <ProfileTab infoUser={infoUser} />;
       case 'orders':
-        return <OrdersTab />;
+        return <OrderTrackingTab />;
       case 'addresses':
         return <AddressTab />;
       default:

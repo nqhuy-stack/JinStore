@@ -45,11 +45,22 @@ export const createOrder = async (data, dispatch, accessToken, axiosJWT) => {
 
 export const getOrdersStatus = async (status, accessToken, axiosJWT) => {
   try {
-    const res = await axiosJWT.get(`${API_URL}/orders/status?status=${status}`, {
+    const res = await axiosJWT.get(`${API_URL}/orders?status=${status}`, {
       headers: authHeaders(accessToken),
     });
     return res.data;
   } catch (error) {
-    toast.error(error.response?.data.message, { duration: 2000 });
+    throw error.response?.data.message;
+  }
+};
+
+export const getOrdersByIdStatus = async (id, status, accessToken, axiosJWT) => {
+  try {
+    const res = await axiosJWT.get(`${API_URL}/orders/${id}?status=${status}`, {
+      headers: authHeaders(accessToken),
+    });
+    return res.data;
+  } catch (error) {
+    throw error.response?.data.message;
   }
 };
