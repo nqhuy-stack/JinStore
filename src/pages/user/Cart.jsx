@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import NotFound from './NotFound';
 import PageLoad from '../PageLoad';
 import cartEmpty from '@assets/icons/cart-empty.svg';
+import { toast } from 'react-toastify';
 
 const Cart = () => {
   const dispatch = useDispatch();
@@ -27,7 +28,10 @@ const Cart = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchCartItems();
+    const itemCount = sessionStorage.getItem('itemCount');
+    if (itemCount > 0) {
+      fetchCartItems();
+    }
   }, []);
 
   const fetchCartItems = async () => {
@@ -36,21 +40,10 @@ const Cart = () => {
 
       const response = await getCart(accessToken, axiosJWT);
 
-      // Kiểm tra nếu response có cấu trúc như trong ảnh
-      if (response.success && response.data) {
-        // Chuyển đổi object items thành array
-        const itemsArray = [];
-        for (let key in response.data) {
-          if (!isNaN(parseInt(key))) {
-            // Chuyển đổi dữ liệu từ format của API sang format component
-            const item = response.data[key];
-            itemsArray.push({ ...item });
-          }
-        }
-        setCartItems(itemsArray);
+      if (response.success && Array.isArray(response.data)) {
+        setCartItems(response.data);
       } else {
-        // Nếu response đã là mảng, sử dụng trực tiếp
-        setCartItems(response);
+        setCartItems([]);
       }
     } catch (err) {
       setError('Không thể tải giỏ hàng. Vui lòng thử lại sau.');
@@ -141,8 +134,7 @@ const Cart = () => {
   const calculateSubtotal = () => {
     return cartItems.reduce((total, item) => {
       if (selectedItems.includes(item._id)) {
-        const discountedPrice = item.price - item.price * (item.discount / 100);
-        return total + discountedPrice * item.quantity;
+        return total + item.discountPrice * item.quantity;
       }
       return total;
     }, 0);
@@ -165,11 +157,8 @@ const Cart = () => {
     return cartItems
       .filter((item) => selectedItems.includes(item._id))
       .map((item) => {
-        const discountedPrice = item.price - item.price * (item.discount / 100);
         return {
           ...item,
-          discountedPrice: discountedPrice, // Thêm giá đã giảm
-          totalPrice: discountedPrice * item.quantity, // Thêm tổng giá cho sản phẩm
         };
       });
   };
@@ -217,12 +206,10 @@ const Cart = () => {
 
                     <div className="cart__item-price">
                       <span className="current-price">
-                        {(item.price - item.price * (item.discount / 100)).toLocaleString()}đ/{item.unit}
+                        {item.discountPrice.toLocaleString()}đ/{item.unit}
                       </span>
                       <span className="original-price">{item.price.toLocaleString()}đồng</span>{' '}
-                      <span className="savings">
-                        Tiết kiệm : {(item.price - (item.price - item.price * (item.discount / 100))).toLocaleString()}đ
-                      </span>
+                      <span className="savings">Tiết kiệm : {(item.price - item.discountPrice).toLocaleString()}đ</span>
                     </div>
                   </div>
 
@@ -251,9 +238,7 @@ const Cart = () => {
 
                   <div className="cart__item-total">
                     <div className="total-label">Thành tiền</div>
-                    <div className="total-value">
-                      {((item.price - item.price * (item.discount / 100)) * item.quantity).toLocaleString()}đ
-                    </div>
+                    <div className="total-value">{(item.discountPrice * item.quantity).toLocaleString()}đ</div>
                   </div>
 
                   <div className="cart__item-actions">
@@ -304,7 +289,7 @@ const Cart = () => {
               </div>
             </div>
             <Link
-              to="/checkout"
+              to="/checkout?source=cart"
               state={{
                 selectedProducts: getSelectedProductsData(),
                 summary: {

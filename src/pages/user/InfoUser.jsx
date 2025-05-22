@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 
 import ProfileTab from './InfoUser/ProfileTab';
 import AddressTab from './InfoUser/AddressTab';
+import OrderTrackingTab from './InfoUser/OrderTrackingTab';
 import ChangePasswordTab from './InfoUser/ChangePasswordTab';
 // Component chính
 const InfoUser = () => {
@@ -110,7 +111,7 @@ const InfoUser = () => {
       case 'password':
         return <ChangePasswordTab />;
       case 'orders':
-        return <OrdersTab />;
+        return <OrderTrackingTab />;
       case 'addresses':
         return <AddressTab />;
       default:

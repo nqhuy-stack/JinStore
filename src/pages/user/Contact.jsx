@@ -44,22 +44,17 @@ function Contact() {
           <form className="contact__form">
             <div className="form__row">
               <div>
-                <label className="form__label">Your name *</label>
+                <label className="form__label">Tên đầy đủ của bạn *</label>
                 <input type="text" className="form__input" placeholder="Enter your name" required />
               </div>
               <div>
-                <label className="form__label">Your email *</label>
+                <label className="form__label">Địa chỉ email của bạn *</label>
                 <input type="email" className="form__input" placeholder="Enter your email" required />
               </div>
             </div>
 
             <div className="form__field">
-              <label className="form__label">Subject *</label>
-              <input type="text" className="form__input" placeholder="Enter subject" required />
-            </div>
-
-            <div className="form__field">
-              <label className="form__label">Your message</label>
+              <label className="form__label">Lời góp ý</label>
               <textarea className="form__textarea" placeholder="Enter your message"></textarea>
             </div>
 

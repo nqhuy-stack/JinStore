@@ -2,12 +2,14 @@ import { Fragment, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 
-import Button from '@components/common/utils/Button.jsx';
 import jsonNavbar from '@json/navbar.jsx';
+import Button from '@components/common/utils/Button.jsx';
+import HeaderNav from '@components/common/ui/HeaderNav.jsx';
 import { logOut } from '@services/AuthService.jsx';
 import { logoutSuccess, loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
 import { getCart } from '@services/CartService';
+import PageLoad from '@pages/PageLoad';
 
 import logoFull from '@assets/images/logo/logo-full.svg';
 import iconLocation from '@assets/icons/iconlocation.svg';
@@ -27,6 +29,7 @@ const Header = () => {
 
   const [lengthItems, setLengthItems] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchCartItems(); // chạy 1 lần khi load Header
@@ -77,11 +80,18 @@ const Header = () => {
     };
   }, []);
 
-  const handleLogout = () => {
-    logOut(dispatch, id, navigate, accessToken, axiosJWT_V2);
-    sessionStorage.removeItem('itemCount'); // ✅ Xóa itemCount khỏi sessionStorage
-    window.dispatchEvent(new CustomEvent('itemCountChanged', { detail: 0 })); // ✅ Cập nhật ngay cho Header
-    setLengthItems(0); // ✅ Cập nhật state ngay
+  const handleLogout = async () => {
+    setLoading(true);
+    try {
+      await logOut(dispatch, id, navigate, accessToken, axiosJWT_V2);
+    } catch {
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+    sessionStorage.removeItem('itemCount');
+    window.dispatchEvent(new CustomEvent('itemCountChanged', { detail: 0 }));
+    setLengthItems(0);
   };
 
   const handleCart = () => {
@@ -121,6 +131,10 @@ const Header = () => {
   }, []);
 
   useEffect(() => {});
+
+  if (loading) {
+    return <PageLoad zIndex={1000} />;
+  }
 
   return (
     <Fragment>
@@ -193,17 +207,7 @@ const Header = () => {
             </div>
           </div>
         </section>
-        <nav className="header__nav">
-          <div className="header__nav-content">
-            <ul className="header__menu">
-              {jsonNavbar.slice(0).map((item, i) => (
-                <li key={i}>
-                  <Link to={`${item.path}`}>{item.name}</Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </nav>
+        <HeaderNav dataList={jsonNavbar} />
       </header>
     </Fragment>
   );

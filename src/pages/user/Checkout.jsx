@@ -1,10 +1,18 @@
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMapMarkerAlt, faWallet, faArrowLeft, faSpinner, faShoppingBag } from '@fortawesome/free-solid-svg-icons';
+import { faMapMarkerAlt, faArrowLeft, faSpinner, faShoppingBag } from '@fortawesome/free-solid-svg-icons';
+import { useLocation, Link, useNavigate, useSearchParams } from 'react-router-dom';
+
+import { toast } from 'react-toastify';
+
 import Breadcrumb from '@components/common/ui/Breadcrumb';
 import ModalAddress from '@components/common/ui/ModalAddress';
-import { useLocation, Link, useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import paymentMethods from '@json/paymentMethod';
+import { loginSuccess } from '@/redux/authSlice.jsx';
+import { createAxios } from '@utils/createInstance.jsx';
+
+import { createOrder } from '@services/orderServer';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Checkout = () => {
   // State management
@@ -15,8 +23,15 @@ const Checkout = () => {
   const [errors, setErrors] = useState({});
 
   // Router hooks
+  const user = useSelector((state) => state.auth.login.currentUser);
+  const accessToken = user?.accessToken;
+  const dispatch = useDispatch();
+  const navigator = useNavigate();
+  const axiosJWT = createAxios(user, dispatch, loginSuccess);
   const location = useLocation();
-  const navigate = useNavigate();
+
+  const [searchParams] = useSearchParams();
+  const source = searchParams.get('source');
 
   // Get cart data from location state or redirect if empty
   const { selectedProducts = [], summary = {} } = location.state || {};
@@ -43,17 +58,36 @@ const Checkout = () => {
 
     try {
       setIsLoading(true);
-      // TODO: Replace with actual API call to your backend
-      // const response = await placeOrder({
-      //   products: selectedProducts,
-      //   addressId: selectedAddress.id,
-      //   paymentMethod: selectedPayment,
-      //   summary: summary
-      // });
 
-      // Success handling
-      toast.success('Đặt hàng thành công!');
-      navigate('/order-success');
+      console.log('orderItems', selectedProducts);
+      console.log('shippingAddress', selectedAddress);
+      console.log('paymentMethod', selectedPayment);
+      console.log('totalAmount', summary.total);
+      console.log('note', '');
+      console.log('source', source);
+      const orderItem = selectedProducts.map((product) => ({
+        _idProduct: product._id,
+        name: product.name,
+        quantity: product.quantity,
+        price: product.discountPrice,
+      }));
+      const response = await createOrder(
+        {
+          orderItems: orderItem,
+          shippingAddress: selectedAddress._id,
+          paymentMethod: selectedPayment,
+          totalAmount: summary.total,
+          note: '',
+          source,
+        },
+        dispatch,
+        accessToken,
+        axiosJWT,
+      );
+      if (response.success) {
+        toast.success('Đặt hàng thành công!');
+        navigator('/');
+      }
     } catch (error) {
       toast.error('Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại!');
       console.error('Order error:', error);
@@ -61,47 +95,6 @@ const Checkout = () => {
       setIsLoading(false);
     }
   };
-
-  // Placeholder data for address and payment methods
-  const addresses = [
-    {
-      id: 'addr1',
-      name: 'Nguyễn Văn A',
-      streetAddress: '123 Đường Lê Lợi, Phường Bến Nghé, Quận 1, TP HCM',
-      phone: '0901234567',
-    },
-    {
-      id: 'addr2',
-      name: 'Nguyễn Văn A',
-      streetAddress: '456 Đường Nguyễn Huệ, Phường Bến Nghé, Quận 1, TP HCM',
-      phone: '0907654321',
-    },
-  ];
-
-  const paymentMethods = [
-    {
-      id: 'cod',
-      name: 'Thanh toán khi nhận hàng (COD)',
-      description: 'Thanh toán bằng tiền mặt khi nhận được hàng',
-    },
-    {
-      id: 'vnpay',
-      name: 'Ví VNPay',
-      description: 'Thanh toán trực tuyến qua cổng thanh toán VNPay',
-    },
-  ];
-
-  // Redirect if no products are selected
-  if (selectedProducts.length === 0) {
-    return (
-      <div className="empty-checkout">
-        <h2>Không có sản phẩm nào được chọn để thanh toán</h2>
-        <Link to="/cart" className="return-to-cart">
-          <FontAwesomeIcon icon={faArrowLeft} /> Quay lại giỏ hàng
-        </Link>
-      </div>
-    );
-  }
 
   return (
     <>
@@ -123,7 +116,6 @@ const Checkout = () => {
                 </div>
                 {showAddressModal && (
                   <ModalAddress
-                    addresses={addresses}
                     onClose={() => setShowAddressModal(false)}
                     onSelect={(addr) => {
                       setSelectedAddress(addr);
@@ -135,11 +127,14 @@ const Checkout = () => {
               {errors.address && <div className="error-message">{errors.address}</div>}
               <div className="address__options">
                 {selectedAddress && (
-                  <div className="address__card selected">
+                  <div key={selectedAddress._id} className="address__card selected">
                     <h3>
-                      {selectedAddress.name} | {selectedAddress.phone}
+                      {selectedAddress._idUser?.fullname} | {selectedAddress._idUser?.phone}
                     </h3>
-                    <p>{selectedAddress.streetAddress}</p>
+                    <p>{selectedAddress.detailed}</p>
+                    <p>
+                      {selectedAddress.district}, {selectedAddress.city}, {selectedAddress.province}
+                    </p>
                   </div>
                 )}
                 {!selectedAddress && (
@@ -168,12 +163,10 @@ const Checkout = () => {
                       <span className="item__name">{item.name}</span>
                       <div className="item__info">
                         <span className="item__quantity">Số lượng: {item.quantity}</span>
-                        <span className="item__price">Đơn giá: {item.discountedPrice?.toLocaleString()}đ</span>
+                        <span className="item__price">Đơn giá: {item.discountPrice?.toLocaleString()}đ</span>
                       </div>
                     </div>
-                    <span className="item__total">
-                      {(item.totalPrice || item.discountedPrice * item.quantity)?.toLocaleString()}đ
-                    </span>
+                    <span className="item__total">{item.totalDiscountPrice?.toLocaleString()}đ</span>
                   </div>
                 ))}
               </div>

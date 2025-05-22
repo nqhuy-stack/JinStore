@@ -112,29 +112,27 @@ const ProductDetails = () => {
       return;
     }
 
-    const discountedPrice = product.discountedPrice || product.price;
-    const totalPrice = discountedPrice * quantity;
+    const discountPrice = product.discountPrice || product.price;
+    const totalDiscountPrice = discountPrice * quantity;
 
     const selectedProduct = {
       _id: product._id,
       name: product.name,
       images: product.images || [],
-      discountedPrice,
+      discountPrice,
       quantity,
-      totalPrice,
+      totalDiscountPrice,
     };
 
-    const subtotal = totalPrice;
+    const subtotal = totalDiscountPrice;
     const shipping = 30000;
     const couponDiscount = 0;
-    const tax = Math.round(subtotal * 0.1);
-    const total = subtotal + shipping + tax - couponDiscount;
+    const total = subtotal + shipping - couponDiscount;
 
     const summary = {
       subtotal,
       shipping,
       couponDiscount,
-      tax,
       total,
     };
 

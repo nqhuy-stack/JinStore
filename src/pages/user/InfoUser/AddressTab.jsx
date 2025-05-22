@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, memo } from 'react';
 import Button from '@components/common/utils/Button';
 import {
   getAddresses,
@@ -15,14 +15,15 @@ import axios from 'axios';
 import PageLoad from '../../PageLoad';
 import { useParams } from 'react-router-dom';
 
-function AddressTab() {
+import FormAddress from '@components/common/forms/FormAddress';
+
+function AddressTab({ selectedDefault = null }) {
   const { id } = useParams();
-  console.log(id);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.login.currentUser);
   const accessToken = user?.accessToken;
   const axiosJWT = createAxios(user, dispatch, loginSuccess);
-  const [showAddressModal, setShowAddressModal] = useState(false);
+  const [showFormAddress, setShowFormAddress] = useState(false);
   const [addresses, setAddresses] = useState([]);
 
   // State cho dữ liệu địa chỉ hành chính
@@ -98,7 +99,7 @@ function AddressTab() {
         console.log();
         if (response) {
           setAddresses(response);
-          console.log('Addresses loaded:', response);
+          selectedDefault(response.filter((address) => address.isDefault === true));
         }
       }
     } catch (error) {
@@ -109,11 +110,11 @@ function AddressTab() {
   };
 
   const handleOpenModal = () => {
-    setShowAddressModal(true);
+    setShowFormAddress(true);
   };
 
   const handleCloseModal = () => {
-    setShowAddressModal(false);
+    setShowFormAddress(false);
     // Reset form
     setFormData({
       detailed: '',
@@ -244,7 +245,7 @@ function AddressTab() {
         fetchDistricts(selectedProvince.code);
       }
 
-      setShowAddressModal(true);
+      setShowFormAddress(true);
     }
   };
 
@@ -262,12 +263,12 @@ function AddressTab() {
       </div>
 
       {loading ? (
-        <PageLoad />
+        <PageLoad zIndex={10} />
       ) : (
         addresses &&
         addresses.length > 0 &&
         addresses.map((address) => (
-          <div className="contact-card" key={address._id}>
+          <div className={`contact-card ${address.isDefault ? 'default' : ''}`} key={address._id}>
             <div className="contact-header">
               <h2 className="contact-name">
                 {address._idUser?.fullname} | {address._idUser?.phone}
@@ -304,7 +305,7 @@ function AddressTab() {
         ))
       )}
 
-      {showAddressModal && (
+      {showFormAddress && (
         <div className="modal-overlay">
           <div className="address-modal-content">
             <div className="modal-header">
@@ -313,93 +314,19 @@ function AddressTab() {
                 &times;
               </button>
             </div>
-            <form className="block__form" onSubmit={handleSubmit}>
-              <div className="form-group">
-                <label htmlFor="detailed">Địa chỉ chi tiết</label>
-                <input
-                  type="text"
-                  id="detailed"
-                  name="detailed"
-                  value={formData.detailed}
-                  onChange={handleInputChange}
-                  placeholder="Số nhà, tòa nhà, tên đường..."
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="province">Tỉnh/Thành phố</label>
-                <select
-                  id="province"
-                  name="province"
-                  value={formData.province}
-                  onChange={handleSelectProvince}
-                  disabled={loading}
-                >
-                  <option value="">Chọn Tỉnh/Thành phố</option>
-                  {provinces.map((province) => (
-                    <option key={province.code} value={province.name} data-code={province.code}>
-                      {province.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="city">Quận/Huyện</label>
-                <select
-                  id="city"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleSelectCity}
-                  disabled={!formData.province || loading}
-                >
-                  <option value="">Chọn Quận/Huyện</option>
-                  {districts.map((district) => (
-                    <option key={district.code} value={district.name} data-code={district.code}>
-                      {district.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="district">Phường/Xã</label>
-                <select
-                  id="district"
-                  name="district"
-                  value={formData.district}
-                  onChange={handleSelectWard}
-                  disabled={!formData.city || loading}
-                >
-                  <option value="">Chọn Phường/Xã</option>
-                  {wards.map((ward) => (
-                    <option key={ward.code} value={ward.name}>
-                      {ward.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="form-group checkbox">
-                <input
-                  type="checkbox"
-                  id="isDefault"
-                  name="isDefault"
-                  checked={formData.isDefault}
-                  onChange={handleInputChange}
-                />
-                <label htmlFor="isDefault">Đặt làm địa chỉ mặc định</label>
-              </div>
-
-              <div className="form-actions">
-                <button type="button" className="btn-cancel" onClick={handleCloseModal}>
-                  Hủy
-                </button>
-                <button type="submit" className="btn-save">
-                  Lưu
-                </button>
-              </div>
-            </form>
+            <FormAddress
+              formData={formData}
+              handleSubmit={handleSubmit}
+              handleCloseModal={handleCloseModal}
+              handleInputChange={handleInputChange}
+              handleSelectProvince={handleSelectProvince}
+              handleSelectCity={handleSelectCity}
+              handleSelectWard={handleSelectWard}
+              provinces={provinces}
+              districts={districts}
+              wards={wards}
+              loading={loading}
+            />
           </div>
         </div>
       )}
@@ -407,4 +334,4 @@ function AddressTab() {
   );
 }
 
-export default AddressTab;
+export default memo(AddressTab);

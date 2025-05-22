@@ -21,8 +21,11 @@
       border-radius: 4px;
       padding: 16px;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
       margin-bottom: 16px;
+      &.default {
+        border-color: $color-primary-purple;
+        background-color: #f0fdf4;
+      }
 
       .contact-header {
         display: flex;
@@ -158,6 +161,7 @@
 
         form {
           .form-group {
+            width: 100%;
             margin-bottom: 16px;
 
             label {
