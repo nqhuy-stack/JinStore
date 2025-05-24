@@ -1,6 +1,6 @@
 import { memo, useEffect, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { getOrdersStatus, getOrdersByIdStatus } from '../../../services/orderServer';
+import { getOrdersStatus, getOrdersByIdStatus } from '../../../services/orderService';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
@@ -22,7 +22,7 @@ const OrderTrackingTab = () => {
   const statusMap = {
     all: 'Tất cả',
     pending: 'Chờ xác nhận',
-    confirmed: 'Đã xác nhận',
+    paid: 'Đã thanh toán',
     processing: 'Đang chuẩn bị hàng',
     shipping: 'Đang giao hàng',
     delivered: 'Đã giao hàng',
@@ -114,7 +114,11 @@ const OrderTrackingTab = () => {
               </div>
               <div className="order__info">
                 <span className="info__payment-method">
-                  {item.paymentMethod === 'cod' ? 'Thanh toán khi nhận hàng' : 'Đã thanh toán'}
+                  {item.paymentMethod === 'cod'
+                    ? 'Thanh toán khi nhận hàng'
+                    : item.isPaid === false
+                      ? 'Chưa thanh toán'
+                      : 'Đã thanh toán'}
                 </span>
                 <span className="info__total">Thành tiền: {item.totalAmount?.toLocaleString()}đ</span>
               </div>

@@ -12,6 +12,7 @@ import NotFound from '@pages/user/NotFound.jsx';
 // import Shop from '@pages/user/Shop';
 import Cart from '@pages/user/Cart';
 import Checkout from '@pages/user/Checkout';
+import PaymentSuccess from '@pages/user/PaymentSuccess';
 import ProductList from '@pages/user/ProductList';
 import ProductDetails from '@pages/user/ProductDetails';
 
@@ -94,6 +95,10 @@ const routes = [
   {
     path: '/checkout',
     page: Checkout,
+  },
+  {
+    path: '/checkout/result',
+    page: PaymentSuccess,
   },
   {
     path: '/admin',

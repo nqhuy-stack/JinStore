@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMapMarkerAlt, faArrowLeft, faSpinner, faShoppingBag } from '@fortawesome/free-solid-svg-icons';
-import { useLocation, Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, Link, useSearchParams } from 'react-router-dom';
 
 import { toast } from 'react-toastify';
 
@@ -11,7 +11,8 @@ import paymentMethods from '@json/paymentMethod';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
 
-import { createOrder } from '@services/orderServer';
+import { createOrder } from '@services/orderService';
+import { paymentService } from '@services/PaymentService';
 import { useDispatch, useSelector } from 'react-redux';
 
 const Checkout = () => {
@@ -26,7 +27,6 @@ const Checkout = () => {
   const user = useSelector((state) => state.auth.login.currentUser);
   const accessToken = user?.accessToken;
   const dispatch = useDispatch();
-  const navigator = useNavigate();
   const axiosJWT = createAxios(user, dispatch, loginSuccess);
   const location = useLocation();
 
@@ -65,6 +65,7 @@ const Checkout = () => {
       console.log('totalAmount', summary.total);
       console.log('note', '');
       console.log('source', source);
+
       const orderItem = selectedProducts.map((product) => ({
         _idProduct: product._id,
         name: product.name,
@@ -85,8 +86,14 @@ const Checkout = () => {
         axiosJWT,
       );
       if (response.success) {
-        toast.success('Đặt hàng thành công!');
-        navigator('/');
+        toast.success('Đặt hàng thành công!', {
+          position: 'top-center',
+          autoClose: 2000,
+        });
+        const res = await paymentService(response.data._id, accessToken, axiosJWT);
+        if (res.success && res.paymentUrl) {
+          window.location.href = res.paymentUrl;
+        }
       }
     } catch (error) {
       toast.error('Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại!');

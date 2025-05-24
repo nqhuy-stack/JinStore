@@ -1,7 +1,7 @@
 import { addStart, addSuccess, addFailed, resetAddState } from '@/redux/itemSlice.jsx';
 import { toast } from 'react-hot-toast';
 
-const API_URL = import.meta.env.VITE_API_URL_V1 || import.meta.env.VITE_API_URL_V2;
+const API_URL = import.meta.env.VITE_API_URL_V1 ?? import.meta.env.VITE_API_URL_V2;
 
 // Cấu hình header mặc định
 const defaultHeaders = {
@@ -54,9 +54,9 @@ export const getOrdersStatus = async (status, accessToken, axiosJWT) => {
   }
 };
 
-export const getOrdersByIdStatus = async (id, status, accessToken, axiosJWT) => {
+export const getOrdersByIdStatus = async (idUser, status, accessToken, axiosJWT) => {
   try {
-    const res = await axiosJWT.get(`${API_URL}/orders/${id}?status=${status}`, {
+    const res = await axiosJWT.get(`${API_URL}/orders/${idUser}?status=${status}`, {
       headers: authHeaders(accessToken),
     });
     return res.data;

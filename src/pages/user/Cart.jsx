@@ -10,7 +10,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import NotFound from './NotFound';
 import PageLoad from '../PageLoad';
 import cartEmpty from '@assets/icons/cart-empty.svg';
-import { toast } from 'react-toastify';
 
 const Cart = () => {
   const dispatch = useDispatch();
