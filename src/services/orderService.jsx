@@ -43,22 +43,30 @@ export const createOrder = async (data, dispatch, accessToken, axiosJWT) => {
   }
 };
 
-export const getOrdersStatus = async (status, accessToken, axiosJWT) => {
+export const getOrdersStatus = async (status, accessToken, axiosJWT, signal) => {
   try {
-    const res = await axiosJWT.get(`${API_URL}/orders?status=${status}`, {
-      headers: authHeaders(accessToken),
-    });
+    const res = await axiosJWT.get(
+      `${API_URL}/orders?status=${status}`,
+      {
+        headers: authHeaders(accessToken),
+      },
+      signal,
+    );
     return res.data;
   } catch (error) {
     throw error.response?.data.message;
   }
 };
 
-export const getOrdersByIdStatus = async (idUser, status, accessToken, axiosJWT) => {
+export const getOrdersByIdStatus = async (idUser, status, accessToken, axiosJWT, signal) => {
   try {
-    const res = await axiosJWT.get(`${API_URL}/orders/${idUser}?status=${status}`, {
-      headers: authHeaders(accessToken),
-    });
+    const res = await axiosJWT.get(
+      `${API_URL}/orders/${idUser}?status=${status}`,
+      {
+        headers: authHeaders(accessToken),
+      },
+      signal,
+    );
     return res.data;
   } catch (error) {
     throw error.response?.data.message;

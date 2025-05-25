@@ -1,39 +1,42 @@
-import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faMinus, faPlus, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import Breadcrumb from '@components/common/ui/Breadcrumb';
-import { getCart, deleteItemInCart, updateItemInCart } from '@services/CartService';
-import { createAxios } from '@utils/createInstance.jsx';
-import { loginSuccess } from '@/redux/authSlice.jsx';
 import { useDispatch, useSelector } from 'react-redux';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { faMinus, faPlus, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+
 import NotFound from './NotFound';
 import PageLoad from '../PageLoad';
 import cartEmpty from '@assets/icons/cart-empty.svg';
+import { loginSuccess } from '@/redux/authSlice.jsx';
+import { createAxios } from '@utils/createInstance.jsx';
+import Breadcrumb from '@components/common/ui/Breadcrumb';
+import { getCart, deleteItemInCart, updateItemInCart } from '@services/CartService';
 
 const Cart = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const user = useSelector((state) => state.auth.login.currentUser);
-  const accessToken = user?.accessToken;
-  const axiosJWT = createAxios(user, dispatch, loginSuccess);
-  const [cartItems, setCartItems] = useState([]);
 
+  const [cartItems, setCartItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [couponCode, setCouponCode] = useState('');
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const itemCount = sessionStorage.getItem('itemCount');
-    if (itemCount > 0) {
-      fetchCartItems();
-    }
-  }, []);
+  const isAllSelected = selectedItems.length === cartItems.length;
 
-  const fetchCartItems = async () => {
+  const { accessToken, axiosJWT } = useMemo(() => {
+    if (!user) return { accessToken: null, axiosJWT: null };
+
+    return {
+      accessToken: user.accessToken,
+      axiosJWT: createAxios(user, dispatch, loginSuccess),
+    };
+  }, [user, dispatch]);
+
+  const fetchCartItems = useCallback(async () => {
     try {
       setLoading(true);
 
@@ -50,69 +53,66 @@ const Cart = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [accessToken, axiosJWT]);
 
-  const handleQuantityChange = async (itemId, change, oldQuantity) => {
-    try {
-      const newQuantity = oldQuantity + change;
-      if (newQuantity < 1) return; // Không cho phép số lượng nhỏ hơn 1
-
-      const formData = {
-        productId: itemId,
-        quantity: newQuantity,
-      };
-
-      const response = await updateItemInCart(formData, accessToken, axiosJWT);
-
-      if (response.success) {
-        setCartItems((prevItems) =>
-          prevItems.map((item) => (item._id === itemId ? { ...item, quantity: newQuantity } : item)),
-        );
-      }
-    } catch (error) {
-      console.error('Error updating quantity:', error);
+  useEffect(() => {
+    const itemCount = sessionStorage.getItem('itemCount');
+    if (parseInt(itemCount) > 0) {
+      fetchCartItems();
     }
-  };
+  }, [fetchCartItems]);
 
-  const handleQuantityInput = async (itemId, value) => {
-    try {
-      const newQuantity = parseInt(value);
-      if (isNaN(newQuantity) || newQuantity < 1) return; // Kiểm tra giá trị hợp lệ
+  const handleQuantityChange = useCallback(
+    async (itemId, change, oldQuantity) => {
+      try {
+        const newQuantity = oldQuantity + change;
+        if (newQuantity < 1) return; // Không cho phép số lượng nhỏ hơn 1
 
-      const formData = {
-        productId: itemId,
-        quantity: newQuantity,
-      };
+        const formData = {
+          productId: itemId,
+          quantity: newQuantity,
+        };
 
-      const response = await updateItemInCart(formData, accessToken, axiosJWT);
+        const response = await updateItemInCart(formData, accessToken, axiosJWT);
 
-      if (response.success) {
-        setCartItems((prevItems) =>
-          prevItems.map((item) => (item._id === itemId ? { ...item, quantity: newQuantity } : item)),
-        );
+        if (response?.success) {
+          setCartItems((prevItems) =>
+            prevItems.map((item) => (item._id === itemId ? { ...item, quantity: newQuantity } : item)),
+          );
+        }
+      } catch (error) {
+        console.error('Error updating quantity:', error);
       }
-    } catch (error) {
-      console.error('Error updating quantity:', error);
-    }
-  };
+    },
+    [accessToken, axiosJWT],
+  );
 
-  const handleRemoveItem = async (itemId) => {
-    await deleteItemInCart(itemId, accessToken, axiosJWT);
-    setCartItems((prevItems) => prevItems.filter((item) => item._id !== itemId));
-    handleSelectItem(itemId);
-  };
+  const handleQuantityInput = useCallback(
+    async (itemId, value) => {
+      try {
+        const newQuantity = parseInt(value);
+        if (isNaN(newQuantity) || newQuantity < 1) return; // Kiểm tra giá trị hợp lệ
 
-  const handleProductClick = (product) => {
-    if (!product || !product._id) return;
-    navigate(`/product/${product._id}`);
-  };
+        const formData = {
+          productId: itemId,
+          quantity: newQuantity,
+        };
 
-  const handleApplyCoupon = () => {
-    // Placeholder for apply coupon handler
-    console.log('Apply coupon:', couponCode);
-  };
+        const response = await updateItemInCart(formData, accessToken, axiosJWT);
 
-  const handleSelectItem = (itemId) => {
+        if (response.success) {
+          setCartItems((prevItems) =>
+            prevItems.map((item) => (item._id === itemId ? { ...item, quantity: newQuantity } : item)),
+          );
+        }
+      } catch (error) {
+        console.error('Error updating quantity:', error);
+      }
+    },
+    [accessToken, axiosJWT],
+  );
+
+  const handleSelectItem = useCallback((itemId) => {
     setSelectedItems((prev) => {
       if (prev.includes(itemId)) {
         return prev.filter((id) => id !== itemId);
@@ -120,39 +120,70 @@ const Cart = () => {
         return [...prev, itemId];
       }
     });
-  };
+  }, []);
 
-  const handleSelectAll = () => {
-    if (selectedItems.length === cartItems.length) {
+  const unselectItem = useCallback((itemId) => {
+    setSelectedItems((prev) => prev.filter((id) => id !== itemId));
+  }, []);
+
+  const handleRemoveItem = useCallback(
+    async (itemId) => {
+      try {
+        const res = await deleteItemInCart(itemId, accessToken, axiosJWT);
+        if (res.success) {
+          setCartItems((prevItems) => prevItems.filter((item) => item._id !== itemId));
+          unselectItem(itemId);
+        } else {
+          console.error('Delete failed:', res.message);
+        }
+      } catch (error) {
+        console.error('Error deleting item:', error);
+      }
+    },
+    [accessToken, axiosJWT, unselectItem],
+  );
+
+  const handleProductClick = useCallback(
+    (product) => {
+      if (!product || !product._id) return;
+      navigate(`/product/${product._id}`);
+    },
+    [navigate],
+  );
+
+  const handleApplyCoupon = useCallback(() => {}, []);
+
+  const handleSelectAll = useCallback(() => {
+    if (isAllSelected) {
       setSelectedItems([]);
     } else {
       setSelectedItems(cartItems.map((item) => item._id));
     }
-  };
+  }, [isAllSelected, cartItems]);
 
-  const calculateSubtotal = () => {
+  const calculateSubtotal = useMemo(() => {
     return cartItems.reduce((total, item) => {
       if (selectedItems.includes(item._id)) {
         return total + item.discountPrice * item.quantity;
       }
       return total;
     }, 0);
-  };
+  }, [cartItems, selectedItems]);
 
-  const calculateCouponDiscount = () => {
+  const calculateCouponDiscount = useMemo(() => {
     return 0;
-  };
+  }, []);
 
-  const calculateShipping = () => {
-    return calculateSubtotal() > 0 ? 30000 : 0;
-  };
+  const calculateShipping = useMemo(() => {
+    return calculateSubtotal > 0 ? 30000 : 0;
+  }, [calculateSubtotal]);
 
-  const calculateTotal = () => {
-    return calculateSubtotal() - calculateCouponDiscount() + calculateShipping();
-  };
+  const calculateTotal = useMemo(() => {
+    return calculateSubtotal - calculateCouponDiscount + calculateShipping;
+  }, [calculateSubtotal, calculateCouponDiscount, calculateShipping]);
 
   // Tạo mảng chứa thông tin đầy đủ của các sản phẩm đã chọn để chuyển sang checkout
-  const getSelectedProductsData = () => {
+  const getSelectedProductsData = useMemo(() => {
     return cartItems
       .filter((item) => selectedItems.includes(item._id))
       .map((item) => {
@@ -160,7 +191,7 @@ const Cart = () => {
           ...item,
         };
       });
-  };
+  }, [cartItems, selectedItems]);
 
   if (loading) {
     return <PageLoad zIndex={1} />;
@@ -272,30 +303,30 @@ const Cart = () => {
             <div className="cart__totals">
               <div className="subtotal">
                 <span>Thành tiền</span>
-                <span>{calculateSubtotal().toLocaleString()} đồng</span>
+                <span>{calculateSubtotal.toLocaleString()} đồng</span>
               </div>
               <div className="coupon-discount">
                 <span>Mã giảm giá</span>
-                <span>{calculateCouponDiscount().toLocaleString()} đồng</span>
+                <span>{calculateCouponDiscount.toLocaleString()} đồng</span>
               </div>
               <div className="shipping">
                 <span>Phí vận chuyển</span>
-                <span>{calculateShipping().toLocaleString()} đồng</span>
+                <span>{calculateShipping.toLocaleString()} đồng</span>
               </div>
               <div className="total">
                 <span>Tổng</span>
-                <span className="total-amount">{calculateTotal().toLocaleString()} đồng</span>
+                <span className="total-amount">{calculateTotal.toLocaleString()} đồng</span>
               </div>
             </div>
             <Link
               to="/checkout?source=cart"
               state={{
-                selectedProducts: getSelectedProductsData(),
+                selectedProducts: getSelectedProductsData,
                 summary: {
-                  subtotal: calculateSubtotal(),
-                  couponDiscount: calculateCouponDiscount(),
-                  shipping: calculateShipping(),
-                  total: calculateTotal(),
+                  subtotal: calculateSubtotal,
+                  couponDiscount: calculateCouponDiscount,
+                  shipping: calculateShipping,
+                  total: calculateTotal,
                 },
               }}
             >

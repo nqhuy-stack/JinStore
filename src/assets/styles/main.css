@@ -4468,10 +4468,15 @@ html {
   justify-content: space-between;
   align-items: center;
   padding-bottom: 2rem;
+  margin-bottom: 2rem;
 }
 .profile__tab-order .order-tracking .order__info span {
   font-size: 1.6rem;
   font-weight: 500;
+}
+.profile__tab-order .order-tracking .order__info .info__payment-method {
+  display: block;
+  color: red;
 }
 .profile__tab-order .order-tracking .info__total {
   display: flex;
@@ -4479,6 +4484,25 @@ html {
   align-items: center;
   font-size: 1.6rem;
   font-weight: 500;
+}
+.profile__tab-order .order-tracking .order__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+.profile__tab-order .order-tracking .order__actions .btn__action-order {
+  width: -moz-fit-content;
+  width: fit-content;
+}
+.profile__tab-order .order-tracking .order__actions .btn-detail__order, .profile__tab-order .order-tracking .order__actions .btn-cancelled__order {
+  font-size: 1.6rem;
+  background-color: #fff;
+  border: 1px solid #dadada;
+  color: black;
+  font-weight: 500;
+}
+.profile__tab-order .order-tracking .order__actions .btn-detail__order:hover, .profile__tab-order .order-tracking .order__actions .btn-cancelled__order:hover {
+  background-color: #f5f5f5;
 }
 
 .admin {

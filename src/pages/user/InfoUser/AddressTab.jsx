@@ -1,4 +1,4 @@
-import { useEffect, useState, memo } from 'react';
+import { useEffect, useState, memo, useCallback, useMemo } from 'react';
 import Button from '@components/common/utils/Button';
 import {
   getAddresses,
@@ -11,225 +11,234 @@ import {
 import { createAxios } from '../../../utils/createInstance';
 import { loginSuccess } from '../../../redux/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import axios from 'axios';
 import PageLoad from '../../PageLoad';
 import { useParams } from 'react-router-dom';
-
 import FormAddress from '@components/common/forms/FormAddress';
+import AddressCard from '@components/common/ui/AddressCard';
+import useAddressData from '@hooks/useAddressData';
+
+// Constants
+const INITIAL_FORM_DATA = {
+  detailed: '',
+  district: '',
+  city: '',
+  province: '',
+  isDefault: false,
+};
 
 function AddressTab({ selectedDefault = null }) {
   const { id } = useParams();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.login.currentUser);
-  const accessToken = user?.accessToken;
-  const axiosJWT = createAxios(user, dispatch, loginSuccess);
-  const [showFormAddress, setShowFormAddress] = useState(false);
+
+  // States
   const [addresses, setAddresses] = useState([]);
-
-  // State cho dữ liệu địa chỉ hành chính
+  const [showFormAddress, setShowFormAddress] = useState(false);
   const [editingAddressId, setEditingAddressId] = useState(null);
-  const [provinces, setProvinces] = useState([]);
-  const [districts, setDistricts] = useState([]);
-  const [wards, setWards] = useState([]);
+  const [formData, setFormData] = useState(INITIAL_FORM_DATA);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const [formData, setFormData] = useState({
-    detailed: '',
-    district: '',
-    city: '',
-    province: '',
-    isDefault: false,
-  });
+  // Custom hook for address data
+  const {
+    provinces,
+    districts,
+    wards,
+    loading: addressDataLoading,
+    error: addressDataError,
+    fetchProvinces,
+    fetchDistricts,
+    fetchWards,
+  } = useAddressData();
 
-  useEffect(() => {
-    fetchAddresses();
-    fetchProvinces();
-  }, []);
+  const isViewOnly = useMemo(() => Boolean(id), [id]);
+  const isEditing = useMemo(() => Boolean(editingAddressId), [editingAddressId]);
 
-  // Lấy danh sách tỉnh/thành phố
-  const fetchProvinces = async () => {
+  // Memoized values
+  const { accessToken, axiosJWT } = useMemo(() => {
+    if (!user) return { accessToken: null, axiosJWT: null };
+
+    return {
+      accessToken: user.accessToken,
+      axiosJWT: createAxios(user, dispatch, loginSuccess),
+    };
+  }, [user, dispatch]);
+
+  // Fetch addresses
+  const fetchAddresses = useCallback(async () => {
+    if (!user || !accessToken) return;
+
     setLoading(true);
-    try {
-      const response = await axios.get('https://provinces.open-api.vn/api/p/');
-      setProvinces(response.data);
-    } catch (error) {
-      console.error('Error fetching provinces:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    setError(null);
 
-  // Lấy danh sách quận/huyện dựa trên tỉnh/thành phố đã chọn
-  const fetchDistricts = async (provinceCode) => {
-    setLoading(true);
     try {
-      const response = await axios.get(`https://provinces.open-api.vn/api/p/${provinceCode}?depth=2`);
-      setDistricts(response.data.districts);
-    } catch (error) {
-      console.error('Error fetching districts:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Lấy danh sách phường/xã dựa trên quận/huyện đã chọn
-  const fetchWards = async (districtCode) => {
-    setLoading(true);
-    try {
-      const response = await axios.get(`https://provinces.open-api.vn/api/d/${districtCode}?depth=2`);
-      setWards(response.data.wards);
-    } catch (error) {
-      console.error('Error fetching wards:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchAddresses = async () => {
-    try {
-      setLoading(true);
+      let response;
       if (id) {
-        const response = await getAddressesByUserId(id, accessToken, axiosJWT);
-        if (response) {
-          setAddresses(response);
-          console.log('Addresses loaded:', response);
-        }
+        response = await getAddressesByUserId(id, accessToken, axiosJWT);
       } else {
-        const response = await getAddresses(accessToken, axiosJWT);
-        console.log();
-        if (response) {
-          setAddresses(response);
+        response = await getAddresses(accessToken, axiosJWT);
+      }
+
+      if (response) {
+        setAddresses(response);
+        if (!id && selectedDefault) {
           selectedDefault(response.filter((address) => address.isDefault === true));
         }
       }
     } catch (error) {
       console.error('Error fetching addresses:', error);
+      setError('Không thể tải danh sách địa chỉ');
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, accessToken, axiosJWT, id, selectedDefault]);
 
-  const handleOpenModal = () => {
+  // Initialize data
+  useEffect(() => {
+    fetchAddresses();
+    fetchProvinces();
+  }, [fetchAddresses, fetchProvinces]);
+
+  // Modal handlers
+  const handleOpenModal = useCallback(() => {
     setShowFormAddress(true);
-  };
+    setEditingAddressId(null);
+    setFormData(INITIAL_FORM_DATA);
+  }, []);
 
-  const handleCloseModal = () => {
+  const handleCloseModal = useCallback(() => {
     setShowFormAddress(false);
-    // Reset form
-    setFormData({
-      detailed: '',
-      district: '',
-      city: '',
-      province: '',
-      isDefault: false,
-    });
-    // Reset quận/huyện và phường/xã
-    setDistricts([]);
-    setWards([]);
-  };
+    setEditingAddressId(null);
+    setFormData(INITIAL_FORM_DATA);
+  }, []);
 
-  const handleInputChange = (e) => {
+  // Form handlers
+  const handleInputChange = useCallback((e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: type === 'checkbox' ? checked : value,
-    });
-  };
+    }));
+  }, []);
 
-  const handleSelectProvince = (e) => {
-    const selectedOption = e.target.options[e.target.selectedIndex];
-    const provinceCode = selectedOption.getAttribute('data-code');
-    const provinceName = e.target.value;
+  const handleSelectProvince = useCallback(
+    (e) => {
+      const selectedOption = e.target.options[e.target.selectedIndex];
+      const provinceCode = selectedOption.getAttribute('data-code');
+      const provinceName = e.target.value;
 
-    setFormData({
-      ...formData,
-      province: provinceName,
-      city: '',
-      district: '',
-    });
+      setFormData((prev) => ({
+        ...prev,
+        province: provinceName,
+        city: '',
+        district: '',
+      }));
 
-    if (provinceCode) {
-      fetchDistricts(provinceCode);
-    } else {
-      setDistricts([]);
-      setWards([]);
-    }
-  };
-
-  const handleSelectCity = (e) => {
-    const selectedOption = e.target.options[e.target.selectedIndex];
-    const districtCode = selectedOption.getAttribute('data-code');
-    const districtName = e.target.value;
-
-    setFormData({
-      ...formData,
-      city: districtName,
-      district: '',
-    });
-
-    if (districtCode) {
-      fetchWards(districtCode);
-    } else {
-      setWards([]);
-    }
-  };
-
-  const handleSelectWard = (e) => {
-    const wardName = e.target.value;
-
-    setFormData({
-      ...formData,
-      district: wardName,
-    });
-  };
-
-  // Thêm địa chỉ mới
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    // Validate form
-    if (!formData.detailed || !formData.district || !formData.city || !formData.province) {
-      alert('Vui lòng điền đầy đủ thông tin');
-      return;
-    }
-
-    try {
-      if (editingAddressId) {
-        await updateAddress(editingAddressId, formData, accessToken, axiosJWT);
-      } else {
-        await addAddress(formData, accessToken, axiosJWT, dispatch);
+      if (provinceCode) {
+        fetchDistricts(provinceCode);
       }
-      fetchAddresses();
-      handleCloseModal();
-    } catch (error) {
-      console.error('Error adding address:', error);
-    }
-  };
+    },
+    [fetchDistricts],
+  );
 
-  const handleDelete = async (id) => {
-    if (window.confirm('Bạn có chắc muốn xóa địa chỉ này?')) {
+  const handleSelectCity = useCallback(
+    (e) => {
+      const selectedOption = e.target.options[e.target.selectedIndex];
+      const districtCode = selectedOption.getAttribute('data-code');
+      const districtName = e.target.value;
+
+      setFormData((prev) => ({
+        ...prev,
+        city: districtName,
+        district: '',
+      }));
+
+      if (districtCode) {
+        fetchWards(districtCode);
+      }
+    },
+    [fetchWards],
+  );
+
+  const handleSelectWard = useCallback((e) => {
+    const wardName = e.target.value;
+    setFormData((prev) => ({
+      ...prev,
+      district: wardName,
+    }));
+  }, []);
+
+  // CRUD operations
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
+
+      // Validate form
+      if (!formData.detailed || !formData.district || !formData.city || !formData.province) {
+        alert('Vui lòng điền đầy đủ thông tin');
+        return;
+      }
+
+      setLoading(true);
       try {
-        await deleteAddress(id, accessToken, axiosJWT);
-        fetchAddresses();
+        if (isEditing) {
+          await updateAddress(editingAddressId, formData, accessToken, axiosJWT);
+        } else {
+          await addAddress(formData, accessToken, axiosJWT, dispatch);
+        }
+
+        await fetchAddresses();
+        handleCloseModal();
+      } catch (error) {
+        console.error('Error saving address:', error);
+        alert('Có lỗi xảy ra khi lưu địa chỉ');
+      } finally {
+        setLoading(false);
+      }
+    },
+    [formData, isEditing, editingAddressId, accessToken, axiosJWT, dispatch, fetchAddresses, handleCloseModal],
+  );
+
+  const handleDelete = useCallback(
+    async (addressId) => {
+      if (!window.confirm('Bạn có chắc muốn xóa địa chỉ này?')) return;
+
+      setLoading(true);
+      try {
+        await deleteAddress(addressId, accessToken, axiosJWT);
+        await fetchAddresses();
       } catch (error) {
         console.error('Error deleting address:', error);
+        alert('Có lỗi xảy ra khi xóa địa chỉ');
+      } finally {
+        setLoading(false);
       }
-    }
-  };
+    },
+    [accessToken, axiosJWT, fetchAddresses],
+  );
 
-  const handleSetDefault = async (id) => {
-    try {
-      await setDefaultAddress(id, accessToken, axiosJWT);
-      fetchAddresses();
-    } catch (error) {
-      console.error('Error setting default address:', error);
-    }
-  };
+  const handleSetDefault = useCallback(
+    async (addressId) => {
+      setLoading(true);
+      try {
+        await setDefaultAddress(addressId, accessToken, axiosJWT);
+        await fetchAddresses();
+      } catch (error) {
+        console.error('Error setting default address:', error);
+        alert('Có lỗi xảy ra khi thiết lập địa chỉ mặc định');
+      } finally {
+        setLoading(false);
+      }
+    },
+    [accessToken, axiosJWT, fetchAddresses],
+  );
 
-  const handleUpdate = (id) => {
-    const addressToUpdate = addresses.find((address) => address._id === id);
-    setEditingAddressId(id);
-    if (addressToUpdate) {
+  const handleUpdate = useCallback(
+    (addressId) => {
+      const addressToUpdate = addresses.find((address) => address._id === addressId);
+      if (!addressToUpdate) return;
+
+      setEditingAddressId(addressId);
       setFormData({
         detailed: addressToUpdate.detailed || '',
         district: addressToUpdate.district || '',
@@ -238,82 +247,67 @@ function AddressTab({ selectedDefault = null }) {
         isDefault: addressToUpdate.isDefault || false,
       });
 
-      // Cần fetch districts và wards dựa trên province và city đã chọn
-      // Đây là chức năng phức tạp hơn vì chúng ta cần tìm code dựa trên tên
+      // Fetch districts and wards for the selected province
       const selectedProvince = provinces.find((p) => p.name === addressToUpdate.province);
       if (selectedProvince) {
         fetchDistricts(selectedProvince.code);
       }
 
       setShowFormAddress(true);
-    }
-  };
+    },
+    [addresses, provinces, fetchDistricts],
+  );
+
+  // Render error state
+  if (error) {
+    return (
+      <div className="profile__tab profile__tab-address">
+        <div className="error-state">
+          <p>Có lỗi xảy ra: {error}</p>
+          <button onClick={fetchAddresses}>Thử lại</button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="profile__tab profile__tab-address">
       <div className="profile__tab-header">
         <h2 className="header__title">Địa chỉ người dùng</h2>
-        {id ? (
-          <></>
-        ) : (
+        {!isViewOnly && (
           <Button type="button" className="btn btn-add" onClick={handleOpenModal}>
             Thêm địa chỉ mới
           </Button>
         )}
       </div>
 
-      {loading ? (
-        <PageLoad zIndex={10} />
-      ) : (
-        addresses &&
-        addresses.length > 0 &&
-        addresses.map((address) => (
-          <div className={`contact-card ${address.isDefault ? 'default' : ''}`} key={address._id}>
-            <div className="contact-header">
-              <h2 className="contact-name">
-                {address._idUser?.fullname} | {address._idUser?.phone}
-              </h2>
-              <div className="contact-actions">
-                <button className="btn-update" onClick={() => handleUpdate(address._id)}>
-                  Cập nhật
-                </button>
-                <button className="btn-delete" onClick={() => handleDelete(address._id)}>
-                  Xóa
-                </button>
-              </div>
-            </div>
+      {loading && <PageLoad zIndex={10} />}
 
-            <div className="contact-address">
-              <p>{address.detailed}</p>
-              <p>
-                {address.district}, {address.city}, {address.province}
-              </p>
-            </div>
-
-            <div className="contact-footer">
-              {address.isDefault ? (
-                <button className="btn-default" disabled>
-                  Mặc định
-                </button>
-              ) : (
-                <button className="btn-set-default" onClick={() => handleSetDefault(address._id)}>
-                  Thiết lập mặc định
-                </button>
-              )}
-            </div>
-          </div>
-        ))
+      {addresses.length > 0 && (
+        <div className="addresses-list">
+          {addresses.map((address) => (
+            <AddressCard
+              key={address._id}
+              address={address}
+              onUpdate={handleUpdate}
+              onDelete={handleDelete}
+              onSetDefault={handleSetDefault}
+              isViewOnly={isViewOnly}
+            />
+          ))}
+        </div>
       )}
 
       {showFormAddress && (
         <div className="modal-overlay">
           <div className="address-modal-content">
             <div className="modal-header">
-              <h2>Thêm địa chỉ mới</h2>
+              <h2>{isEditing ? 'Cập nhật địa chỉ' : 'Thêm địa chỉ mới'}</h2>
               <button className="close-btn" onClick={handleCloseModal}>
                 &times;
               </button>
             </div>
+            {addressDataError && <div className="error-message">{addressDataError}</div>}
             <FormAddress
               formData={formData}
               handleSubmit={handleSubmit}
@@ -325,7 +319,7 @@ function AddressTab({ selectedDefault = null }) {
               provinces={provinces}
               districts={districts}
               wards={wards}
-              loading={loading}
+              loading={addressDataLoading}
             />
           </div>
         </div>

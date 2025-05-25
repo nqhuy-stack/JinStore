@@ -1,134 +1,200 @@
-import { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { getOrdersStatus, getOrdersByIdStatus } from '../../../services/orderService';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
+import OrderItem from '../../../components/common/ui/OrderItem';
 
 import cartEmpty from '@assets/icons/cart-empty.svg';
+
+const STATUS_MAP = {
+  all: 'Tất cả',
+  pending: 'Chờ xác nhận',
+  paid: 'Đã thanh toán',
+  processing: 'Đang chuẩn bị hàng',
+  shipping: 'Đang giao hàng',
+  delivered: 'Đã giao hàng',
+  cancelled: 'Đã hủy',
+};
+
+const STATUS_ENTRIES = Object.entries(STATUS_MAP);
 
 const OrderTrackingTab = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const user = useSelector((state) => state.auth.login.currentUser);
-  const accessToken = user?.accessToken;
-  const axiosJWT = createAxios(user, dispatch, loginSuccess);
   const [searchParams] = useSearchParams();
-  const activeTab = searchParams.get('status') || 'pending';
 
+  // States
   const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const statusMap = {
-    all: 'Tất cả',
-    pending: 'Chờ xác nhận',
-    paid: 'Đã thanh toán',
-    processing: 'Đang chuẩn bị hàng',
-    shipping: 'Đang giao hàng',
-    delivered: 'Đã giao hàng',
-    cancelled: 'Đã hủy',
-  };
+  // Refs for cleanup
+  const abortControllerRef = useRef(null);
 
+  // Memoized values
+  const activeTab = useMemo(() => {
+    return searchParams.get('status') || 'pending';
+  }, [searchParams]);
+
+  const { accessToken, axiosJWT } = useMemo(() => {
+    if (!user) return { accessToken: null, axiosJWT: null };
+
+    return {
+      accessToken: user.accessToken,
+      axiosJWT: createAxios(user, dispatch, loginSuccess),
+    };
+  }, [user, dispatch]);
+
+  // Memoized navigation handler
+  const handleNavigate = useCallback(
+    (path) => {
+      navigate(path);
+    },
+    [navigate],
+  );
+
+  // Tab navigation handler
+  const handleTabClick = useCallback(
+    (status) => {
+      const basePath = id ? '' : '/info-user';
+      navigate(`${basePath}?tab=orders&status=${status}`);
+    },
+    [id, navigate],
+  );
+
+  // Fetch orders function
+  const fetchOrdersStatus = useCallback(
+    async (status) => {
+      if (!user || !accessToken) {
+        setOrders([]);
+        return;
+      }
+
+      // Cancel previous request
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+
+      // Create new abort controller
+      abortControllerRef.current = new AbortController();
+
+      setLoading(true);
+      setError(null);
+
+      try {
+        let response;
+        const signal = abortControllerRef.current.signal;
+
+        if (id) {
+          response = await getOrdersByIdStatus(id, status, accessToken, axiosJWT, signal);
+        } else {
+          response = await getOrdersStatus(status, accessToken, axiosJWT, signal);
+        }
+
+        if (response.success) {
+          setOrders(response.data);
+        } else {
+          throw new Error(response.message || 'Failed to fetch orders');
+        }
+      } catch (error) {
+        // Don't set error if request was aborted
+        if (error.name !== 'AbortError') {
+          console.error('Error fetching orders status:', error);
+          setError(error.message || 'Failed to fetch orders');
+          setOrders([]);
+        }
+      } finally {
+        setLoading(false);
+      }
+    },
+    [user, accessToken, axiosJWT, id],
+  );
+
+  // Effect to fetch orders
   useEffect(() => {
     fetchOrdersStatus(activeTab);
-  }, [activeTab]);
 
-  const fetchOrdersStatus = async (status) => {
-    if (!user) {
-      return [];
-    }
-    try {
-      let response;
-      if (id) {
-        console.log(id, status, accessToken, axiosJWT);
-        response = await getOrdersByIdStatus(id, status, accessToken, axiosJWT);
-        if (response.success) {
-          setOrders(response.data);
-        }
-      } else {
-        response = await getOrdersStatus(status, accessToken, axiosJWT);
-        if (response.success) {
-          setOrders(response.data);
-        }
+    // Cleanup function
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
       }
-    } catch (error) {
-      console.error('Error fetching orders status:', error);
-      return [];
-    }
-  };
+    };
+  }, [fetchOrdersStatus, activeTab]);
 
-  return (
-    <>
+  // Render loading state
+  if (loading) {
+    return (
       <div className="profile__tab profile__tab-order">
         <div className="profile__tab-header">
           <nav className="header__nav">
-            {Object.entries(statusMap).map(([key, name]) => (
+            {STATUS_ENTRIES.map(([key, name]) => (
               <button
                 key={key}
                 className={`header__nav-item ${activeTab === key ? 'active' : ''}`}
-                onClick={() => {
-                  navigate(`${id ? '' : '/info-user'}?tab=orders&status=${key}`);
-                }}
+                onClick={() => handleTabClick(key)}
               >
                 {name}
               </button>
             ))}
           </nav>
         </div>
-
-        {orders.length > 0 ? (
-          orders.map((item) => (
-            <div key={item._id || item.id} className="order-tracking">
-              <div className="order__info">
-                <span className="info__date">Ngày đặt hàng: {item.createdAt.split('T')[0]}</span>
-                {Object.entries(statusMap).map(
-                  ([key, name]) =>
-                    item.status === key && (
-                      <span key={key} className="info__status">
-                        {name}
-                      </span>
-                    ),
-                )}
-              </div>
-              <div className="order__items">
-                {item.orderItems.map((item) => (
-                  <div key={item._id || item.id} className="order__item">
-                    <div className="item__image">
-                      <img
-                        src={
-                          (item._idProduct.images && item._idProduct.images[0] && item._idProduct.images[0].url) || ''
-                        }
-                        alt={item.name}
-                      />
-                    </div>
-                    <div className="item__details">
-                      <span className="item__name">{item.name}</span>
-                      <div className="item__info">
-                        <span className="item__quantity">Số lượng: {item.quantity}</span>
-                        {/* <span className="item__price">Đơn giá: {item.price?.toLocaleString()}đ</span> */}
-                      </div>
-                    </div>
-                    <span className="item__total">Đơn giá: {item.price?.toLocaleString()}đ</span>
-                  </div>
-                ))}
-              </div>
-              <div className="order__info">
-                <span className="info__payment-method">
-                  {item.paymentMethod === 'cod'
-                    ? 'Thanh toán khi nhận hàng'
-                    : item.isPaid === false
-                      ? 'Chưa thanh toán'
-                      : 'Đã thanh toán'}
-                </span>
-                <span className="info__total">Thành tiền: {item.totalAmount?.toLocaleString()}đ</span>
-              </div>
-            </div>
-          ))
-        ) : (
-          <img className="img__empty" src={cartEmpty} alt="Cart Empty" />
-        )}
+        <div className="loading-state">Đang tải...</div>
       </div>
-    </>
+    );
+  }
+
+  // Render error state
+  if (error) {
+    return (
+      <div className="profile__tab profile__tab-order">
+        <div className="profile__tab-header">
+          <nav className="header__nav">
+            {STATUS_ENTRIES.map(([key, name]) => (
+              <button
+                key={key}
+                className={`header__nav-item ${activeTab === key ? 'active' : ''}`}
+                onClick={() => handleTabClick(key)}
+              >
+                {name}
+              </button>
+            ))}
+          </nav>
+        </div>
+        <div className="error-state">
+          <p>Có lỗi xảy ra: {error}</p>
+          <button onClick={() => fetchOrdersStatus(activeTab)}>Thử lại</button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="profile__tab profile__tab-order">
+      <div className="profile__tab-header">
+        <nav className="header__nav">
+          {STATUS_ENTRIES.map(([key, name]) => (
+            <button
+              key={key}
+              className={`header__nav-item ${activeTab === key ? 'active' : ''}`}
+              onClick={() => handleTabClick(key)}
+            >
+              {name}
+            </button>
+          ))}
+        </nav>
+      </div>
+
+      {orders.length > 0 ? (
+        orders.map((item) => <OrderItem key={item._id || item.id} item={item} onNavigate={handleNavigate} />)
+      ) : (
+        <img className="img__empty" src={cartEmpty} alt="Cart Empty" />
+      )}
+    </div>
   );
 };
 

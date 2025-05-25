@@ -34,9 +34,14 @@
         justify-content: space-between;
         align-items: center;
         padding-bottom: 2rem;
+        margin-bottom: 2rem;
         span {
           font-size: 1.6rem;
           font-weight: 500;
+        }
+        .info__payment-method {
+          display: block;
+          color: red;
         }
       }
       .info__total {
@@ -45,6 +50,27 @@
         align-items: center;
         font-size: 1.6rem;
         font-weight: 500;
+      }
+      .order__actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+        .btn {
+          &__action-order {
+            width: fit-content;
+          }
+          &-detail__order,
+          &-cancelled__order {
+            font-size: 1.6rem;
+            background-color: #fff;
+            border: 1px solid #dadada;
+            color: black;
+            font-weight: 500;
+            &:hover {
+              background-color: #f5f5f5;
+            }
+          }
+        }
       }
     }
   }

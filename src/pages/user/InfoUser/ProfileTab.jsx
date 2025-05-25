@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { updateUser, updateUserById } from '@services/UserService';
 import { createAxios } from '@utils/createInstance.jsx';
 import { loginSuccess } from '@/redux/authSlice.jsx';
@@ -44,11 +44,11 @@ const ProfileTab = ({ infoUser }) => {
     }
   }, [infoUser]);
 
-  const obfuscateEmail = (email) => {
+  const obfuscateEmail = useMemo(() => {
     const [user, domain] = email.split('@');
     const obfuscatedUser = user.length > 2 ? user[0] + '***' + user[user.length - 1] : user[0] + '*';
     return `${obfuscatedUser}@${domain}`;
-  };
+  }, [email]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -93,7 +93,7 @@ const ProfileTab = ({ infoUser }) => {
 
     // Gọi API cập nhật thông tin ở đây
     if (id) {
-      updateUserById(id, formData, accessToken, axiosJWT);
+      await updateUserById(id, formData, accessToken, axiosJWT);
     } else {
       await updateUser(formData, accessToken, axiosJWT);
     }
@@ -157,7 +157,7 @@ const ProfileTab = ({ infoUser }) => {
             <input
               type="email"
               name="email"
-              value={obfuscateEmail(email)}
+              value={obfuscateEmail}
               disabled
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -171,7 +171,7 @@ const ProfileTab = ({ infoUser }) => {
               type="tel"
               name="phone"
               value={phone}
-              disabled={id ?? !isEditing}
+              disabled={!!id || !isEditing}
               onChange={(e) => setPhone(e.target.value)}
             />
           </div>
@@ -207,7 +207,7 @@ const ProfileTab = ({ infoUser }) => {
         </div>
         {isEditing && (
           <>
-            <Button form="form" type="submit" className="btn btn-cancel" onClick={() => setIsEditing(false)}>
+            <Button form="form" type="button" className="btn btn-cancel" onClick={() => setIsEditing(false)}>
               Hủy
             </Button>
             <Button form="form" type="submit" className="btn btn-update" onClick={() => setIsEditing(true)}>

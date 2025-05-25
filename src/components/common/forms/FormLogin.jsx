@@ -65,7 +65,7 @@ function FormLogin() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-              <Button className="see-password" onClick={togglePasswordVisibility}>
+              <Button type="button" className="see-password" onClick={togglePasswordVisibility}>
                 {showPassword ? <LuEye className="icon-eye" /> : <LuEyeClosed className="icon-eye" />}
               </Button>
             </div>

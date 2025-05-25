@@ -23,6 +23,7 @@ export default defineConfig({
       '@routes': path.resolve(__dirname, 'src/routes'),
       '@json': path.resolve(__dirname, 'src/json'),
       '@services': path.resolve(__dirname, 'src/services'),
+      '@hooks': path.resolve(__dirname, 'src/hooks'),
     },
   },
 });

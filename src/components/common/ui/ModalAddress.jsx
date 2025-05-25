@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import AddressTab from '@pages/user/InfoUser/AddressTab';
 
 function ModalAddress({ onClose, onSelect }) {
@@ -12,6 +12,10 @@ function ModalAddress({ onClose, onSelect }) {
     onSelect(...selectedId);
   };
 
+  const handleSelectDefault = useCallback((id) => {
+    setSelectedId(id);
+  }, []);
+
   return (
     <div className="modal-overlay">
       <div className="modal__content-address">
@@ -20,7 +24,7 @@ function ModalAddress({ onClose, onSelect }) {
             &times;
           </button>
         </div>
-        <AddressTab selectedDefault={(id) => setSelectedId(id)} />
+        <AddressTab selectedDefault={handleSelectDefault} />
         <div className="modal-footer">
           <div className="modal-action_buttons">
             <button className="btn btn-cancel modal-btn" onClick={showAddressModal ? handleCloseModal : onClose}>
