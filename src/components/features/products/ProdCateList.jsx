@@ -50,9 +50,7 @@ const ProductsCategoryList = ({ idCategory }) => {
         duration: 2000,
         position: 'top-center',
       });
-      setTimeout(() => {
-        navigate('/login');
-      }, 2000);
+      navigate('/login');
     } else {
       await addItemToCart(formData, dispatch, accessToken, axiosJWT);
     }

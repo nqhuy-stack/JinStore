@@ -245,13 +245,13 @@ const EditUser = () => {
   }
 
   return (
-    <section className="admin__section">
+    <section className="admin-section">
       {loading ? (
         <PageLoad zIndex="1" />
       ) : (
         <>
-          <div className="admin__section-header">
-            <h2 className="admin__section-title">Chỉnh Sửa Thông Tin Người Dùng</h2>
+          <div className="admin-section__header">
+            <h2 className="admin-section__title">Chỉnh Sửa Thông Tin Người Dùng</h2>
             <button className="btn btn-cancel" onClick={() => navigate('/admin/users')}>
               Quay lại
             </button>

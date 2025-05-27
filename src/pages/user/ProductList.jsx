@@ -194,8 +194,6 @@ const ProductList = () => {
   const handleAddToCart = async (product) => {
     if (!product || !product._id) return;
 
-    console.log('Add to cart:', product._id);
-
     const formData = {
       productId: product._id,
       quantity: 1,
@@ -209,12 +207,10 @@ const ProductList = () => {
           background: '#333',
           color: '#fff',
         },
-        duration: 2000,
+        duration: 1000,
         position: 'top-center',
       });
-      setTimeout(() => {
-        navigate('/login');
-      }, 2000);
+      navigate('/login');
     } else {
       await addItemToCart(formData, dispatch, accessToken, axiosJWT);
     }

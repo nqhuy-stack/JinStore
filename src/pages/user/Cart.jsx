@@ -174,13 +174,9 @@ const Cart = () => {
     return 0;
   }, []);
 
-  const calculateShipping = useMemo(() => {
-    return calculateSubtotal > 0 ? 30000 : 0;
-  }, [calculateSubtotal]);
-
   const calculateTotal = useMemo(() => {
-    return calculateSubtotal - calculateCouponDiscount + calculateShipping;
-  }, [calculateSubtotal, calculateCouponDiscount, calculateShipping]);
+    return calculateSubtotal - calculateCouponDiscount;
+  }, [calculateSubtotal, calculateCouponDiscount]);
 
   // Tạo mảng chứa thông tin đầy đủ của các sản phẩm đã chọn để chuyển sang checkout
   const getSelectedProductsData = useMemo(() => {
@@ -309,10 +305,6 @@ const Cart = () => {
                 <span>Mã giảm giá</span>
                 <span>{calculateCouponDiscount.toLocaleString()} đồng</span>
               </div>
-              <div className="shipping">
-                <span>Phí vận chuyển</span>
-                <span>{calculateShipping.toLocaleString()} đồng</span>
-              </div>
               <div className="total">
                 <span>Tổng</span>
                 <span className="total-amount">{calculateTotal.toLocaleString()} đồng</span>
@@ -325,7 +317,6 @@ const Cart = () => {
                 summary: {
                   subtotal: calculateSubtotal,
                   couponDiscount: calculateCouponDiscount,
-                  shipping: calculateShipping,
                   total: calculateTotal,
                 },
               }}

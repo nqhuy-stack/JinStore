@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
 import OrderItem from '../../../components/common/ui/OrderItem';
+import HeaderStatusOrder from '../../../components/common/ui/HeaderStatusOrder';
+import PageLoad from '@pages/PageLoad';
 
 import cartEmpty from '@assets/icons/cart-empty.svg';
 
@@ -74,7 +76,7 @@ const OrderTrackingTab = () => {
         return;
       }
 
-      // Cancel previous request
+      //   previous request
       if (abortControllerRef.current) {
         abortControllerRef.current.abort();
       }
@@ -98,13 +100,13 @@ const OrderTrackingTab = () => {
         if (response.success) {
           setOrders(response.data);
         } else {
-          throw new Error(response.message || 'Failed to fetch orders');
+          setOrders([]);
         }
       } catch (error) {
         // Don't set error if request was aborted
         if (error.name !== 'AbortError') {
           console.error('Error fetching orders status:', error);
-          setError(error.message || 'Failed to fetch orders');
+          setError(error.message);
           setOrders([]);
         }
       } finally {
@@ -126,74 +128,18 @@ const OrderTrackingTab = () => {
     };
   }, [fetchOrdersStatus, activeTab]);
 
-  // Render loading state
-  if (loading) {
-    return (
-      <div className="profile__tab profile__tab-order">
-        <div className="profile__tab-header">
-          <nav className="header__nav">
-            {STATUS_ENTRIES.map(([key, name]) => (
-              <button
-                key={key}
-                className={`header__nav-item ${activeTab === key ? 'active' : ''}`}
-                onClick={() => handleTabClick(key)}
-              >
-                {name}
-              </button>
-            ))}
-          </nav>
-        </div>
-        <div className="loading-state">Đang tải...</div>
-      </div>
-    );
-  }
-
-  // Render error state
-  if (error) {
-    return (
-      <div className="profile__tab profile__tab-order">
-        <div className="profile__tab-header">
-          <nav className="header__nav">
-            {STATUS_ENTRIES.map(([key, name]) => (
-              <button
-                key={key}
-                className={`header__nav-item ${activeTab === key ? 'active' : ''}`}
-                onClick={() => handleTabClick(key)}
-              >
-                {name}
-              </button>
-            ))}
-          </nav>
-        </div>
-        <div className="error-state">
-          <p>Có lỗi xảy ra: {error}</p>
-          <button onClick={() => fetchOrdersStatus(activeTab)}>Thử lại</button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="profile__tab profile__tab-order">
       <div className="profile__tab-header">
-        <nav className="header__nav">
-          {STATUS_ENTRIES.map(([key, name]) => (
-            <button
-              key={key}
-              className={`header__nav-item ${activeTab === key ? 'active' : ''}`}
-              onClick={() => handleTabClick(key)}
-            >
-              {name}
-            </button>
-          ))}
-        </nav>
+        <HeaderStatusOrder activeTab={activeTab} handleTabClick={handleTabClick} STATUS_ENTRIES={STATUS_ENTRIES} />
       </div>
-
-      {orders.length > 0 ? (
-        orders.map((item) => <OrderItem key={item._id || item.id} item={item} onNavigate={handleNavigate} />)
-      ) : (
-        <img className="img__empty" src={cartEmpty} alt="Cart Empty" />
-      )}
+      <div className="profile__tab-bod">
+        {orders.length > 0 ? (
+          orders.map((item) => <OrderItem key={item._id || item.id} item={item} onNavigate={handleNavigate} />)
+        ) : (
+          <img className="img__empty" src={cartEmpty} alt="Cart Empty" />
+        )}
+      </div>
     </div>
   );
 };

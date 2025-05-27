@@ -137,6 +137,36 @@
       line-height: 1.6;
       color: $color-dark-text;
     }
+
+    .btn.btn__back-normal {
+      width: fit-content;
+      margin-top: 32px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: black;
+      text-align: center;
+      font-size: 1.6rem;
+      font-style: normal;
+      font-weight: 500;
+      line-height: 42px;
+      background-color: transparent;
+      border: 1px solid #dfdfdf;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      &:hover {
+        background-color: #dfdfdf;
+      }
+      svg {
+        margin-right: 5px;
+        width: 20px;
+        height: 20px;
+        margin: auto 0;
+      }
+    }
   }
   .register {
     font-size: 16px;

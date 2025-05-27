@@ -148,41 +148,44 @@ const Discount = () => {
   if (error) return <div className="error-message">{error}</div>;
 
   return (
-    <section className="admin__section">
-      <div className="admin__section-header">
-        <h2 className="admin__section-title">Mã Giảm Giá ({discount.length})</h2>
-        <button className="admin__add-button" onClick={handleAddDiscount}>
+    <section className="admin-section">
+      <div className="admin-section__header">
+        <h2 className="admin-section__title">Quản lý mã giảm giá ({discount.length})</h2>
+        <button className="admin-add__button" onClick={handleAddDiscount}>
           + Thêm Mới
         </button>
       </div>
-      <div className="admin__search-bar">
-        <select className="custom-select select__filter-status" onChange={handleFilter}>
-          <option value="all">Tất cả</option>
+      <div className="admin-section__search">
+        <div className="search-box">
+          <i className="fas fa-search"></i>
+          <input
+            type="text"
+            placeholder="Tìm kiếm theo mã đơn, khách hàng, sản phẩm..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <select className="select-filter" onChange={handleFilter}>
+          <option value="all">Tất cả trạng thái</option>
           <option value="active">Đang kích hoạt</option>
           <option value="inactive">Không kích hoạt</option>
         </select>
-        <input
-          type="text"
-          placeholder="Tìm kiếm theo mã giảm giá..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
       </div>
       {loading ? (
         !error && <PageLoad zIndex="1" />
       ) : (
         <>
-          <div className="admin__table-wrapper">
-            <table className="admin__table block__table">
+          <div className="block__table">
+            <table className="admin__table ">
               <thead>
                 <tr>
-                  <th className="th-status">Trạng thái</th>
-                  <th className="th-code">Mã giảm giá</th>
-                  <th className="th-discount">Giảm giá (%)</th>
-                  <th className="th-activation">Hết hạn</th>
-                  <th className="th-expiration">Hết hạn</th>
-                  <th className="th-quantity">Đã dùng/Giới hạn</th>
-                  <th className="th-option">Tùy chỉnh</th>
+                  <th>Trạng thái</th>
+                  <th>Mã giảm giá</th>
+                  <th>Giảm giá (%)</th>
+                  <th>Hết hạn</th>
+                  <th>Hết hạn</th>
+                  <th>Đã dùng/Giới hạn</th>
+                  <th>Tùy chỉnh</th>
                 </tr>
               </thead>
               <tbody>
@@ -198,7 +201,7 @@ const Discount = () => {
 
                   return (
                     <tr key={item._id} style={{ backgroundColor: bgColor }}>
-                      <td className="td-status">
+                      <td>
                         <span className={`td__status td__status--${item.isActive ? 'true' : 'false'}`}>
                           {item.isActive ? 'Kích hoạt' : 'Không kích hoạt'}
                         </span>
@@ -207,38 +210,29 @@ const Discount = () => {
                           <span className="td__status td__status--depleted"> (Hết lượt)</span>
                         )}
                       </td>
-                      <td className="td-code">{item.code}</td>
-                      <td className="td-discount">{item.discount}%</td>
-                      <td className="td-activation">{formatDate(item.activation)}</td>
-                      <td className="td-expiration">{formatDate(item.expiration)}</td>
-                      <td className="td-quantity">
+                      <td>{item.code}</td>
+                      <td>{item.discount}%</td>
+                      <td>{formatDate(item.activation)}</td>
+                      <td>{formatDate(item.expiration)}</td>
+                      <td>
                         {item.quantityUsed}/{item.quantityLimit}
                       </td>
-                      <td className="td-option">
-                        <button
-                          className="admin__action-btn admin__action-btn--view"
-                          onClick={() => handleToggleActive(item._id, item.isActive)}
-                          disabled={loading}
-                          title={item.isActive ? 'Vô hiệu hóa' : 'Kích hoạt'}
-                        >
-                          <i className={`fas fa-${item.isActive ? 'eye-slash' : 'eye'}`}></i>
-                        </button>
-                        <button
-                          className="admin__action-btn admin__action-btn--edit"
-                          onClick={() => handleEditDiscount(item._id)}
-                          disabled={loading}
-                          title="Chỉnh sửa"
-                        >
-                          <i className="fas fa-edit"></i>
-                        </button>
-                        <button
-                          className="admin__action-btn admin__action-btn--delete"
-                          onClick={() => handleDeleteDiscount(item._id)}
-                          disabled={loading}
-                          title="Xóa"
-                        >
-                          <i className="fas fa-trash"></i>
-                        </button>
+                      <td>
+                        <div className="table-actions">
+                          <button
+                            onClick={() => handleToggleActive(item._id, item.isActive)}
+                            disabled={loading}
+                            title={item.isActive ? 'Vô hiệu hóa' : 'Kích hoạt'}
+                          >
+                            <i className={`fas fa-${item.isActive ? 'eye-slash' : 'eye'}`}></i>
+                          </button>
+                          <button onClick={() => handleEditDiscount(item._id)} disabled={loading} title="Chỉnh sửa">
+                            <i className="fas fa-edit"></i>
+                          </button>
+                          <button onClick={() => handleDeleteDiscount(item._id)} disabled={loading} title="Xóa">
+                            <i className="fas fa-trash"></i>
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   );

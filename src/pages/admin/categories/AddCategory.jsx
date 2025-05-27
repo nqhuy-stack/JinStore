@@ -77,12 +77,14 @@ const AddCategory = () => {
   };
 
   return (
-    <section className="admin__section">
+    <section className="admin-section">
       {loading ? (
         <PageLoad zIndex="1" />
       ) : (
         <>
-          <h2 className="admin__section-title">Add New Category</h2>
+          <div className="admin-section__header">
+            <h2 className="admin-section__title">Thêm mới danh mục</h2>
+          </div>
           <form className="admin__form" onSubmit={handleSubmit}>
             <div className="admin__form-row">
               {/* NOTE: Name */}

@@ -146,8 +146,10 @@ const EditCategory = () => {
   }
 
   return (
-    <section className="admin__section">
-      <h2 className="admin__section-title">Cập nhật thông tin danh mục</h2>
+    <section className="admin-section">
+      <div className="admin-section__header">
+        <h2 className="admin-section__title">Cập nhật thông tin danh mục</h2>
+      </div>
       <form className="admin__form" onSubmit={handleSubmit}>
         <div className="admin__form-row">
           {/* NOTE: Name */}

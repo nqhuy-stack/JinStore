@@ -67,26 +67,37 @@ const AddProduct = () => {
     fetchCategories();
   }, []);
 
-  //NOTE: Hàm xử lý thay đổi ảnh
+  //NOTE: Xử lý thay đổi hình ảnh
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
-    const imageURLs = files.map((file) => URL.createObjectURL(file));
+    const currentImageCount = newProduct.images.length;
+    const maxImages = 5;
 
-    // Lưu URL preview cho hiển thị
-    setNewProduct((prev) => ({ ...prev, images: [...prev.images, ...imageURLs] }));
+    if (currentImageCount + files.length > maxImages) {
+      const remainingSlots = maxImages - currentImageCount;
 
-    // Lưu file thực tế để gửi lên server
-    setImageFiles((prev) => [...prev, ...files]);
+      const filesToAdd = files.slice(0, remainingSlots);
+      const imageURLs = filesToAdd.map((file) => URL.createObjectURL(file));
+
+      setNewProduct((prev) => ({ ...prev, images: [...prev.images, ...imageURLs] }));
+      setImageFiles((prev) => [...prev, ...filesToAdd]);
+    } else {
+      const imageURLs = files.map((file) => URL.createObjectURL(file));
+      setNewProduct((prev) => ({ ...prev, images: [...prev.images, ...imageURLs] }));
+      setImageFiles((prev) => [...prev, ...files]);
+    }
+    e.target.value = '';
   };
 
-  //NOTE: Hàm xóa ảnh preview
+  // NOTE: Xóa hình ảnh xem trước
   const removeImagePreview = (indexToRemove) => {
+    URL.revokeObjectURL(newProduct.images[indexToRemove]);
+
     setNewProduct((prev) => ({
       ...prev,
       images: prev.images.filter((_, index) => index !== indexToRemove),
     }));
 
-    // Cũng xóa file thực tế tương ứng
     setImageFiles((prev) => prev.filter((_, index) => index !== indexToRemove));
   };
 
@@ -112,6 +123,22 @@ const AddProduct = () => {
   //NOTE: Hàm xử lý sự kiện khi nhấn nút "Thêm sản phẩm"
   const handleAddProduct = (e) => {
     e.preventDefault();
+    if (!newProduct) {
+      toast.error('Vui lòng nhập thống tin sản phẩm', {
+        duration: 3000,
+        position: 'top-center',
+        style: {
+          background: '#f8d7da',
+          color: '#721c24',
+          border: '1px solid #f5c6cb',
+          borderRadius: '8px',
+          fontWeight: '500',
+          fontSize: '1.6rem',
+        },
+        icon: '⚠️',
+      });
+      return;
+    }
 
     // Kiểm tra các trường bắt buộc
     if (!newProduct.name) {
@@ -247,7 +274,6 @@ const AddProduct = () => {
       if (newProduct.information && newProduct.information.length > 0) {
         formData.append('information', JSON.stringify(newProduct.information));
       }
-
       // Gọi API
       await addProducts(formData, dispatch, accessToken, axiosJWT);
 
@@ -317,12 +343,14 @@ const AddProduct = () => {
   };
 
   return (
-    <section className="admin__section">
+    <section className="admin-section">
       {loading ? (
         <PageLoad zIndex="1" />
       ) : (
         <>
-          <h2 className="admin__section-title">Thêm sản phẩm</h2>
+          <div className="admin-section__header">
+            <h2 className="admin-section__title">Thêm sản phẩm</h2>
+          </div>
           <form className="admin__form" id="form-addProduct" onSubmit={handleAddProduct}>
             <div className="admin__form-row">
               <div className="admin__form-field">
@@ -335,7 +363,6 @@ const AddProduct = () => {
                   value={newProduct.name}
                   onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
                   onBlur={() => handleBlur('name')}
-                  required
                   placeholder="Nhập tên sản phẩm"
                 />
                 {touchedFields.name && !newProduct.name && (
@@ -353,7 +380,6 @@ const AddProduct = () => {
                   value={newProduct.description}
                   onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
                   onBlur={() => handleBlur('description')}
-                  required
                   placeholder="Nhập mô tả sản phẩm"
                 />
                 {touchedFields.description && !newProduct.description && (
@@ -374,7 +400,6 @@ const AddProduct = () => {
                   value={newProduct.price}
                   onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
                   onBlur={() => handleBlur('price')}
-                  required
                   step="100"
                   min="0"
                   placeholder="Nhập giá sản phẩm"
@@ -395,7 +420,6 @@ const AddProduct = () => {
                   value={newProduct.unit}
                   onChange={(e) => setNewProduct({ ...newProduct, unit: e.target.value })}
                   onBlur={() => handleBlur('unit')}
-                  required
                 >
                   <option value="">Chọn đơn vị</option>
                   <optgroup label="🔢 Đơn vị khối lượng">
@@ -464,7 +488,6 @@ const AddProduct = () => {
                   value={newProduct.quantity}
                   onChange={(e) => setNewProduct({ ...newProduct, quantity: e.target.value })}
                   onBlur={() => handleBlur('quantity')}
-                  required
                   min="0"
                   placeholder="Nhập số lượng sản phẩm"
                 />
@@ -485,7 +508,6 @@ const AddProduct = () => {
                   value={newProduct._idCategory}
                   onChange={(e) => setNewProduct({ ...newProduct, _idCategory: e.target.value })}
                   onBlur={() => handleBlur('_idCategory')}
-                  required
                   disabled={loading || error}
                 >
                   {loading ? (
@@ -526,9 +548,13 @@ const AddProduct = () => {
             </div>
             <div className="admin__form-row">
               <div className="admin__form-field">
-                <label htmlFor="product-images">Hình ảnh sản phẩm</label>
+                <label htmlFor="product-images">Hình ảnh sản phẩm (Tối đa 5)</label>
                 <input type="file" id="product-images" accept="image/*" multiple onChange={handleImageChange} />
-                <div className="field-hint">Bạn có thể chọn nhiều ảnh cùng lúc</div>
+                {newProduct.images.length > 5 && (
+                  <div className="field-error" style={{ color: '#dc3545', marginTop: '5px', fontSize: '1.4rem' }}>
+                    Vui lòng chọn tối đa 5 hình ảnh
+                  </div>
+                )}
                 {newProduct.images.length > 0 && (
                   <div className="image-preview-container">
                     {newProduct.images.map((image, index) => (
@@ -615,11 +641,7 @@ const AddProduct = () => {
               </div>
             </div>
             {error && <div className="error-message">{error}</div>}
-            <button
-              type="submit"
-              className="admin__form-button"
-              disabled={loading || !newProduct.name || !newProduct.price || !newProduct._idCategory || !newProduct.unit}
-            >
+            <button type="submit" className="admin__form-button" disabled={loading}>
               {loading ? 'Đang thêm...' : 'Thêm sản phẩm'}
             </button>
           </form>

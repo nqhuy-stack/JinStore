@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMapMarkerAlt, faArrowLeft, faSpinner, faShoppingBag } from '@fortawesome/free-solid-svg-icons';
-import { useLocation, Link, useSearchParams } from 'react-router-dom';
+import { useLocation, Link, useSearchParams, useNavigate } from 'react-router-dom';
 
 import { toast } from 'react-toastify';
 
@@ -27,6 +27,7 @@ const Checkout = () => {
   const user = useSelector((state) => state.auth.login.currentUser);
   const accessToken = user?.accessToken;
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const axiosJWT = createAxios(user, dispatch, loginSuccess);
   const location = useLocation();
 
@@ -35,6 +36,11 @@ const Checkout = () => {
 
   // Get cart data from location state or redirect if empty
   const { selectedProducts = [], summary = {} } = location.state || {};
+
+  if (summary.shipping === undefined) {
+    summary.shipping = parseInt(30000);
+    summary.total = summary.total + summary.shipping;
+  }
 
   // Form validation
   const validateForm = () => {
@@ -76,6 +82,7 @@ const Checkout = () => {
         {
           orderItems: orderItem,
           shippingAddress: selectedAddress._id,
+          shippingFee: summary.shipping,
           paymentMethod: selectedPayment,
           totalAmount: summary.total,
           note: '',
@@ -90,9 +97,13 @@ const Checkout = () => {
           position: 'top-center',
           autoClose: 2000,
         });
-        const res = await paymentService(response.data._id, accessToken, axiosJWT);
-        if (res.success && res.paymentUrl) {
-          window.location.href = res.paymentUrl;
+        if (response.data.paymentMethod === 'vnpay') {
+          const res = await paymentService(response.data._id, accessToken, axiosJWT);
+          if (res.success && res.paymentUrl) {
+            window.location.href = res.paymentUrl;
+          }
+        } else {
+          navigate('/product');
         }
       }
     } catch (error) {

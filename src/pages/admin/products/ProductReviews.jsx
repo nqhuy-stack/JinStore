@@ -89,24 +89,27 @@ const ProductReviews = () => {
   const currentReviews = filteredReviews.slice(startIndex, endIndex);
 
   return (
-    <section className="admin__section">
-      <div className="admin__section-header">
-        <h2 className="admin__section-title">Product Reviews</h2>
+    <section className="admin-section">
+      <div className="admin-section__header">
+        <h2 className="admin-section__title">Quản lý đánh giá</h2>
       </div>
-      <div className="admin__search-bar">
-        <input
-          type="text"
-          placeholder="Search by Customer or Product Name..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
+      <div className="admin-section__search">
+        <div className="search-box">
+          <i className="fas fa-search"></i>
+          <input
+            type="text"
+            placeholder="Tìm kiếm theo mã đơn, khách hàng, sản phẩm..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
       </div>
       {loading ? (
         <p>Loading...</p>
       ) : (
         <>
-          <div className="admin__table-wrapper">
-            <table className="admin__table block__table">
+          <div className="block__table">
+            <table className="admin__table">
               <thead>
                 <tr>
                   <th>No.</th>
@@ -148,16 +151,11 @@ const ProductReviews = () => {
                         </span>
                       </td>
                       <td>
-                        <div className="admin__actions">
-                          <button
-                            className="admin__action-btn admin__action-btn--view"
-                            onClick={() => handleViewDetails(review)}
-                            title="View Details"
-                          >
+                        <div className="table-actions">
+                          <button onClick={() => handleViewDetails(review)} title="View Details">
                             <i className="fas fa-eye"></i>
                           </button>
                           <button
-                            className="admin__action-btn admin__action-btn--product"
                             onClick={() => window.open(`/JinStore/product/${review.product?._id}`, '_blank')}
                             title="View Product"
                             disabled={!review.product?._id}
@@ -176,11 +174,7 @@ const ProductReviews = () => {
                           >
                             <i className={`fas ${review.status === 'approved' ? 'fa-check' : 'fa-times'}`}></i>
                           </button>
-                          <button
-                            className="admin__action-btn admin__action-btn--delete"
-                            onClick={() => handleDeleteReview(review._id)}
-                            title="Delete Review"
-                          >
+                          <button onClick={() => handleDeleteReview(review._id)} title="Delete Review">
                             <i className="fas fa-trash"></i>
                           </button>
                         </div>

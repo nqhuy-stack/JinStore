@@ -8,7 +8,6 @@ import Pagination from '@components/common/ui/Pagination';
 import { getCategoriesAll, editCategory, deleteCategory } from '@services/CategoryService';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
-import PageLoad from '@pages/PageLoad';
 
 const Categories = () => {
   const dispatch = useDispatch();
@@ -142,43 +141,49 @@ const Categories = () => {
   if (error) return <div className="error-message">{error}</div>;
 
   return (
-    <section className="admin__section">
-      <div className="admin__section-header">
-        <h2 className="admin__section-title">All Category ({categories.length})</h2>
-        <button className="admin__add-button" onClick={handleAddCategory}>
+    <section className="admin-section">
+      <div className="admin-section__header">
+        <h2 className="admin-section__title">Quản lý danh mục ({categories.length})</h2>
+        <button className="admin-add__button" onClick={handleAddCategory}>
           + Add New
         </button>
       </div>
-      <div className="admin__search-bar">
-        <select className="custom-select select__filter-status" onChange={handleFilter}>
-          <option value="all">Tất cả</option>
+      <div className="admin-section__search">
+        <div className="search-box">
+          <i className="fas fa-search"></i>
+          <input
+            type="text"
+            placeholder="Tìm kiếm theo mã đơn, khách hàng, sản phẩm..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+        <select className="select-filter" onChange={handleFilter}>
+          <option value="all">Tất cả tình trạng</option>
           <option value="active">Đang bán</option>
           <option value="inactive">Ngừng bán</option>
         </select>
-        <input
-          type="text"
-          placeholder="Search by Category Name..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
       </div>
       {loading ? (
-        !error && <PageLoad zIndex="1" />
+        <div className="loading-state">
+          <div className="loading-spinner"></div>
+          <p>Đang tải dữ liệu...</p>
+        </div>
       ) : (
         <>
-          <div className="admin__table-wrapper">
-            <table className="admin__table block__table">
+          <div className="block__table">
+            <table className="admin__table ">
               <thead>
                 <tr>
-                  <th className="th-status">Tình trạng</th>
-                  <th className="th-name">Code</th>
-                  <th className="th-name">Tên</th>
-                  <th className="th-description">Mô tả</th>
-                  <th className="th-date">Ngày Thêm</th>
-                  <th className="th-img">Ảnh</th>
-                  <th className="th-slug">Slug</th>
-                  <th className="th-outstanding">Trạng thái</th>
-                  <th className="th-option">Tùy chỉnh</th>
+                  <th>Tình trạng</th>
+                  <th>Code</th>
+                  <th>Tên</th>
+                  <th>Mô tả</th>
+                  <th>Ngày Thêm</th>
+                  <th>Ảnh</th>
+                  <th>Slug</th>
+                  <th>Trạng thái</th>
+                  <th>Tùy chỉnh</th>
                 </tr>
               </thead>
               <tbody>
@@ -187,51 +192,41 @@ const Categories = () => {
                     key={category._id}
                     style={{ backgroundColor: category.status === 'inactive' ? '#f8d7da' : '#fff' }}
                   >
-                    <td className="td-status">
+                    <td>
                       {' '}
                       <span className={`td__status td__status--${category.status === 'inactive' ? 'true' : 'false'}`}>
                         {category.status === 'active' ? 'Đang bán' : 'Ngừng bán'}
                       </span>
                     </td>
-                    <td className="td-code">{category.code}</td>
-                    <td className="td-name">{category.name || 'Không có tên'}</td>
-                    <td className="td-description">{category.description || 'Không có mô tả'}</td>
-                    <td className="td-date">{formatDate(category.createdAt)}</td>
-                    <td className="td-img">
+                    <td>{category.code}</td>
+                    <td>{category.name || 'Không có tên'}</td>
+                    <td>{category.description || 'Không có mô tả'}</td>
+                    <td>{formatDate(category.createdAt)}</td>
+                    <td>
                       <img
                         src={category.image?.url || '/placeholder-image.jpg'}
                         alt={`${category.name || 'Danh mục'} : ${category.description || 'Không có mô tả'}`}
                         className="admin__image-preview admin__image-preview--category"
                       />
                     </td>
-                    <td className="td-slug">{category.slug || 'Không có slug'}</td>
-                    <td className="td-outstanding">
+                    <td>{category.slug || 'Không có slug'}</td>
+                    <td>
                       <span className={`td__outstanding td__outstanding--${category.isOutstanding ? 'true' : 'false'}`}>
                         {category.isOutstanding ? 'Nổi bật' : 'Bình thường'}
                       </span>
                     </td>
-                    <td className="td-option">
-                      <button
-                        className="admin__action-btn admin__action-btn--view"
-                        onClick={() => handleViewCategory(category._id, category.status)}
-                        disabled={loading}
-                      >
-                        <i className="fas fa-eye"></i>
-                      </button>
-                      <button
-                        className="admin__action-btn admin__action-btn--edit"
-                        onClick={() => handleEditCategory(category._id)}
-                        disabled={loading}
-                      >
-                        <i className="fas fa-edit"></i>
-                      </button>
-                      <button
-                        className="admin__action-btn admin__action-btn--delete"
-                        onClick={() => handleDeleteCategory(category._id)}
-                        disabled={loading}
-                      >
-                        <i className="fas fa-trash"></i>
-                      </button>
+                    <td>
+                      <div className="table-actions">
+                        <button onClick={() => handleViewCategory(category._id, category.status)} disabled={loading}>
+                          <i className="fas fa-eye"></i>
+                        </button>
+                        <button onClick={() => handleEditCategory(category._id)} disabled={loading}>
+                          <i className="fas fa-edit"></i>
+                        </button>
+                        <button onClick={() => handleDeleteCategory(category._id)} disabled={loading}>
+                          <i className="fas fa-trash"></i>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

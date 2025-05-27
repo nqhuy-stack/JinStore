@@ -148,10 +148,6 @@ const Products = () => {
     navigate('/admin/products/add');
   };
 
-  const handleImportExport = () => {
-    alert('Import/Export functionality not implemented yet.');
-  };
-
   const filteredProducts = products.filter((product) => product.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
   // Tính toán dữ liệu hiển thị trên trang hiện tại
@@ -162,52 +158,50 @@ const Products = () => {
   const currentProducts = filteredProducts.slice(startIndex, endIndex);
 
   return (
-    <section className="admin__section">
-      <div className="admin__section-header">
-        <h2 className="admin__section-title">All Products</h2>
-        <div className="admin__section-actions">
-          <button className="admin__import-export-button" onClick={handleImportExport}>
-            Import Export
-          </button>
-          <button className="admin__add-button" onClick={handleAddProduct}>
-            + Add New
-          </button>
-        </div>
+    <section className="admin-section">
+      <div className="admin-section__header">
+        <h2 className="admin-section__title">Quản lý sản phẩm</h2>
+        <button className="admin-add__button" onClick={handleAddProduct}>
+          + Add New
+        </button>
       </div>
-      <div className="admin__search-bar">
-        <select className="custom-select" onChange={handleFilter}>
-          <option value="all">Tất cả</option>
+      <div className="admin-section__search">
+        <div className="search-box">
+          <i className="fas fa-search"></i>
+          <input
+            type="text"
+            placeholder="Tìm kiếm theo mã đơn, khách hàng, sản phẩm..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>{' '}
+        <select className="select-filter" onChange={handleFilter}>
+          <option value="all">Tất cả danh mục</option>
           {categories.map((category) => (
             <option key={category._id} value={category._id}>
               {category.name}
             </option>
           ))}
         </select>
-        <input
-          type="text"
-          placeholder="Search by Category Name..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
       </div>
       {loading ? (
         !error && <PageLoad zIndex="1" />
       ) : (
         <>
-          <div className="admin__table-wrapper">
-            <table className="admin__table block__table">
+          <div className="block__table">
+            <table className="admin__table">
               <thead>
                 <tr>
-                  <th className="th-status">Trạng thái</th>
-                  <th className="th-img">Ảnh</th>
-                  <th className="th-name">Tên</th>
-                  <th className="th-description">Mô tả</th>
-                  <th className="th-category">Danh mục</th>
-                  <th className="th-quantity">Số lượng</th>
-                  <th className="th-unit">Đơn vị</th>
-                  <th className="th-price">Giá (1 Đơn vị)</th>
-                  <th className="th-discount">Giảm giá</th>
-                  <th className="th-option">Tùy chỉnh</th>
+                  <th>Trạng thái</th>
+                  <th>Ảnh</th>
+                  <th>Tên</th>
+                  <th>Mô tả</th>
+                  <th>Danh mục</th>
+                  <th>Số lượng</th>
+                  <th>Đơn vị</th>
+                  <th>Giá (1 Đơn vị)</th>
+                  <th>Giảm giá</th>
+                  <th>Tùy chỉnh</th>
                 </tr>
               </thead>
               <tbody>
@@ -224,7 +218,7 @@ const Products = () => {
                         : '#f8d7da',
                     }}
                   >
-                    <td className="td-status">
+                    <td>
                       <span
                         className={`td__isActive td__isActive--${
                           product.isActive
@@ -245,42 +239,32 @@ const Products = () => {
                           : 'Ngừng bán'}
                       </span>
                     </td>
-                    <td className="td-img">
+                    <td>
                       <img
                         src={product.images[1]?.url || 'https://sonnptnt.thaibinh.gov.vn/App/images/no-image-news.png'}
                         alt={product.name}
                         className="admin__image-preview admin__image-preview--product"
                       />
                     </td>
-                    <td className="td-name">{product.name}</td>
-                    <td className="td-description">{product.description}</td>
-                    <td className="td-category">{product._idCategory?.name}</td>
+                    <td>{product.name}</td>
+                    <td>{product.description}</td>
+                    <td>{product._idCategory?.name}</td>
                     <td>{product.quantity}</td>
                     <td>{product.unit}</td>
                     <td>{product.price} VND</td>
                     <td>{product.discount}%</td>
-                    <td className="td-option">
-                      <button
-                        className="admin__action-btn admin__action-btn--view"
-                        onClick={() => handleViewProduct(product._id, product.isActive)}
-                        disabled={loading}
-                      >
-                        <i className="fas fa-eye"></i>
-                      </button>
-                      <button
-                        className="admin__action-btn admin__action-btn--edit"
-                        onClick={() => handleEditProduct(product._id)}
-                        disabled={loading}
-                      >
-                        <i className="fas fa-edit"></i>
-                      </button>
-                      <button
-                        className="admin__action-btn admin__action-btn--delete"
-                        onClick={() => handleDeleteProduct(product._id)}
-                        disabled={loading}
-                      >
-                        <i className="fas fa-trash"></i>
-                      </button>
+                    <td>
+                      <div className="table-actions">
+                        <button onClick={() => handleViewProduct(product._id, product.isActive)} disabled={loading}>
+                          <i className="fas fa-eye"></i>
+                        </button>
+                        <button onClick={() => handleEditProduct(product._id)} disabled={loading}>
+                          <i className="fas fa-edit"></i>
+                        </button>
+                        <button onClick={() => handleDeleteProduct(product._id)} disabled={loading}>
+                          <i className="fas fa-trash"></i>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

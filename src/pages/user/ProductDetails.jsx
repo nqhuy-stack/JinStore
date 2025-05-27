@@ -226,7 +226,7 @@ const ProductDetails = () => {
                 <span>{product.averageRating}</span>
               </div>
               <span className="divider">•</span>
-              <span>{product.reviews} Reviews</span>
+              <span>{product.reviews} đánh giá</span>
             </div>
 
             <div className="product-details__price">
@@ -258,11 +258,11 @@ const ProductDetails = () => {
               </div>
 
               <button className="add-to-cart" disabled={product.quantity <= 0} onClick={() => handleAddToCart(product)}>
-                <FontAwesomeIcon icon={faCartPlus} /> Add to Cart
+                <FontAwesomeIcon icon={faCartPlus} /> Thêm vào giỏ hàng
               </button>
 
               <button className="buy-now" disabled={product.quantity <= 0} onClick={handleBuyNow}>
-                Buy Now
+                Mua
               </button>
             </div>
 
@@ -270,24 +270,24 @@ const ProductDetails = () => {
               <div className="info-block">
                 <FontAwesomeIcon icon={faTruck} />
                 <div className="content">
-                  <h4>Free Delivery</h4>
-                  <p>Free shipping on orders over $50</p>
+                  <h4>Giao hàng miễn phí</h4>
+                  <p>Miễn phí vận chuyển cho đơn hàng trên 200.000đ</p>
                 </div>
               </div>
 
               <div className="info-block">
                 <FontAwesomeIcon icon={faShieldAlt} />
                 <div className="content">
-                  <h4>Secure Payment</h4>
-                  <p>100% secure payment</p>
+                  <h4>Thanh toán an toàn</h4>
+                  <p>100% thanh toán an toàn</p>
                 </div>
               </div>
 
               <div className="info-block">
                 <FontAwesomeIcon icon={faUndo} />
                 <div className="content">
-                  <h4>Easy Returns</h4>
-                  <p>30 day return policy</p>
+                  <h4>Hoàn trả dễ dàng</h4>
+                  <p>Hoàn trả dễ dàng trong 7 ngày</p>
                 </div>
               </div>
             </div>

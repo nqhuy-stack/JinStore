@@ -162,12 +162,14 @@ const EditDiscount = () => {
   };
 
   return (
-    <section className="admin__section">
+    <section className="admin-section">
       {loading ? (
         <PageLoad zIndex="1" />
       ) : (
         <>
-          <h2 className="admin__section-title">Thêm mã giảm giá</h2>
+          <div className="admin-section__header">
+            <h2 className="admin-section__title">Thêm mã giảm giá</h2>
+          </div>
           <form className="admin__form" id="form-editDiscount" onSubmit={handleEditDiscount}>
             <div className="admin__form-row">
               <div className="admin__form-field">

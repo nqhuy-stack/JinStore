@@ -1,5 +1,7 @@
 import { memo } from 'react';
 import useOrderItem from '@hooks/useOrderItem';
+import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const OrderItem = ({ item, onNavigate }) => {
   const {
@@ -13,6 +15,9 @@ const OrderItem = ({ item, onNavigate }) => {
     handleRefundClick,
     handleDetailClick,
   } = useOrderItem({ item, onNavigate });
+  const user = useSelector((state) => state.auth.login.currentUser);
+
+  const { id } = useParams();
 
   return (
     <div className="order-tracking">
@@ -52,25 +57,34 @@ const OrderItem = ({ item, onNavigate }) => {
         <span className="info__total">Thành tiền: {item.totalAmount?.toLocaleString()}đ</span>
       </div>
 
-      <div className="order__actions">
-        <button
-          className="btn btn__action-order btn-review__order"
-          onClick={handleReviewClick}
-          disabled={item.status !== 'delivered' && item.status !== 'received'}
-        >
-          {reviewButtonText}
-        </button>
-
-        {showRefundButton && (
-          <button className="btn btn__action-order btn-cancelled__order" onClick={handleRefundClick}>
-            {refundButtonText}
+      {user.isAdmin || id ? (
+        <>
+          <div className="order__info">
+            <span className="info__code-order">Mã đơn hàng: {item._id}</span>
+            <span className="info__code-order">Mã khách hàng: {item._idUser._id}</span>
+          </div>
+        </>
+      ) : (
+        <div className="order__actions">
+          <button
+            className="btn btn__action-order btn-review__order"
+            onClick={handleReviewClick}
+            disabled={item.status !== 'delivered' && item.status !== 'received'}
+          >
+            {reviewButtonText}
           </button>
-        )}
 
-        <button className="btn btn__action-order btn-detail__order" onClick={handleDetailClick}>
-          Chi tiết
-        </button>
-      </div>
+          {showRefundButton && (
+            <button className="btn btn__action-order btn-cancelled__order" onClick={handleRefundClick}>
+              {refundButtonText}
+            </button>
+          )}
+
+          <button className="btn btn__action-order btn-detail__order" onClick={handleDetailClick}>
+            Chi tiết
+          </button>
+        </div>
+      )}
     </div>
   );
 };

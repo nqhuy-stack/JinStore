@@ -76,88 +76,90 @@ const Users = () => {
   const currentUsers = filteredUsers.slice(startIndex, endIndex);
 
   return (
-    <section className="admin__section">
-      <div className="admin__section-header">
-        <h2 className="admin__section-title">All Users</h2>
+    <div className="admin-section">
+      <div className="admin-section__header">
+        <h2 className="admin-section__title">Quản lý người dùng ({totalItems})</h2>
       </div>
 
-      <div className="admin__search-bar">
-        <input
-          type="text"
-          placeholder="Search by Name..."
-          value={searchTerm}
-          onChange={(e) => {
-            setSearchTerm(e.target.value);
-            setCurrentPage(1); // Reset về trang đầu khi tìm kiếm
-          }}
-        />
+      <div className="admin-section__search">
+        <div className="search-box">
+          <i className="fas fa-search"></i>
+          <input
+            type="text"
+            placeholder="Tìm kiếm theo mã đơn, khách hàng, sản phẩm..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
       </div>
 
-      {loading ? (
-        <p>Đang tải...</p>
-      ) : error ? (
-        <p className="text-red-500">{error}</p>
-      ) : (
-        <>
-          <div className="admin__table-wrapper">
-            <table className="admin__table block__table">
-              <thead>
-                <tr>
-                  <th>Avatar</th>
-                  <th>Full name</th>
-                  <th>Giới tính</th>
-                  <th>Ngày sinh</th>
-                  <th>Phone</th>
-                  <th>Email</th>
-                  <th>Vai trò</th>
-                  <th>Trạng thái</th>
-                  <th>Option</th>
-                </tr>
-              </thead>
-              <tbody>
-                {currentUsers.map(
-                  (user) =>
-                    user._id !== id && (
-                      <tr key={user._id}>
-                        <td>
-                          <img
-                            src={user.avatar.url}
-                            alt={user.fullname}
-                            className="admin__image-preview admin__image-preview--user"
-                          />
-                        </td>
-                        <td>{user.fullname}</td>
-                        <td>{user.gender === 'male' ? 'Nam' : 'Nữ'}</td>
-                        <td>{new Date(user.dateBirth).toISOString().split('T')[0]}</td>
-                        <td>{user.phone || 'N/A'}</td>
-                        <td title={user.email}>{shorten(user.email)}</td>
-                        <td>{user.isAdmin ? 'Admin' : 'Member'}</td>
-                        <td>{user.isActive ? 'Hoạt động' : 'Khóa'}</td>
-                        <td>
-                          <button
-                            className="admin__action-btn admin__action-btn--view"
-                            onClick={() => handleViewUser(user._id)}
-                          >
-                            <i className="fas fa-eye"></i>
-                          </button>
-                          <button
-                            className="admin__action-btn admin__action-btn--edit"
-                            onClick={() => handleEditUser(user._id)}
-                          >
-                            <i className="fas fa-edit"></i>
-                          </button>
-                        </td>
-                      </tr>
-                    ),
-                )}
-              </tbody>
-            </table>
-          </div>
+      <div className="admin-section__content">
+        {loading ? (
+          <p>Đang tải...</p>
+        ) : error ? (
+          <p className="text-red-500">{error}</p>
+        ) : (
+          <>
+            <div className="block__table">
+              <table className="admin__table">
+                <thead>
+                  <tr>
+                    <th>Avatar</th>
+                    <th>Full name</th>
+                    <th>Giới tính</th>
+                    <th>Ngày sinh</th>
+                    <th>Phone</th>
+                    <th>Email</th>
+                    <th>Vai trò</th>
+                    <th>Trạng thái</th>
+                    <th>Option</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentUsers.map(
+                    (user) =>
+                      user._id !== id && (
+                        <tr key={user._id}>
+                          <td>
+                            <img
+                              src={user.avatar.url}
+                              alt={user.fullname}
+                              className="admin__image-preview admin__image-preview--user"
+                            />
+                          </td>
+                          <td>{user.fullname}</td>
+                          <td>{user.gender === 'male' ? 'Nam' : 'Nữ'}</td>
+                          <td>{new Date(user.dateBirth).toISOString().split('T')[0]}</td>
+                          <td>{user.phone || 'N/A'}</td>
+                          <td title={user.email}>{shorten(user.email)}</td>
+                          <td>{user.isAdmin ? 'Admin' : 'Member'}</td>
+                          <td>{user.isActive ? 'Hoạt động' : 'Khóa'}</td>
+                          <td>
+                            <div className="table-actions">
+                              <button onClick={() => handleViewUser(user._id)}>
+                                <i className="fas fa-eye"></i>
+                              </button>
+                              <button onClick={() => handleEditUser(user._id)}>
+                                <i className="fas fa-edit"></i>
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ),
+                  )}
+                </tbody>
+              </table>
+            </div>
 
-          <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={(page) => setCurrentPage(page)} />
-        </>
-      )}
-    </section>
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={(page) => setCurrentPage(page)}
+            />
+          </>
+        )}
+      </div>
+    </div>
   );
 };
 

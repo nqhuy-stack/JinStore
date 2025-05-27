@@ -44,9 +44,32 @@ export const createOrder = async (data, dispatch, accessToken, axiosJWT) => {
 };
 
 export const getOrdersStatus = async (status, accessToken, axiosJWT, signal) => {
+  if (!accessToken || !axiosJWT) {
+    toast.error('Vui lòng đăng nhập lại!', { duration: 2000 });
+    throw new Error('Dữ liệu đầu vào không hợp lệ!');
+  }
   try {
     const res = await axiosJWT.get(
-      `${API_URL}/orders?status=${status}`,
+      `${API_URL}/orders/my-order?status=${status}`,
+      {
+        headers: authHeaders(accessToken),
+      },
+      signal,
+    );
+    return res.data;
+  } catch (error) {
+    throw error.response?.data.message;
+  }
+};
+
+export const getAllOrders = async (status, accessToken, axiosJWT, signal) => {
+  if (!accessToken || !axiosJWT) {
+    toast.error('Vui lòng đăng nhập lại!', { duration: 2000 });
+    throw new Error('Dữ liệu đầu vào không hợp lệ!');
+  }
+  try {
+    const res = await axiosJWT.get(
+      `${API_URL}/orders/list?status=${status}`,
       {
         headers: authHeaders(accessToken),
       },
@@ -61,7 +84,7 @@ export const getOrdersStatus = async (status, accessToken, axiosJWT, signal) => 
 export const getOrdersByIdStatus = async (idUser, status, accessToken, axiosJWT, signal) => {
   try {
     const res = await axiosJWT.get(
-      `${API_URL}/orders/${idUser}?status=${status}`,
+      `${API_URL}/orders/user/${idUser}?status=${status}`,
       {
         headers: authHeaders(accessToken),
       },

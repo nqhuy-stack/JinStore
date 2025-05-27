@@ -1,4 +1,5 @@
 import logoFull from '@assets/images/logo/logo-full.svg';
+import { FaHome } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
 function FormDescribe({ children }) {
@@ -13,6 +14,10 @@ function FormDescribe({ children }) {
       <p className="form-describe__text">
         GreenStore là nơi bạn có thể tìm thấy những sản phẩm xanh, thân thiện với môi trường. {children}
       </p>
+      <Link to="/" className="btn btn__back-normal">
+        <FaHome />
+        Trang chủ
+      </Link>
     </div>
   );
 }

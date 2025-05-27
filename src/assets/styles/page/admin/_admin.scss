@@ -1,18 +1,3 @@
-// File: src/assets/styles/page/admin.scss
-
-// Admin Layout Variables
-$admin-primary-color: #2c3e50;
-$admin-secondary-color: #34495e;
-$admin-accent-color: #3498db;
-$admin-success-color: #2ecc71;
-$admin-warning-color: #f1c40f;
-$admin-danger-color: #e74c3c;
-$admin-text-color: #2c3e50;
-$admin-light-gray: #ecf0f1;
-$admin-border-color: #bdc3c7;
-$admin-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-$admin-transition: all 0.3s ease;
-
 // Admin Layout
 .admin {
   min-height: 100vh;
@@ -23,7 +8,7 @@ $admin-transition: all 0.3s ease;
   // Header
   &__header {
     background: linear-gradient(to right, #2c3e50, #3498db);
-    padding: 1rem 2rem;
+    padding: 0 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -339,7 +324,7 @@ $admin-transition: all 0.3s ease;
   }
 
   // Section chung cho các trang (Products, Orders, Users, Categories, ProductReviews)
-  &__section {
+  &-section {
     background-color: white;
     border-radius: 8px;
     box-shadow: $admin-shadow;
@@ -347,15 +332,6 @@ $admin-transition: all 0.3s ease;
     margin-bottom: 30px;
     overflow-x: auto;
     white-space: nowrap;
-
-    .admin__section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid $admin-border-color;
-    }
 
     .admin__section-actions {
       display: flex;
@@ -411,26 +387,7 @@ $admin-transition: all 0.3s ease;
       }
     }
 
-    // Ô tìm kiếm
-    .admin__search-bar {
-      margin-bottom: 20px;
-      display: flex;
-      justify-content: space-between;
-
-      select,
-      input {
-        width: 100%;
-        max-width: 300px;
-        padding: 10px 15px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-size: 1.4rem;
-        color: #6b7280;
-
-        &::placeholder {
-          color: #6b7280;
-        }
-      }
+    .admin__status-order {
     }
 
     // Nút "Add New" (dùng trong Products, Users, Categories)
@@ -553,7 +510,7 @@ $admin-transition: all 0.3s ease;
 
         label {
           display: block;
-          font-size: 1.3rem;
+          font-size: 1.6rem;
           font-weight: 500;
           margin-bottom: 5px;
           color: #000000;
@@ -677,9 +634,8 @@ $admin-transition: all 0.3s ease;
 
     // Hình ảnh preview
     .admin__image-preview {
-      margin-top: 10px;
       width: 100%;
-      height: 8rem;
+      height: 4rem;
       object-fit: cover;
       border-radius: 0.2rem;
 
@@ -822,13 +778,6 @@ $admin-transition: all 0.3s ease;
           }
         }
       }
-    }
-
-    // Wrapper cho bảng
-    .admin__table-wrapper {
-      overflow-x: auto;
-      margin-top: 30px;
-      border: none;
     }
 
     // Bảng chung (dùng trong Products, Orders, Users, Categories, ProductReviews)
@@ -1522,80 +1471,5 @@ $admin-transition: all 0.3s ease;
 
   .admin__main {
     margin-left: 70px;
-  }
-}
-
-// CSS cho Products trong admin
-.admin-products {
-  &__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-  }
-
-  .admin__table {
-    img.admin__image-preview--product {
-      width: 60px;
-      height: 60px;
-      object-fit: cover;
-      border-radius: 5px;
-    }
-  }
-
-  .admin__pagination {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 2rem;
-
-    &-info {
-      font-size: 1.4rem;
-      color: #6c757d;
-    }
-  }
-
-  .admin__actions {
-    display: flex;
-    gap: 0.5rem;
-  }
-
-  .admin__action-btn {
-    width: 35px;
-    height: 35px;
-    border: none;
-    border-radius: 5px;
-    color: white;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s;
-
-    &--view {
-      background-color: #3498db;
-      &:hover {
-        background-color: darken(#3498db, 10%);
-      }
-    }
-
-    &--edit {
-      background-color: #f39c12;
-      &:hover {
-        background-color: darken(#f39c12, 10%);
-      }
-    }
-
-    &--delete {
-      background-color: #e74c3c;
-      &:hover {
-        background-color: darken(#e74c3c, 10%);
-      }
-    }
-
-    &:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
   }
 }

@@ -1,4 +1,4 @@
-import { Fragment, useState, useEffect } from 'react';
+import { Fragment, useState, useEffect, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -31,11 +31,7 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    fetchCartItems(); // chạy 1 lần khi load Header
-  }, []);
-
-  const fetchCartItems = async () => {
+  const fetchCartItems = useCallback(async () => {
     try {
       if (user && accessToken && axiosJWT_V1) {
         const res = await getCart(accessToken, axiosJWT_V1);
@@ -43,7 +39,6 @@ const Header = () => {
         sessionStorage.setItem('itemCount', count.toString());
         setLengthItems(count);
       } else {
-        // fallback khi chưa có token (vẫn lấy từ session)
         const storedCount = parseInt(sessionStorage.getItem('itemCount') || '0', 10);
         setLengthItems(storedCount);
       }
@@ -51,7 +46,11 @@ const Header = () => {
       console.error('Lỗi khi lấy giỏ hàng:', err);
       setLengthItems(0);
     }
-  };
+  }, [user, accessToken, axiosJWT_V1]);
+
+  useEffect(() => {
+    fetchCartItems(); // chạy 1 lần khi load Header
+  }, [fetchCartItems]);
 
   // ✅ Khi mount, lắng nghe sự kiện itemCountChanged và window focus
   useEffect(() => {
@@ -80,7 +79,7 @@ const Header = () => {
     };
   }, []);
 
-  const handleLogout = async () => {
+  const handleLogout = useCallback(async () => {
     setLoading(true);
     try {
       await logOut(dispatch, id, navigate, accessToken, axiosJWT_V2);
@@ -92,9 +91,9 @@ const Header = () => {
     sessionStorage.removeItem('itemCount');
     window.dispatchEvent(new CustomEvent('itemCountChanged', { detail: 0 }));
     setLengthItems(0);
-  };
+  }, [dispatch, id, navigate, accessToken, axiosJWT_V2]);
 
-  const handleCart = () => {
+  const handleNoLogin = useCallback(() => {
     if (!user) {
       toast.dismiss();
       toast('Vui lòng đăng nhập', {
@@ -111,7 +110,7 @@ const Header = () => {
         navigate('/login');
       }, 1000);
     }
-  };
+  }, [navigate, user]);
 
   const getInitials = (name) => {
     if (!name || typeof name !== 'string') return '';
@@ -129,8 +128,6 @@ const Header = () => {
     document.addEventListener('click', handleClickOutside);
     return () => document.removeEventListener('click', handleClickOutside);
   }, []);
-
-  useEffect(() => {});
 
   if (loading) {
     return <PageLoad zIndex={1000} />;
@@ -198,7 +195,7 @@ const Header = () => {
                   </div>
                 )}
               </div>
-              <Link to={user && '/cart'} onClick={handleCart}>
+              <Link to={user && '/cart'} onClick={handleNoLogin}>
                 <div className="header__cart">
                   <img src={iconCart} alt="icon cart-shopping" />
                   <span className="header__count">{lengthItems}</span>

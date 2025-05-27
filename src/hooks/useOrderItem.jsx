@@ -29,7 +29,7 @@ function useOrderItem({ item, onNavigate }) {
 
   const statusText = useMemo(() => {
     return STATUS_MAP[item.status] || item.status;
-  }, [item.status]);
+  }, [item.status, STATUS_MAP]);
 
   const paymentText = useMemo(() => {
     if (item.paymentMethod === 'cod') {
