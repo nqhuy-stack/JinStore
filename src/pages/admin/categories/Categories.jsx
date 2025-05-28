@@ -133,8 +133,11 @@ const Categories = () => {
     navigate('/admin/categories/add');
   };
 
+  const filteredCategories = categories.filter((category) =>
+    category.name.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
   const totalPages = Math.ceil(categories.length / itemsPerPage);
-  const currentCategories = categories.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const currentCategories = filteredCategories.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const formatDate = (isoDate) => moment(isoDate).format('DD/MM/YYYY HH:mm:ss');
 

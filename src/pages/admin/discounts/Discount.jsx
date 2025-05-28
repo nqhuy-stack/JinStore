@@ -8,7 +8,6 @@ import Pagination from '@components/common/ui/Pagination';
 import { getAllDiscount, toggleDiscountStatus, deleteDiscount } from '@services/DiscountService';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
-import PageLoad from '@pages/PageLoad';
 
 const Discount = () => {
   const dispatch = useDispatch();
@@ -172,7 +171,10 @@ const Discount = () => {
         </select>
       </div>
       {loading ? (
-        !error && <PageLoad zIndex="1" />
+        <div className="loading-state">
+          <div className="loading-spinner"></div>
+          <p>Đang tải dữ liệu...</p>
+        </div>
       ) : (
         <>
           <div className="block__table">
@@ -181,69 +183,81 @@ const Discount = () => {
                 <tr>
                   <th>Trạng thái</th>
                   <th>Mã giảm giá</th>
-                  <th>Giảm giá (%)</th>
+                  <th>Loại</th>
+                  <th>Giá trị giảm</th>
+                  <th>Đơn hàng từ</th>
+                  <th>Bắt đầu</th>
                   <th>Hết hạn</th>
-                  <th>Hết hạn</th>
-                  <th>Đã dùng/Giới hạn</th>
+                  <th>Đã dùng</th>
+                  <th>Giới hạn</th>
                   <th>Tùy chỉnh</th>
                 </tr>
               </thead>
               <tbody>
-                {currentDiscounts.map((item) => {
-                  const expired = isExpired(item.expiration);
-                  const bgColor = !item.isActive
-                    ? '#f8d7da'
-                    : expired
-                      ? '#ffeeba'
-                      : item.quantityUsed >= item.quantityLimit
-                        ? '#d1ecf1'
-                        : '#fff';
+                {currentDiscounts.length === 0 ? (
+                  <tr>
+                    <td colSpan="100%" className="no-data">
+                      Không có đơn hàng nào
+                    </td>
+                  </tr>
+                ) : (
+                  currentDiscounts.map((item) => {
+                    const expired = isExpired(item.expiration);
+                    const bgColor = !item.isActive
+                      ? '#f8d7da'
+                      : expired
+                        ? '#ffeeba'
+                        : item.quantityUsed >= item.quantityLimit
+                          ? '#d1ecf1'
+                          : '#fff';
 
-                  return (
-                    <tr key={item._id} style={{ backgroundColor: bgColor }}>
-                      <td>
-                        <span className={`td__status td__status--${item.isActive ? 'true' : 'false'}`}>
-                          {item.isActive ? 'Kích hoạt' : 'Không kích hoạt'}
-                        </span>
-                        {expired && item.isActive && <span className="td__status td__status--expired"> (Hết hạn)</span>}
-                        {item.quantityUsed >= item.quantityLimit && item.isActive && (
-                          <span className="td__status td__status--depleted"> (Hết lượt)</span>
-                        )}
-                      </td>
-                      <td>{item.code}</td>
-                      <td>{item.discount}%</td>
-                      <td>{formatDate(item.activation)}</td>
-                      <td>{formatDate(item.expiration)}</td>
-                      <td>
-                        {item.quantityUsed}/{item.quantityLimit}
-                      </td>
-                      <td>
-                        <div className="table-actions">
-                          <button
-                            onClick={() => handleToggleActive(item._id, item.isActive)}
-                            disabled={loading}
-                            title={item.isActive ? 'Vô hiệu hóa' : 'Kích hoạt'}
-                          >
-                            <i className={`fas fa-${item.isActive ? 'eye-slash' : 'eye'}`}></i>
-                          </button>
-                          <button onClick={() => handleEditDiscount(item._id)} disabled={loading} title="Chỉnh sửa">
-                            <i className="fas fa-edit"></i>
-                          </button>
-                          <button onClick={() => handleDeleteDiscount(item._id)} disabled={loading} title="Xóa">
-                            <i className="fas fa-trash"></i>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
+                    return (
+                      <tr key={item._id} style={{ backgroundColor: bgColor }}>
+                        <td>
+                          <span className={`td__status td__status--${item.isActive ? 'true' : 'false'}`}>
+                            {item.isActive ? 'Kích hoạt' : 'Không kích hoạt'}
+                          </span>
+                          {expired && item.isActive && (
+                            <span className="td__status td__status--expired"> (Hết hạn)</span>
+                          )}
+                          {item.quantityUsed >= item.quantityLimit && item.isActive && (
+                            <span className="td__status td__status--depleted"> (Hết lượt)</span>
+                          )}
+                        </td>
+                        <td>{item.code}</td>
+                        <td>{item.type === 'fixed' ? 'Cố định' : 'Phần trăm'}</td>
+                        <td>{item.type === 'fixed' ? item.value.toLocaleString() : item.maxValue}</td>
+                        <td>{item.minOrderAmount.toLocaleString()}đ</td>
+                        <td>{formatDate(item.activation)}</td>
+                        <td>{formatDate(item.expiration)}</td>
+                        <td>{item.quantityUsed}</td>
+                        <td>{item.quantityLimit}</td>
+                        <td>
+                          <div className="table-actions">
+                            <button
+                              onClick={() => handleToggleActive(item._id, item.isActive)}
+                              disabled={loading}
+                              title={item.isActive ? 'Vô hiệu hóa' : 'Kích hoạt'}
+                            >
+                              <i className={`fas fa-${item.isActive ? 'eye-slash' : 'eye'}`}></i>
+                            </button>
+                            <button onClick={() => handleEditDiscount(item._id)} disabled={loading} title="Chỉnh sửa">
+                              <i className="fas fa-edit"></i>
+                            </button>
+                            <button onClick={() => handleDeleteDiscount(item._id)} disabled={loading} title="Xóa">
+                              <i className="fas fa-trash"></i>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
               </tbody>
             </table>
           </div>
-          {discount.length > 0 ? (
+          {discount.length > 0 && (
             <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
-          ) : (
-            <div className="no-data-message">Không có mã giảm giá nào</div>
           )}
         </>
       )}

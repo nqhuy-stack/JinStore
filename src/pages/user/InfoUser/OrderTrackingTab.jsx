@@ -1,12 +1,11 @@
 import { memo, useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { getOrdersStatus, getOrdersByIdStatus } from '../../../services/orderService';
+import { getOrdersStatus, getOrdersByUserStatus } from '../../../services/orderService';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
 import OrderItem from '../../../components/common/ui/OrderItem';
 import HeaderStatusOrder from '../../../components/common/ui/HeaderStatusOrder';
-import PageLoad from '@pages/PageLoad';
 
 import cartEmpty from '@assets/icons/cart-empty.svg';
 
@@ -92,7 +91,7 @@ const OrderTrackingTab = () => {
         const signal = abortControllerRef.current.signal;
 
         if (id) {
-          response = await getOrdersByIdStatus(id, status, accessToken, axiosJWT, signal);
+          response = await getOrdersByUserStatus(id, status, accessToken, axiosJWT, signal);
         } else {
           response = await getOrdersStatus(status, accessToken, axiosJWT, signal);
         }

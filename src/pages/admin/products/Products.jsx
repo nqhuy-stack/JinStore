@@ -9,7 +9,6 @@ import Pagination from '@components/common/ui/Pagination';
 import { createAxios } from '@utils/createInstance.jsx';
 import { getProductsAll, editProduct, deleteProduct } from '@services/ProductService';
 import { getCategoriesAll } from '@services/CategoryService';
-import PageLoad from '@pages/PageLoad';
 
 const Products = () => {
   const dispatch = useDispatch();
@@ -185,7 +184,10 @@ const Products = () => {
         </select>
       </div>
       {loading ? (
-        !error && <PageLoad zIndex="1" />
+        <div className="loading-state">
+          <div className="loading-spinner"></div>
+          <p>Đang tải dữ liệu...</p>
+        </div>
       ) : (
         <>
           <div className="block__table">
@@ -197,7 +199,8 @@ const Products = () => {
                   <th>Tên</th>
                   <th>Mô tả</th>
                   <th>Danh mục</th>
-                  <th>Số lượng</th>
+                  <th>Trong kho</th>
+                  <th>Đã bán</th>
                   <th>Đơn vị</th>
                   <th>Giá (1 Đơn vị)</th>
                   <th>Giảm giá</th>
@@ -205,69 +208,80 @@ const Products = () => {
                 </tr>
               </thead>
               <tbody>
-                {currentProducts.map((product) => (
-                  <tr
-                    key={product.id}
-                    style={{
-                      backgroundColor: product.isActive
-                        ? product.quantity > 0
-                          ? product._idCategory?.status === 'active'
-                            ? '#fff'
-                            : '#f8d7da'
-                          : '#f8d7da'
-                        : '#f8d7da',
-                    }}
-                  >
-                    <td>
-                      <span
-                        className={`td__isActive td__isActive--${
-                          product.isActive
-                            ? product.quantity > 0
-                              ? product._idCategory?.status === 'active'
-                                ? 'false'
-                                : 'true'
-                              : 'true'
-                            : 'true'
-                        }`}
-                      >
-                        {product.isActive
-                          ? product.quantity > 0
-                            ? product._idCategory?.status === 'active'
-                              ? 'Đang bán'
-                              : 'Ngừng bán'
-                            : 'Ngừng bán'
-                          : 'Ngừng bán'}
-                      </span>
-                    </td>
-                    <td>
-                      <img
-                        src={product.images[1]?.url || 'https://sonnptnt.thaibinh.gov.vn/App/images/no-image-news.png'}
-                        alt={product.name}
-                        className="admin__image-preview admin__image-preview--product"
-                      />
-                    </td>
-                    <td>{product.name}</td>
-                    <td>{product.description}</td>
-                    <td>{product._idCategory?.name}</td>
-                    <td>{product.quantity}</td>
-                    <td>{product.unit}</td>
-                    <td>{product.price} VND</td>
-                    <td>{product.discount}%</td>
-                    <td>
-                      <div className="table-actions">
-                        <button onClick={() => handleViewProduct(product._id, product.isActive)} disabled={loading}>
-                          <i className="fas fa-eye"></i>
-                        </button>
-                        <button onClick={() => handleEditProduct(product._id)} disabled={loading}>
-                          <i className="fas fa-edit"></i>
-                        </button>
-                        <button onClick={() => handleDeleteProduct(product._id)} disabled={loading}>
-                          <i className="fas fa-trash"></i>
-                        </button>
-                      </div>
+                {(error ?? currentProducts.length === 0) ? (
+                  <tr>
+                    <td colSpan="10" style={{ textAlign: 'center' }}>
+                      {error ? error : 'Không có sản phẩm nào'}
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  currentProducts.map((product) => (
+                    <tr
+                      key={product.id}
+                      style={{
+                        backgroundColor: product.isActive
+                          ? product.quantity > 0
+                            ? product._idCategory?.status === 'active'
+                              ? '#fff'
+                              : '#f8d7da'
+                            : '#f8d7da'
+                          : '#f8d7da',
+                      }}
+                    >
+                      <td>
+                        <span
+                          className={`td__isActive td__isActive--${
+                            product.isActive
+                              ? product.quantity > 0
+                                ? product._idCategory?.status === 'active'
+                                  ? 'false'
+                                  : 'true'
+                                : 'true'
+                              : 'true'
+                          }`}
+                        >
+                          {product.isActive
+                            ? product.quantity > 0
+                              ? product._idCategory?.status === 'active'
+                                ? 'Đang bán'
+                                : 'Ngừng bán'
+                              : 'Ngừng bán'
+                            : 'Ngừng bán'}
+                        </span>
+                      </td>
+                      <td>
+                        <img
+                          src={
+                            product.images[1]?.url || 'https://sonnptnt.thaibinh.gov.vn/App/images/no-image-news.png'
+                          }
+                          alt={product.name}
+                          className="admin__image-preview admin__image-preview--product"
+                        />
+                      </td>
+                      <td>{product.name}</td>
+                      <td>{product.description}</td>
+                      <td>{product._idCategory?.name}</td>
+                      <td>{product.quantity}</td>
+                      <td>{product.countBuy}</td>
+                      <td>{product.unit}</td>
+                      <td>{product.price.toLocaleString()} VND</td>
+                      <td>{product.discount}%</td>
+                      <td>
+                        <div className="table-actions">
+                          <button onClick={() => handleViewProduct(product._id, product.isActive)} disabled={loading}>
+                            <i className="fas fa-eye"></i>
+                          </button>
+                          <button onClick={() => handleEditProduct(product._id)} disabled={loading}>
+                            <i className="fas fa-edit"></i>
+                          </button>
+                          <button onClick={() => handleDeleteProduct(product._id)} disabled={loading}>
+                            <i className="fas fa-trash"></i>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

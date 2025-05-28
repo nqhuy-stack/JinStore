@@ -1,5 +1,5 @@
 // File: src/pages/admin/Orders.jsx
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import Modal from '@components/common/ui/Modal';
 import Pagination from '@components/common/ui/Pagination';
@@ -7,7 +7,7 @@ import HeaderStatusOrder from '../../../components/common/ui/HeaderStatusOrder';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
-import { getAllOrders } from '../../../services/orderService';
+import { getAllOrders, updateOrderStatus } from '../../../services/orderService';
 
 const STATUS_MAP = {
   all: 'Tất cả',
@@ -52,6 +52,35 @@ const Orders = () => {
     setIsDeleteModalOpen(true);
   };
 
+  const handleUpdateOrderStatus = async (order) => {
+    try {
+      // Xác định trạng thái tiếp theo
+      const nextStatus = getNextStatus(order.status);
+      if (!nextStatus) {
+        console.warn('Không thể cập nhật trạng thái từ:', order.status);
+        return;
+      }
+
+      await updateOrderStatus(order._id, nextStatus, user.accessToken, axiosJWT);
+      fetchOrders(activeTab);
+    } catch (error) {
+      console.error('Error updating order status:', error);
+      throw error;
+    }
+  };
+
+  // Hàm helper để xác định trạng thái tiếp theo
+  const getNextStatus = (currentStatus) => {
+    const statusFlow = {
+      pending: 'processing',
+      processing: 'shipping',
+      shipping: 'delivered',
+      delivered: null,
+      cancelled: null,
+    };
+    return statusFlow[currentStatus];
+  };
+
   const confirmDeleteOrder = () => {
     setLoading(true);
     // Simulate delete API call
@@ -70,20 +99,23 @@ const Orders = () => {
   };
 
   // Fetch orders
-  const fetchOrders = async (status) => {
-    if (!user?.accessToken) return;
+  const fetchOrders = useCallback(
+    async (status) => {
+      if (!user?.accessToken) return;
 
-    setLoading(true);
-    try {
-      const response = await getAllOrders(status, user.accessToken, axiosJWT);
-      setOrders(response.success ? response.data : []);
-    } catch (error) {
-      console.error('Error fetching orders:', error);
-      setOrders([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+      setLoading(true);
+      try {
+        const response = await getAllOrders(status, user.accessToken, axiosJWT);
+        setOrders(response.success ? response.data : []);
+      } catch (error) {
+        console.error('Error fetching orders:', error);
+        setOrders([]);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [axiosJWT, user],
+  );
 
   // Effects
   useEffect(() => {
@@ -164,33 +196,34 @@ const Orders = () => {
                     <th>Mã đơn</th>
                     <th>Ngày tạo</th>
                     <th>Khách hàng</th>
+                    <th>Số liên hệ</th>
                     <th>Sản phẩm</th>
                     <th>Thanh toán</th>
                     <th>Trạng thái</th>
                     <th>Tổng tiền</th>
                     <th>Thao tác</th>
+                    <th>Duyệt</th>
                   </tr>
                 </thead>
                 <tbody>
                   {currentOrders.length > 0 ? (
                     currentOrders.map((order) => (
                       <tr key={order._id}>
-                        <td>#{order._id.slice(-6).toUpperCase()}</td>
+                        <td title={order._id}>#{'...' + order._id.slice(-6).toUpperCase()}</td>
                         <td>{new Date(order.createdAt).toLocaleDateString('vi-VN')}</td>
-                        <td>
-                          <div>
-                            {order._idUser?.fullname || 'N/A'} ||{' '}
-                            {order._idUser?.phone && <small>{order._idUser.phone}</small>}
-                          </div>
-                        </td>
+                        <td>{order._idUser?.fullname || 'N/A'}</td>
+                        <td>{order._idUser?.phone}</td>
                         <td>{order.orderItems?.length || 0} sản phẩm</td>
                         <td>
                           <div className={`payment-status ${order.isPaid ? 'paid' : 'unpaid'}`}>
-                            {order.isPaid ? 'Đã TT' : 'Chưa TT'}
+                            {order.isPaid ? 'Đã thanh toán' : 'Chưa thanh toán'}
                           </div>
                         </td>
                         <td>
-                          <span className="status-badge" style={{ backgroundColor: getStatusColor(order.status) }}>
+                          <span
+                            className="status-badge"
+                            style={{ backgroundColor: getStatusColor(order.status), color: 'white' }}
+                          >
                             {STATUS_MAP[order.status]}
                           </span>
                         </td>
@@ -203,9 +236,22 @@ const Orders = () => {
                             <button onClick={() => handleEditOrder(order._id)} title="Sửa">
                               <i className="fas fa-edit"></i>
                             </button>
+                            <button onClick={() => handleTracking(order)} disabled={loading} title="Theo dõi đơn hàng">
+                              <i className="fas fa-truck"></i>
+                            </button>
                             <button onClick={() => handleDeleteOrder(order)} title="Xóa">
                               <i className="fas fa-trash"></i>
                             </button>
+                          </div>
+                        </td>
+                        <td>
+                          <div className="table-actions table-actions__accept">
+                            {order.status === 'delivered' ||
+                              (order.status === 'received' && (
+                                <button onClick={() => handleUpdateOrderStatus(order)} title="Xác nhận">
+                                  <i className="fas fa-check"></i>
+                                </button>
+                              ))}
                           </div>
                         </td>
                       </tr>

@@ -105,7 +105,10 @@ const ProductReviews = () => {
         </div>
       </div>
       {loading ? (
-        <p>Loading...</p>
+        <div className="loading-state">
+          <div className="loading-spinner"></div>
+          <p>Đang tải dữ liệu...</p>
+        </div>
       ) : (
         <>
           <div className="block__table">
@@ -113,19 +116,19 @@ const ProductReviews = () => {
               <thead>
                 <tr>
                   <th>No.</th>
-                  <th>Customer Name</th>
-                  <th>Product Name</th>
-                  <th>Rating</th>
-                  <th>Comment</th>
-                  <th>Status</th>
-                  <th>Actions</th>
+                  <th>Người dùng</th>
+                  <th>Tên sản phẩm</th>
+                  <th>Đánh giá</th>
+                  <th>Nội dùng</th>
+                  <th>Trạng thái</th>
+                  <th>option</th>
                 </tr>
               </thead>
               <tbody>
                 {currentReviews.length === 0 ? (
                   <tr>
                     <td colSpan="7" style={{ textAlign: 'center' }}>
-                      No reviews found
+                      Không có đánh giá nào
                     </td>
                   </tr>
                 ) : (

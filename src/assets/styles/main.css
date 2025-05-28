@@ -4811,41 +4811,6 @@ html {
   color: #2c3e50;
   font-weight: 600;
 }
-.admin-section .admin__section-subtitle {
-  font-size: 1.6rem;
-  font-weight: 600;
-  color: #00c4b4;
-  margin: 20px 0 10px;
-  text-transform: uppercase;
-}
-.admin-section .admin__import-export-button {
-  padding: 8px 16px;
-  font-size: 1.4rem;
-  font-weight: 500;
-  color: #fff;
-  background: #634c9f;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-.admin-section .admin__import-export-button:hover {
-  background: #4e3c7c;
-}
-.admin-section .admin__download-button {
-  padding: 8px 16px;
-  font-size: 1.4rem;
-  font-weight: 500;
-  color: #fff;
-  background: #634c9f;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-.admin-section .admin__download-button:hover {
-  background: #4e3c7c;
-}
 .admin-section .admin__add-button {
   display: flex;
   align-items: center;
@@ -6419,4 +6384,7 @@ html {
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s;
+}
+.block__table .table-actions.table-actions__accept button {
+  background-color: #2ecc71;
 }/*# sourceMappingURL=main.css.map */

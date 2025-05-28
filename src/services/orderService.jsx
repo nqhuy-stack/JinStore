@@ -81,7 +81,7 @@ export const getAllOrders = async (status, accessToken, axiosJWT, signal) => {
   }
 };
 
-export const getOrdersByIdStatus = async (idUser, status, accessToken, axiosJWT, signal) => {
+export const getOrdersByUserStatus = async (idUser, status, accessToken, axiosJWT, signal) => {
   try {
     const res = await axiosJWT.get(
       `${API_URL}/orders/user/${idUser}?status=${status}`,
@@ -89,6 +89,40 @@ export const getOrdersByIdStatus = async (idUser, status, accessToken, axiosJWT,
         headers: authHeaders(accessToken),
       },
       signal,
+    );
+    return res.data;
+  } catch (error) {
+    throw error.response?.data.message;
+  }
+};
+
+export const getOrderDetails = async (id, accessToken, axiosJWT) => {
+  if (!accessToken || !axiosJWT) {
+    toast.error('Vui lòng đăng nhập lại!', { duration: 2000 });
+    throw new Error('Dữ liệu đầu vào không hợp lệ!');
+  }
+  try {
+    const res = await axiosJWT.get(`${API_URL}/orders/details/${id}`, {
+      headers: authHeaders(accessToken),
+    });
+    return res.data;
+  } catch (error) {
+    throw error.response?.data.message;
+  }
+};
+
+export const updateOrderStatus = async (id, status, accessToken, axiosJWT) => {
+  if (!accessToken || !axiosJWT || !id || !status) {
+    toast.error('Vui lòng đăng nhập lại!', { duration: 2000 });
+    throw new Error('Dữ liệu đầu vào không hợp lệ!');
+  }
+  try {
+    const res = await axiosJWT.patch(
+      `${API_URL}/orders/update-status/${id}`,
+      { status },
+      {
+        headers: authHeaders(accessToken),
+      },
     );
     return res.data;
   } catch (error) {

@@ -286,8 +286,10 @@ const Dashboard = () => {
   };
 
   return (
-    <section className="admin__section">
-      <h2 className="admin__section-title">Dashboard Overview</h2>
+    <section className="admin-section">
+      <div className="admin-section__header">
+        <h2 className="admin-section__title">Tổng quát</h2>
+      </div>
 
       <div className="admin__stats">
         <div className="admin__stat-card">

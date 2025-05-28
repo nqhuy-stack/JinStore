@@ -44,5 +44,11 @@
       cursor: pointer;
       transition: all 0.2s;
     }
+
+    &.table-actions__accept {
+      button {
+        background-color: $admin-success-color;
+      }
+    }
   }
 }
