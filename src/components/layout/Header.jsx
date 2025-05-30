@@ -184,7 +184,7 @@ const Header = () => {
                       </>
                     ) : (
                       <>
-                        <Link to="login" onClick={() => setIsOpen(false)}>
+                        <Link to="/login" onClick={() => setIsOpen(false)}>
                           Đăng nhập
                         </Link>
                         <Link to="/register" onClick={() => setIsOpen(false)}>

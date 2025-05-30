@@ -1,15 +1,16 @@
 import { useCallback, useMemo } from 'react';
 
+const STATUS_MAP = {
+  all: 'Tất cả',
+  pending: 'Chờ xác nhận',
+  paid: 'Đã thanh toán',
+  processing: 'Đang chuẩn bị hàng',
+  shipping: 'Đang giao hàng',
+  delivered: 'Đã giao hàng',
+  received: 'Đã nhân',
+  cancelled: 'Đã hủy',
+};
 function useOrderItem({ item, onNavigate }) {
-  const STATUS_MAP = {
-    all: 'Tất cả',
-    pending: 'Chờ xác nhận',
-    paid: 'Đã thanh toán',
-    processing: 'Đang chuẩn bị hàng',
-    shipping: 'Đang giao hàng',
-    delivered: 'Đã giao hàng',
-    cancelled: 'Đã hủy',
-  };
   const handleReviewClick = useCallback(() => {
     onNavigate(`/write-review/${item._id || item.id}`);
   }, [item._id, item.id, onNavigate]);
@@ -29,11 +30,11 @@ function useOrderItem({ item, onNavigate }) {
 
   const statusText = useMemo(() => {
     return STATUS_MAP[item.status] || item.status;
-  }, [item.status, STATUS_MAP]);
+  }, [item.status]);
 
   const paymentText = useMemo(() => {
     if (item.paymentMethod === 'cod') {
-      return 'Thanh toán khi nhận hàng';
+      return item.isPaid ? 'Đã thanh toán' : 'Thanh toán khi nhận hàng';
     }
     return item.isPaid === false ? 'Chưa thanh toán' : 'Đã thanh toán';
   }, [item.paymentMethod, item.isPaid]);

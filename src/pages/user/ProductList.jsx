@@ -376,50 +376,49 @@ const ProductList = () => {
                 renderSkeleton()
               ) : currentProducts && currentProducts.length > 0 ? (
                 <>
-                  {currentProducts.map(
-                    (product) =>
-                      product._idCategory.status === 'active' && (
-                        <>
-                          <div
-                            key={product._id}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleProductClick(product);
-                            }}
-                            className="product__item"
-                          >
-                            <div className="item__image">
-                              <img src={product.images[0]?.url} alt={product.name} />
-                            </div>
-
-                            <div className="item__category">{product._idCategory?.name}</div>
-
-                            <h3 className="item__name">{product.name}</h3>
-
-                            <p className="item__description">{product.description}</p>
-
-                            <div className="item__price">
-                              <span className="current-price">
-                                {(product.price - product.price * (product.discount / 100)).toLocaleString()}/
-                                {product.unit}
-                              </span>
-                              <span className="original-price">{product.price.toLocaleString()}VNĐ</span>
-                            </div>
-
-                            <button
-                              className="add-btn"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleAddToCart(product);
-                              }}
-                            >
-                              Add
-                              <FontAwesomeIcon icon={faPlus} />
-                            </button>
+                  {currentProducts.map((product) => (
+                    <div key={product._id} className="list__item">
+                      {product._idCategory.status === 'active' && (
+                        <div
+                          key={product._id}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleProductClick(product);
+                          }}
+                          className="product__item"
+                        >
+                          <div className="item__image">
+                            <img src={product.images[0]?.url} alt={product.name} />
                           </div>
-                        </>
-                      ),
-                  )}
+
+                          <div className="item__category">{product._idCategory?.name}</div>
+
+                          <h3 className="item__name">{product.name}</h3>
+
+                          <p className="item__description">{product.description}</p>
+
+                          <div className="item__price">
+                            <span className="current-price">
+                              {(product.price - product.price * (product.discount / 100)).toLocaleString()}/
+                              {product.unit}
+                            </span>
+                            <span className="original-price">{product.price.toLocaleString()}VNĐ</span>
+                          </div>
+
+                          <button
+                            className="add-btn"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAddToCart(product);
+                            }}
+                          >
+                            Add
+                            <FontAwesomeIcon icon={faPlus} />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
                 </>
               ) : (
                 <div className="no-products">

@@ -15,6 +15,7 @@ import Checkout from '@pages/user/Checkout';
 import PaymentSuccess from '@pages/user/PaymentSuccess';
 import ProductList from '@pages/user/ProductList';
 import ProductDetails from '@pages/user/ProductDetails';
+import UserOrderDetails from '@pages/user/UserOrderDetail';
 
 import Admin from '@pages/admin/Admin';
 import Users from '@pages/admin/users/Users';
@@ -47,6 +48,10 @@ const routes = [
   {
     path: '/info-user',
     page: InfoUser,
+  },
+  {
+    path: '/order/details/:id',
+    page: UserOrderDetails,
   },
   {
     path: '/change-password',

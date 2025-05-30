@@ -1,0 +1,132 @@
+import { memo, useMemo } from 'react';
+import useOrderItem from '@hooks/user/useOrderItem';
+import { updateOrderStatus } from '../../../../services/orderService';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginSuccess } from '@/redux/authSlice.jsx';
+import { createAxios } from '@utils/createInstance.jsx';
+
+const OrderItem = ({ item, onNavigate, fetchOrders, activeTab }) => {
+  const {
+    orderDate,
+    statusText,
+    paymentText,
+    reviewButtonText,
+    refundButtonText,
+    showRefundButton,
+    handleReviewClick,
+    handleRefundClick,
+    handleDetailClick,
+  } = useOrderItem({ item, onNavigate });
+
+  console.log(item.status, item._id);
+
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.login.currentUser);
+
+  const { accessToken, axiosJWT } = useMemo(() => {
+    if (!user) return { accessToken: null, axiosJWT: null };
+
+    return {
+      accessToken: user.accessToken,
+      axiosJWT: createAxios(user, dispatch, loginSuccess),
+    };
+  }, [user, dispatch]);
+
+  const handleUpdateOrderStatus = async () => {
+    try {
+      // Xác định trạng thái tiếp theo
+      const nextStatus = getNextStatus(item.status);
+      if (!nextStatus) {
+        console.warn('Không thể cập nhật trạng thái từ:', item.status);
+        return;
+      }
+
+      await updateOrderStatus(item._id, nextStatus, accessToken, axiosJWT);
+      fetchOrders(activeTab);
+    } catch (error) {
+      console.error('Error updating order status:', error);
+      throw error;
+    }
+  };
+
+  // Hàm helper để xác định trạng thái tiếp theo
+  const getNextStatus = (currentStatus) => {
+    const statusFlow = {
+      pending: 'processing',
+      processing: 'shipping',
+      shipping: 'delivered',
+      delivered: 'received',
+      received: 'received',
+      cancelled: 'cancelled',
+    };
+    return statusFlow[currentStatus];
+  };
+
+  return (
+    <div className="order-tracking">
+      <div className="order__info">
+        <span className="info__date">Ngày đặt hàng: {orderDate}</span>
+        <span className="info__status">{statusText}</span>
+      </div>
+
+      <div className="order__items">
+        {item.orderItems.map((orderItem) => (
+          <div key={orderItem._id || orderItem.id} className="order__item">
+            <div className="item__image">
+              <img
+                src={
+                  (orderItem._idProduct.images &&
+                    orderItem._idProduct.images[0] &&
+                    orderItem._idProduct.images[0].url) ||
+                  ''
+                }
+                alt={orderItem.name}
+                loading="lazy"
+              />
+            </div>
+            <div className="item__details">
+              <span className="item__name">{orderItem.name}</span>
+              <div className="item__info">
+                <span className="item__quantity">Số lượng: {orderItem.quantity}</span>
+              </div>
+            </div>
+            <span className="item__total">Đơn giá: {orderItem.price?.toLocaleString()}đ</span>
+          </div>
+        ))}
+      </div>
+
+      <div className="order__info">
+        <span className="info__payment-method">{paymentText}</span>
+        <span className="info__total">Thành tiền: {item.totalAmount?.toLocaleString()}đ</span>
+      </div>
+
+      <div className="order__actions">
+        <button
+          className="btn btn__action-order btn-review__order"
+          onClick={
+            item.status === 'delivered'
+              ? handleUpdateOrderStatus
+              : item.status === 'received'
+                ? handleReviewClick
+                : handleUpdateOrderStatus
+          }
+          disabled={item.status !== 'delivered' && item.status !== 'received'}
+        >
+          {reviewButtonText}
+        </button>
+
+        {showRefundButton && (
+          <button className="btn btn__action-order btn-cancelled__order" onClick={handleRefundClick}>
+            {refundButtonText}
+          </button>
+        )}
+
+        <button className="btn btn__action-order btn-detail__order" onClick={handleDetailClick}>
+          Chi tiết
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default memo(OrderItem);

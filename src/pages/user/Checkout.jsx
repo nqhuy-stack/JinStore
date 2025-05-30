@@ -6,7 +6,7 @@ import { useLocation, Link, useSearchParams, useNavigate } from 'react-router-do
 import { toast } from 'react-toastify';
 
 import Breadcrumb from '@components/common/ui/Breadcrumb';
-import ModalAddress from '@components/common/ui/ModalAddress';
+import ModalAddress from '@pages/user/InfoUser/AddressTab/ModalAddress';
 import paymentMethods from '@json/paymentMethod';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';

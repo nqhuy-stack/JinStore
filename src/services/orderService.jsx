@@ -129,3 +129,19 @@ export const updateOrderStatus = async (id, status, accessToken, axiosJWT) => {
     throw error.response?.data.message;
   }
 };
+
+export const deleteOrder = async (orderId, accessToken, axiosJWT) => {
+  if (!accessToken || !axiosJWT || !orderId) {
+    toast.error('Hết phiên đăng nhập, vui lòng đăng nhập lại!', { duration: 2000 });
+    throw new Error('Dữ liệu đầu vào không hợp lệ!');
+  }
+  try {
+    const res = await axiosJWT.delete(`${API_URL}/orders/delete/${orderId}`, {
+      headers: authHeaders(accessToken),
+    });
+    return res.data;
+  } catch (error) {
+    toast.error(error.response?.data.message, { duration: 2000 });
+    throw error.response?.data.message;
+  }
+};

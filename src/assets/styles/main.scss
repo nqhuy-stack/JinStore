@@ -23,16 +23,24 @@
 @import './page/user/checkout';
 @import './page/user/wishlist';
 @import './page/user/productlist';
+
 @import './page/user/ProfileTabs/addresstab';
 @import './page/user/ProfileTabs/changepassword';
 @import './page/user/ProfileTabs/ordertracking';
+@import './page/user/ProfileTabs/orderdetails';
 
 @import './page/admin/admin';
 @import './page/admin/adminmain';
+@import './page/admin/adminorderdetails';
+@import './page/admin/admindashboard';
 
 @import './ui/product';
 @import './ui/table';
 @import './ui/button';
 @import './ui/orderItem';
 @import './ui/headerStatusOrder';
+
 @import './ui/admintable';
+@import './ui/adminform';
+
+@import './forms/formReview';

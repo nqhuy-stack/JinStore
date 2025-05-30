@@ -12,6 +12,9 @@ export default defineConfig({
   optimizeDeps: {
     include: ['react-toastify'],
   },
+    server: {
+    open: '/JinStore/', // 👉 Tự mở đúng URL
+  },
   resolve: {
     extensions: ['.js', '.jsx'],
     alias: {

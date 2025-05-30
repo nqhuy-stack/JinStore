@@ -7,7 +7,7 @@ import HeaderStatusOrder from '../../../components/common/ui/HeaderStatusOrder';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
-import { getAllOrders, updateOrderStatus } from '../../../services/orderService';
+import { getAllOrders, updateOrderStatus, deleteOrder } from '../../../services/orderService';
 
 const STATUS_MAP = {
   all: 'Tất cả',
@@ -16,6 +16,7 @@ const STATUS_MAP = {
   processing: 'Đang chuẩn bị hàng',
   shipping: 'Đang giao hàng',
   delivered: 'Đã giao hàng',
+  received: 'Đã nhân',
   cancelled: 'Đã hủy',
 };
 
@@ -43,8 +44,6 @@ const Orders = () => {
 
   // Navigation handlers
   const handleViewOrder = (id) => navigate(`/admin/orders/${id}`);
-  const handleEditOrder = (id) => navigate(`/admin/orders/edit/${id}`);
-  const handleTracking = (orderCode) => navigate(`/tracking/${orderCode}`);
 
   // Delete order handlers
   const handleDeleteOrder = (order) => {
@@ -73,23 +72,31 @@ const Orders = () => {
   const getNextStatus = (currentStatus) => {
     const statusFlow = {
       pending: 'processing',
+      paid: 'processing',
       processing: 'shipping',
       shipping: 'delivered',
-      delivered: null,
-      cancelled: null,
+      delivered: 'received',
+      received: 'received',
+      cancelled: 'cancelled',
     };
     return statusFlow[currentStatus];
   };
 
-  const confirmDeleteOrder = () => {
+  const confirmDeleteOrder = async () => {
+    if (!orderToDelete) return;
+
     setLoading(true);
-    // Simulate delete API call
-    setTimeout(() => {
-      setOrders((prev) => prev.filter((o) => o.id !== orderToDelete.id));
+
+    try {
+      await deleteOrder(orderToDelete._id, user.accessToken, axiosJWT);
+      setOrders((prev) => prev.filter((o) => o._id !== orderToDelete._id));
       setIsDeleteModalOpen(false);
       setOrderToDelete(null);
+    } catch (error) {
+      console.error('Error deleting order:', error);
+    } finally {
       setLoading(false);
-    }, 500);
+    }
   };
 
   // Tab navigation
@@ -148,15 +155,28 @@ const Orders = () => {
   // Get status color
   const getStatusColor = (status) => {
     const colors = {
-      pending: '#ffc107',
-      paid: '#28a745',
-      processing: '#17a2b8',
-      shipping: '#6f42c1',
-      delivered: '#28a745',
-      received: '#28a745',
-      cancelled: '#dc3545',
+      pending: '#f0ad4e', // Vàng cam - Đang chờ xử lý
+      paid: '#0275d8', // Xanh dương đậm - Đã thanh toán
+      processing: '#5bc0de', // Xanh ngọc nhạt - Đang xử lý
+      shipping: '#292b2c', // Đen xám - Đang giao hàng
+      delivered: '#5cb85c', // Xanh lá tươi - Đã giao
+      received: '#5cb85c', // Xanh lá tươi - Đã nhận
+      cancelled: '#d9534f', // Đỏ - Đã hủy
     };
-    return colors[status] || '#6c757d';
+    return colors[status] || '#f7f7f7'; // Mặc định: xám rất nhạt
+  };
+
+  const getStatusTextColor = (status) => {
+    const textColors = {
+      pending: '#292b2c',
+      paid: '#ffffff',
+      processing: '#292b2c',
+      shipping: '#ffffff',
+      delivered: '#ffffff',
+      received: '#ffffff',
+      cancelled: '#ffffff',
+    };
+    return textColors[status] || '#292b2c';
   };
 
   return (
@@ -222,7 +242,10 @@ const Orders = () => {
                         <td>
                           <span
                             className="status-badge"
-                            style={{ backgroundColor: getStatusColor(order.status), color: 'white' }}
+                            style={{
+                              backgroundColor: getStatusColor(order.status),
+                              color: getStatusTextColor(order.status),
+                            }}
                           >
                             {STATUS_MAP[order.status]}
                           </span>
@@ -233,12 +256,6 @@ const Orders = () => {
                             <button onClick={() => handleViewOrder(order._id)} title="Xem">
                               <i className="fas fa-eye"></i>
                             </button>
-                            <button onClick={() => handleEditOrder(order._id)} title="Sửa">
-                              <i className="fas fa-edit"></i>
-                            </button>
-                            <button onClick={() => handleTracking(order)} disabled={loading} title="Theo dõi đơn hàng">
-                              <i className="fas fa-truck"></i>
-                            </button>
                             <button onClick={() => handleDeleteOrder(order)} title="Xóa">
                               <i className="fas fa-trash"></i>
                             </button>
@@ -246,8 +263,8 @@ const Orders = () => {
                         </td>
                         <td>
                           <div className="table-actions table-actions__accept">
-                            {order.status === 'delivered' ||
-                              (order.status === 'received' && (
+                            {order.status === 'received' ||
+                              (order.status !== 'cancelled' && (
                                 <button onClick={() => handleUpdateOrderStatus(order)} title="Xác nhận">
                                   <i className="fas fa-check"></i>
                                 </button>

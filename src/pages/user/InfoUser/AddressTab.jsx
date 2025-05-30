@@ -11,11 +11,10 @@ import {
 import { createAxios } from '../../../utils/createInstance';
 import { loginSuccess } from '../../../redux/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import PageLoad from '../../PageLoad';
 import { useParams } from 'react-router-dom';
 import FormAddress from '@components/common/forms/FormAddress';
-import AddressCard from '@components/common/ui/AddressCard';
-import useAddressData from '@hooks/useAddressData';
+import AddressCard from './AddressTab/AddressCard';
+import useAddressData from '@hooks/user/useAddressData';
 
 // Constants
 const INITIAL_FORM_DATA = {
@@ -281,21 +280,26 @@ function AddressTab({ selectedDefault = null }) {
         )}
       </div>
 
-      {loading && <PageLoad zIndex={10} />}
-
-      {addresses.length > 0 && (
-        <div className="addresses-list">
-          {addresses.map((address) => (
-            <AddressCard
-              key={address._id}
-              address={address}
-              onUpdate={handleUpdate}
-              onDelete={handleDelete}
-              onSetDefault={handleSetDefault}
-              isViewOnly={isViewOnly}
-            />
-          ))}
+      {loading ? (
+        <div className="loading-state">
+          <div className="loading-spinner"></div>
+          <p>Đang tải dữ liệu...</p>
         </div>
+      ) : (
+        addresses.length > 0 && (
+          <div className="addresses-list">
+            {addresses.map((address) => (
+              <AddressCard
+                key={address._id}
+                address={address}
+                onUpdate={handleUpdate}
+                onDelete={handleDelete}
+                onSetDefault={handleSetDefault}
+                isViewOnly={isViewOnly}
+              />
+            ))}
+          </div>
+        )
       )}
 
       {showFormAddress && (

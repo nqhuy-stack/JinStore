@@ -4,8 +4,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
-import { getOrderDetails, updateOrderStatus } from '@services/orderService';
+import { getOrderDetails } from '@services/orderService';
 import ModalUpdateStatus from '@components/features/orders/ModalUpdateStatus';
+import Breadcrumb from '@components/common/ui/Breadcrumb';
 
 const STATUS_MAP = {
   pending: 'Chờ xác nhận',
@@ -27,7 +28,7 @@ const STATUS_OPTIONS = [
   { value: 'cancelled', label: 'Đã hủy' },
 ];
 
-const OrderDetail = () => {
+const UserOrderDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -37,7 +38,6 @@ const OrderDetail = () => {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [updating, setUpdating] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [newStatus, setNewStatus] = useState('');
 
@@ -73,33 +73,7 @@ const OrderDetail = () => {
 
   // Event handlers
   const handleBack = () => {
-    navigate('/admin/orders');
-  };
-
-  const handleStatusChange = async () => {
-    if (!newStatus || newStatus === order.status) {
-      setShowStatusModal(false);
-      return;
-    }
-
-    try {
-      setUpdating(true);
-      const response = await updateOrderStatus(id, newStatus, user.accessToken, axiosJWT);
-
-      if (response.success) {
-        setOrder({ ...order, status: newStatus });
-        setShowStatusModal(false);
-        // Show success message
-        alert('Cập nhật trạng thái đơn hàng thành công!');
-      } else {
-        alert('Có lỗi xảy ra khi cập nhật trạng thái đơn hàng');
-      }
-    } catch (err) {
-      console.error('Error updating order status:', err);
-      alert('Lỗi khi cập nhật trạng thái đơn hàng');
-    } finally {
-      setUpdating(false);
-    }
+    navigate(`/info-user?tab=orders&status=${order.status}`);
   };
 
   // Format currency
@@ -180,20 +154,13 @@ const OrderDetail = () => {
 
   return (
     <div>
+      <Breadcrumb items={[{ text: 'Orders details' }]} />
       <section className="admin-section">
         <div className="admin-section__header">
           <h2 className="admin-section__title">Chi tiết đơn hàng #{order._id?.slice(-6).toUpperCase()}</h2>
           <div className="admin-section__actions">
-            <button
-              className="admin-btn admin-btn--primary"
-              onClick={() => setShowStatusModal(true)}
-              disabled={updating}
-            >
-              <i className="fas fa-edit"></i>
-              Cập nhật trạng thái
-            </button>
             <button className="admin-add__button" onClick={handleBack}>
-              Quay lại danh sách
+              Quay lại danh sách đơn hàng
             </button>
           </div>
         </div>
@@ -402,4 +369,4 @@ const OrderDetail = () => {
   );
 };
 
-export default OrderDetail;
+export default UserOrderDetail;

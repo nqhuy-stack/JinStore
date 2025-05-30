@@ -4,7 +4,7 @@ import { getOrdersStatus, getOrdersByUserStatus } from '../../../services/orderS
 import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
-import OrderItem from '../../../components/common/ui/OrderItem';
+import OrderItem from './OrderTrackingTab/OrderItem';
 import HeaderStatusOrder from '../../../components/common/ui/HeaderStatusOrder';
 
 import cartEmpty from '@assets/icons/cart-empty.svg';
@@ -16,6 +16,7 @@ const STATUS_MAP = {
   processing: 'Đang chuẩn bị hàng',
   shipping: 'Đang giao hàng',
   delivered: 'Đã giao hàng',
+  received: 'Đã nhân',
   cancelled: 'Đã hủy',
 };
 
@@ -132,12 +133,26 @@ const OrderTrackingTab = () => {
       <div className="profile__tab-header">
         <HeaderStatusOrder activeTab={activeTab} handleTabClick={handleTabClick} STATUS_ENTRIES={STATUS_ENTRIES} />
       </div>
-      <div className="profile__tab-bod">
-        {orders.length > 0 ? (
-          orders.map((item) => <OrderItem key={item._id || item.id} item={item} onNavigate={handleNavigate} />)
-        ) : (
+      <div className="profile__tab-body">
+        {!error && orders.length > 0 && loading ? (
+          <div className="loading-state">
+            <div className="loading-spinner"></div>
+            <p>Đang tải dữ liệu...</p>
+          </div>
+        ) : orders.length === 0 ? (
           <img className="img__empty" src={cartEmpty} alt="Cart Empty" />
+        ) : (
+          orders.map((item) => (
+            <OrderItem
+              key={item._id || item.id}
+              item={item}
+              onNavigate={handleNavigate}
+              fetchOrders={fetchOrdersStatus}
+              activeTab={activeTab}
+            />
+          ))
         )}
+        {error && <div className="error-message">{error}</div>}
       </div>
     </div>
   );
