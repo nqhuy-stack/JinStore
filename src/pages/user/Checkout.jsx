@@ -36,7 +36,6 @@ const Checkout = () => {
 
   // Get cart data from location state or redirect if empty
   const { selectedProducts = [], summary = {}, appliedDiscount = {} } = location.state || {};
-  console.log('location', location.state);
 
   // Form validation
   const validateForm = () => {
@@ -82,7 +81,10 @@ const Checkout = () => {
           shippingFee: summary.shipping,
           paymentMethod: selectedPayment,
           totalAmount: summary.total,
-          discount: appliedDiscount._id,
+          discount:
+            appliedDiscount && (appliedDiscount.id || appliedDiscount._id)
+              ? appliedDiscount.id || appliedDiscount._id
+              : null,
           note: '',
           source,
         },

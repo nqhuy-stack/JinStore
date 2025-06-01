@@ -466,7 +466,7 @@ const Cart = () => {
               to="/checkout?source=cart"
               state={{
                 selectedProducts: getSelectedProductsData,
-                appliedDiscount: appliedDiscount, // Truyền thông tin mã giảm giá
+                appliedDiscount: appliedDiscount ?? null,
                 summary: {
                   shipping: calculateSubtotal >= 500000 ? 0 : 30000,
                   subtotal: calculateSubtotal,
