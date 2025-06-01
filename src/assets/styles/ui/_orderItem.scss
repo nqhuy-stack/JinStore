@@ -7,12 +7,16 @@
   /* Giữ lại khoảng cách như cart__items */
   padding: 1rem 0;
   .order__item {
+    cursor: pointer;
     display: grid;
     grid-template-columns: 80px 1fr 150px;
     gap: 1.5rem;
     align-items: center;
     padding-bottom: 1.5rem;
     border-bottom: 1px solid #e2e8f0;
+    &:hover {
+      background-color: #f8f9fa;
+    }
 
     .item__image {
       width: 80px;

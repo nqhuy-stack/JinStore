@@ -7,14 +7,56 @@ const STATUS_MAP = {
   processing: 'Đang chuẩn bị hàng',
   shipping: 'Đang giao hàng',
   delivered: 'Đã giao hàng',
-  received: 'Đã nhân',
+  received: 'Đã nhận',
   cancelled: 'Đã hủy',
 };
-function useOrderItem({ item, onNavigate }) {
-  const handleReviewClick = useCallback(() => {
-    onNavigate(`/write-review/${item._id || item.id}`);
-  }, [item._id, item.id, onNavigate]);
 
+function useOrderItem({ item, onNavigate }) {
+  console.log('useOrderItem', item);
+  //FIXME: Tinh năng cần phát triển
+  const handleBuyAgain = useCallback(() => {
+    const selectedProducts =
+      item?.products?.map((product) => {
+        // Tính discountPrice từ price và discount
+        const originalPrice = product._idProduct?.price || product.price;
+        const discount = product._idProduct?.discount || 0;
+        const discountPrice = originalPrice * (1 - discount / 100);
+
+        return {
+          _id: product._idProduct?._id || product._id,
+          name: product._idProduct?.name || product.name,
+          price: originalPrice,
+          discount: discount,
+          discountPrice: discountPrice,
+          unit: product._idProduct?.unit || product.unit,
+          images: product._idProduct?.images || product.images || [],
+          quantity: product.quantity,
+          totalDiscountPrice: discountPrice * product.quantity,
+        };
+      }) || [];
+
+    // Tính summary
+    const subtotal = selectedProducts.reduce((sum, product) => sum + product.totalDiscountPrice, 0);
+    const shipping = 30000; // Phí ship cố định, có thể điều chỉnh theo logic của bạn
+    const couponDiscount = 0; // Mặc định không có coupon
+    const total = subtotal + shipping - couponDiscount;
+
+    const stateData = {
+      selectedProducts,
+      summary: {
+        subtotal,
+        couponDiscount,
+        total,
+        shipping,
+      },
+    };
+
+    onNavigate('/checkout', {
+      state: stateData,
+    });
+  }, [item, onNavigate]);
+
+  //FIXME: Tinh năng cần phát triển
   const handleRefundClick = useCallback(() => {
     onNavigate(`/info-user?tab=orders&id=${item._id || item.id}`);
   }, [item._id, item.id, onNavigate]);
@@ -40,7 +82,7 @@ function useOrderItem({ item, onNavigate }) {
   }, [item.paymentMethod, item.isPaid]);
 
   const reviewButtonText = useMemo(() => {
-    return item.status === 'delivered' ? 'Đã nhận hàng' : item.status === 'received' ? 'Đánh giá' : 'Đã nhận hàng';
+    return item.status === 'delivered' ? 'Đã nhận hàng' : item.status === 'received' ? 'Mua lại' : 'Đã nhận hàng';
   }, [item.status]);
 
   const refundButtonText = useMemo(() => {
@@ -58,7 +100,7 @@ function useOrderItem({ item, onNavigate }) {
     reviewButtonText,
     refundButtonText,
     showRefundButton,
-    handleReviewClick,
+    handleBuyAgain,
     handleRefundClick,
     handleDetailClick,
   };

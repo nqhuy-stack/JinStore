@@ -576,9 +576,8 @@ const AddProduct = () => {
             <div className="admin__form-row">
               <div className="admin__form-field">
                 <label className="product-attributes" htmlFor="product-attributes">
-                  Thuộc tính sản phẩm
+                  Thuộc tính sản phẩm (tùy chọn)
                 </label>
-                <div className="field-hint">Thêm các thuộc tính đặc trưng của sản phẩm (tùy chọn)</div>
                 <div className="form-table-container">
                   <table className="form-table">
                     <thead>

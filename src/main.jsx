@@ -8,9 +8,7 @@ import App from './App';
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
 
-if (!window.location.pathname.startsWith('/JinStore')) {
-  window.location.replace('/JinStore' + window.location.pathname);
-}
+
 createRoot(document.getElementById('root')).render(
   <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>

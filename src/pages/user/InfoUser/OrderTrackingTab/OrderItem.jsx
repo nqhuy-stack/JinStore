@@ -4,6 +4,7 @@ import { updateOrderStatus } from '../../../../services/orderService';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
+import { useNavigate } from 'react-router-dom';
 
 const OrderItem = ({ item, onNavigate, fetchOrders, activeTab }) => {
   const {
@@ -13,13 +14,14 @@ const OrderItem = ({ item, onNavigate, fetchOrders, activeTab }) => {
     reviewButtonText,
     refundButtonText,
     showRefundButton,
-    handleReviewClick,
+    handleBuyAgain,
     handleRefundClick,
     handleDetailClick,
   } = useOrderItem({ item, onNavigate });
 
   console.log(item.status, item._id);
 
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.login.currentUser);
 
@@ -49,6 +51,22 @@ const OrderItem = ({ item, onNavigate, fetchOrders, activeTab }) => {
     }
   };
 
+  console.log(item);
+
+  const handleProductDetail = (id) => {
+    navigate(`/product/${id}`, {
+      state: {
+        activeTab: 'reviews',
+        product: {
+          _id: item.id,
+        },
+        user: {
+          _id: user._id,
+        },
+      },
+    });
+  };
+
   // Hàm helper để xác định trạng thái tiếp theo
   const getNextStatus = (currentStatus) => {
     const statusFlow = {
@@ -71,7 +89,11 @@ const OrderItem = ({ item, onNavigate, fetchOrders, activeTab }) => {
 
       <div className="order__items">
         {item.orderItems.map((orderItem) => (
-          <div key={orderItem._id || orderItem.id} className="order__item">
+          <div
+            onClick={() => handleProductDetail(orderItem._idProduct._id)}
+            key={orderItem._id || orderItem.id}
+            className="order__item"
+          >
             <div className="item__image">
               <img
                 src={
@@ -100,30 +122,36 @@ const OrderItem = ({ item, onNavigate, fetchOrders, activeTab }) => {
         <span className="info__total">Thành tiền: {item.totalAmount?.toLocaleString()}đ</span>
       </div>
 
-      <div className="order__actions">
-        <button
-          className="btn btn__action-order btn-review__order"
-          onClick={
-            item.status === 'delivered'
-              ? handleUpdateOrderStatus
-              : item.status === 'received'
-                ? handleReviewClick
-                : handleUpdateOrderStatus
-          }
-          disabled={item.status !== 'delivered' && item.status !== 'received'}
-        >
-          {reviewButtonText}
-        </button>
+      <div className="order__footer">
+        <span className={item.status === 'received' && 'notification__review'}>
+          {item.status === 'received' && 'Vui lòng Click vào sản phẩm để đánh giá.'}
+        </span>
 
-        {showRefundButton && (
-          <button className="btn btn__action-order btn-cancelled__order" onClick={handleRefundClick}>
-            {refundButtonText}
+        <div className="order__actions">
+          <button
+            className="btn btn__action-order btn-review__order"
+            onClick={
+              item.status === 'delivered'
+                ? handleUpdateOrderStatus
+                : item.status === 'received'
+                  ? handleBuyAgain
+                  : handleUpdateOrderStatus
+            }
+            disabled={item.status !== 'delivered' && item.status !== 'received'}
+          >
+            {reviewButtonText}
           </button>
-        )}
 
-        <button className="btn btn__action-order btn-detail__order" onClick={handleDetailClick}>
-          Chi tiết
-        </button>
+          {showRefundButton && (
+            <button className="btn btn__action-order btn-cancelled__order" onClick={handleRefundClick}>
+              {refundButtonText}
+            </button>
+          )}
+
+          <button className="btn btn__action-order btn-detail__order" onClick={handleDetailClick}>
+            Chi tiết
+          </button>
+        </div>
       </div>
     </div>
   );

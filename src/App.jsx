@@ -34,11 +34,11 @@ const ProtectedRoute = ({ children, isProtected, adminOnly }) => {
 
   if (isProtected) {
     if (!currentUser) {
-      return <Navigate to="/login" />;
+      return <Navigate to="/JinStore/login" />;
     }
 
     if (adminOnly && !currentUser.isAdmin) {
-      return <Navigate to="/" />;
+      return <Navigate to="/JinStore/" />;
     }
   }
 

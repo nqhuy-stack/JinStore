@@ -11,11 +11,13 @@ import ProductsCategoryList from '@/components/features/products/ProdCateList.js
 import ProductImageGallery from '@pages/user/ProductDetails/ProductImageGallery';
 import ProductInfo from '@pages/user/ProductDetails/ProductInfo';
 import ProductTabs from '@pages/user/ProductDetails/ProductTabs';
+import { useRef } from 'react';
 
 const ProductDetails = () => {
   const { id } = useParams();
   const location = useLocation();
   const dispatch = useDispatch();
+  const reviewsRef = useRef(null);
 
   // States
   const [product, setProduct] = useState(null);
@@ -29,14 +31,26 @@ const ProductDetails = () => {
   const accessToken = user?.accessToken;
   const axiosJWT = createAxios(user, dispatch, loginSuccess);
 
+  const shouldScroll = location.state?.activeTab === 'reviews';
+
+  useEffect(() => {
+    if (shouldScroll) {
+      setActiveTab('reviews');
+
+      // Delay để DOM có thời gian render nội dung tab
+      setTimeout(() => {
+        window.scrollTo({
+          top: reviewsRef.current.offsetTop - 100,
+          behavior: 'smooth',
+        });
+      }, 300);
+    }
+  }, [shouldScroll]);
+
   // Effects
   useEffect(() => {
     fetchProduct();
   }, [id, location.state]);
-
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [id]);
 
   // Functions
   const fetchProduct = async () => {
@@ -65,6 +79,12 @@ const ProductDetails = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!loading && shouldScroll) {
+      reviewsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }, [loading, shouldScroll]);
 
   // Loading state
   if (loading) {
@@ -109,8 +129,9 @@ const ProductDetails = () => {
             dispatch={dispatch}
           />
         </div>
-
-        <ProductTabs product={product} activeTab={activeTab} onTabChange={setActiveTab} />
+        <div ref={reviewsRef}>
+          <ProductTabs product={product} activeTab={activeTab} onTabChange={setActiveTab} loading={loading} />
+        </div>
 
         <div className="product-details__related">
           <h2 className="related__title">Sản phẩm liên quan</h2>

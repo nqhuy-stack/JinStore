@@ -211,6 +211,10 @@ const AddDiscount = () => {
     }
   };
 
+  const handleBack = () => {
+    navigate('/admin/discounts');
+  };
+
   // Hàm lấy nhãn cho trường
   const getFieldLabel = (field) => {
     switch (field) {
@@ -235,25 +239,44 @@ const AddDiscount = () => {
     }
   };
 
+  const removeVietnameseTones = (str) => {
+    return str
+      .normalize('NFD') // chuyển về dạng tổ hợp
+      .replace(/[\u0300-\u036f]/g, '') // xóa các dấu tổ hợp
+      .replace(/đ/g, 'd')
+      .replace(/Đ/g, 'D') // xử lý riêng cho đ
+      .replace(/[^a-zA-Z0-9 ]/g, '') // loại bỏ ký tự đặc biệt (nếu cần)
+      .trim();
+  };
+
   return (
     <section className="admin-section">
       {loading && <PageLoad zIndex="1" />}
 
       <div className="admin-section__header">
         <h2 className="admin-section__title">Thêm mã giảm giá</h2>
+        <div className="admin-section__actions">
+          <button className="admin-add__button" onClick={handleBack}>
+            Quay lại danh sách
+          </button>
+        </div>
       </div>
 
       <form className="admin__form" id="form-addDiscount" onSubmit={handleAddDiscount}>
         <div className="admin__form-row">
           <div className="admin__form-field">
             <label htmlFor="discount-code">
-              Mã giảm giá <span className="required">*</span>
+              Mã giảm giá <span className="required">*</span> - (Nhập chuỗi ký tự không dấu)
             </label>
             <input
               type="text"
               id="discount-code"
               value={newDiscount.code}
-              onChange={(e) => setNewDiscount({ ...newDiscount, code: e.target.value.toUpperCase() })}
+              onChange={(e) => {
+                const rawValue = e.target.value;
+                const upperCaseValue = removeVietnameseTones(rawValue).toUpperCase();
+                setNewDiscount({ ...newDiscount, code: upperCaseValue });
+              }}
               onBlur={() => handleBlur('code')}
               required
               placeholder="Nhập mã giảm giá"
@@ -316,7 +339,8 @@ const AddDiscount = () => {
           ) : (
             <div className="admin__form-field">
               <label htmlFor="discount-value">
-                Giá trị giảm giá (VND) <span className="required">*</span>
+                Giá trị giảm giá (VND) <span className="required">*</span> -{' '}
+                {Number(newDiscount.value).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
               </label>
               <input
                 type="number"
@@ -338,7 +362,8 @@ const AddDiscount = () => {
 
           <div className="admin__form-field">
             <label htmlFor="discount-minOrderAmount">
-              Đơn hàng tối thiểu (VND) <span className="required">*</span>
+              Đơn hàng tối thiểu (VND) <span className="required">*</span> -{' '}
+              {Number(newDiscount.minOrderAmount).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
             </label>
             <input
               type="number"
@@ -407,7 +432,8 @@ const AddDiscount = () => {
 
           <div className="admin__form-field">
             <label htmlFor="discount-quantityLimit">
-              Số lượng giới hạn <span className="required">*</span>
+              Số lượng giới hạn <span className="required">*</span> -{' '}
+              {Number(newDiscount.value).toLocaleString('vi-VN')}
             </label>
             <input
               type="number"

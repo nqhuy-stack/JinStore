@@ -63,6 +63,11 @@ const Users = () => {
     return text.length > maxLength ? text.slice(0, maxLength) + '...' : text;
   };
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('vi-VN');
+  };
+
   const handleViewUser = (id) => navigate(`/admin/users/view/${id}`);
   const handleEditUser = (id) => navigate(`/admin/users/edit/${id}`);
 
@@ -129,7 +134,7 @@ const Users = () => {
                           </td>
                           <td>{user.fullname}</td>
                           <td>{user.gender === 'male' ? 'Nam' : 'Nữ'}</td>
-                          <td>{new Date(user.dateBirth).toISOString().split('T')[0]}</td>
+                          <td>{formatDate(user.dateBirth)}</td>
                           <td>{user.phone || 'N/A'}</td>
                           <td title={user.email}>{shorten(user.email)}</td>
                           <td>{user.isAdmin ? 'Admin' : 'Member'}</td>

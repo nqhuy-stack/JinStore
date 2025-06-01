@@ -14,6 +14,7 @@ import Cart from '@pages/user/Cart';
 import Checkout from '@pages/user/Checkout';
 import PaymentSuccess from '@pages/user/PaymentSuccess';
 import ProductList from '@pages/user/ProductList';
+import DiscountList from '@pages/user/DiscountList';
 import ProductDetails from '@pages/user/ProductDetails';
 import UserOrderDetails from '@pages/user/UserOrderDetail';
 
@@ -88,6 +89,10 @@ const routes = [
   {
     path: '/product',
     page: ProductList,
+  },
+  {
+    path: '/discount',
+    page: DiscountList,
   },
   {
     path: '/product/:id',

@@ -19,12 +19,6 @@ const defaultHeaders = {
   'Content-Type': 'application/json',
 };
 
-// Cấu hình header cho form-data
-const formDataHeaders = (accessToken) => ({
-  token: `Bearer ${accessToken}`,
-  'Content-Type': 'multipart/form-data',
-});
-
 // Cấu hình header cho yêu cầu có token
 const authHeaders = (accessToken) => ({
   token: `Bearer ${accessToken}`,

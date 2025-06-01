@@ -1,6 +1,6 @@
 .review-form {
   @include flexbox(flex-start, flex-start, column, flex, nowrap);
-  margin-top: 1rem;
+  margin: 1rem 0;
   gap: 2rem;
   padding: 2rem;
   border: 1px solid #ddd;
@@ -46,6 +46,14 @@
   .btn {
     &.btn__submit-review {
       max-width: 200px;
+    }
+  }
+
+  .form-actions__review {
+    @include flexbox(flex-start, flex-start, row, flex, nowrap);
+    .btn-cancel__review,
+    .btn-submit__review {
+      line-height: 36px;
     }
   }
 }

@@ -23,7 +23,13 @@ const ProductTabs = ({ product, activeTab, onTabChange }) => {
       </div>
 
       <div className="tabs__content">
-        {activeTab === 'description' ? <ProductDescription product={product} /> : <ProductReviews product={product} />}
+        {activeTab === 'description' ? (
+          <ProductDescription product={product} />
+        ) : (
+          <div>
+            <ProductReviews product={product} />
+          </div>
+        )}
       </div>
     </div>
   );

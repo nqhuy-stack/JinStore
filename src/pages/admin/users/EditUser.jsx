@@ -38,6 +38,12 @@ const EditUser = () => {
     phone: false,
   });
 
+  const formatInputDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toISOString().split('T')[0];
+  };
+
   useEffect(() => {
     const fetchUserData = async () => {
       setFetchLoading(true);
@@ -313,8 +319,9 @@ const EditUser = () => {
                   type="date"
                   id="dateBirth"
                   name="dateBirth"
-                  value={new Date(userData.dateBirth).toISOString().split('T')[0]}
+                  value={formatInputDate(userData.dateBirth)}
                   onChange={handleInputChange}
+                  max={new Date().toISOString().split('T')[0]}
                 />
               </div>
               <div className="admin__form-field">

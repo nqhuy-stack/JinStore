@@ -69,7 +69,7 @@ const OrderDetail = () => {
     };
 
     fetchOrderDetail();
-  }, [id, user?.accessToken]);
+  }, []);
 
   // Event handlers
   const handleBack = () => {

@@ -399,7 +399,7 @@ const EditDiscount = () => {
         )}
 
         <button type="submit" className="admin__form-button" disabled={loading}>
-          {loading ? 'Đang xử lý...' : 'Thêm mã giảm giá'}
+          {loading ? 'Đang xử lý...' : 'Xác nhận`'}
         </button>
       </form>
 

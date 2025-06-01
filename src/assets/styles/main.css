@@ -2248,47 +2248,6 @@ html {
   color: #2d3748;
   margin-bottom: 2rem;
 }
-.cart__coupon {
-  margin-bottom: 2rem;
-}
-.cart__coupon .coupon-label {
-  font-size: 1.6rem;
-  font-weight: 500;
-  color: #2d3748;
-  margin-bottom: 1rem;
-}
-.cart__coupon .coupon-input {
-  display: flex;
-  gap: 1rem;
-}
-.cart__coupon .coupon-input input {
-  flex: 1;
-  padding: 1rem;
-  border: 1px solid #e2e8f0;
-  border-radius: 0.5rem;
-  font-size: 1.4rem;
-  color: #2d3748;
-}
-.cart__coupon .coupon-input input::-moz-placeholder {
-  color: #a0aec0;
-}
-.cart__coupon .coupon-input input::placeholder {
-  color: #a0aec0;
-}
-.cart__coupon .coupon-input button {
-  padding: 1rem 2rem;
-  background: #634c9f;
-  color: white;
-  border: none;
-  border-radius: 0.5rem;
-  font-size: 1.4rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.cart__coupon .coupon-input button:hover {
-  background: #7a5dc7;
-}
 .cart__totals {
   border-top: 1px solid #e2e8f0;
   padding-top: 2rem;
@@ -2917,11 +2876,8 @@ html {
   padding: 24px 0;
   border-bottom: 1px solid #e5e7eb;
   transition: background-color 0.2s ease;
-}
-.product-details__tabs .tabs__content .reviews-content .reviews-list .review-item:hover {
   background-color: #f8fafc;
-  margin: 0 -16px;
-  padding: 24px 16px;
+  padding: 16px 16px 24px;
   border-radius: 8px;
 }
 .product-details__tabs .tabs__content .reviews-content .reviews-list .review-item:last-child {
@@ -2941,13 +2897,17 @@ html {
   }
 }
 .product-details__tabs .tabs__content .reviews-content .reviews-list .review-item .review-header .reviewer-info {
-  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  gap: 0.5rem;
 }
 .product-details__tabs .tabs__content .reviews-content .reviews-list .review-item .review-header .reviewer-info h4 {
   font-size: 1.7rem;
   font-weight: 600;
   color: #2c3e50;
-  margin-bottom: 6px;
   line-height: 1.3;
 }
 .product-details__tabs .tabs__content .reviews-content .reviews-list .review-item .review-header .reviewer-info .review-date {
@@ -2955,20 +2915,23 @@ html {
   color: #64748b;
   font-weight: 400;
 }
-.product-details__tabs .tabs__content .reviews-content .reviews-list .review-item .review-header .review-rating {
+.product-details__tabs .tabs__content .reviews-content .reviews-list .review-item .review-header .reviewer-info .review-rating {
   display: flex;
   gap: 3px;
   flex-shrink: 0;
 }
-.product-details__tabs .tabs__content .reviews-content .reviews-list .review-item .review-header .review-rating svg {
+.product-details__tabs .tabs__content .reviews-content .reviews-list .review-item .review-header .reviewer-info .review-rating svg {
   color: #e5e7eb;
   transition: color 0.2s ease;
 }
-.product-details__tabs .tabs__content .reviews-content .reviews-list .review-item .review-header .review-rating svg.filled {
+.product-details__tabs .tabs__content .reviews-content .reviews-list .review-item .review-header .reviewer-info .review-rating svg.filled {
   color: #fbbf24;
 }
-.product-details__tabs .tabs__content .reviews-content .reviews-list .review-item .review-header .review-rating svg.empty {
+.product-details__tabs .tabs__content .reviews-content .reviews-list .review-item .review-header .reviewer-info .review-rating svg.empty {
   color: #e5e7eb;
+}
+.product-details__tabs .tabs__content .reviews-content .reviews-list .review-item .review-header .review-actions .btn.btn__edit-review {
+  line-height: 28px;
 }
 .product-details__tabs .tabs__content .reviews-content .reviews-list .review-item .review-text {
   font-size: 1.5rem;
@@ -3570,6 +3533,47 @@ html {
 }
 .checkout__summary .return-link:hover {
   color: #2d3748;
+}
+.checkout__coupon {
+  margin-bottom: 2rem;
+}
+.checkout__coupon .coupon-label {
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: #2d3748;
+  margin-bottom: 1rem;
+}
+.checkout__coupon .coupon-input {
+  display: flex;
+  gap: 1rem;
+}
+.checkout__coupon .coupon-input input {
+  flex: 1;
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  font-size: 1.4rem;
+  color: #2d3748;
+}
+.checkout__coupon .coupon-input input::-moz-placeholder {
+  color: #a0aec0;
+}
+.checkout__coupon .coupon-input input::placeholder {
+  color: #a0aec0;
+}
+.checkout__coupon .coupon-input button {
+  padding: 1rem 2rem;
+  background: #634c9f;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1.4rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.checkout__coupon .coupon-input button:hover {
+  background: #7a5dc7;
 }
 .checkout .empty-checkout {
   background: white;
@@ -4626,23 +4630,48 @@ html {
   font-size: 1.6rem;
   font-weight: 500;
 }
-.profile__tab-order .order-tracking .order__actions {
+.profile__tab-order .order-tracking .order__footer {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  width: 100;
+}
+.profile__tab-order .order-tracking .order__footer .notification__review {
+  display: inline-block;
+  font-size: 1.6rem;
+  background-color: rgba(255, 193, 7, 0.8784313725);
+  border: 1px solid #a5a5a5;
+  color: black;
+  font-weight: 500;
+  padding: 13px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.profile__tab-order .order-tracking .order__footer .notification__review:hover {
+  background-color: #ffc107;
+}
+.profile__tab-order .order-tracking .order__footer .order__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+  flex-wrap: nowrap;
   gap: 1rem;
 }
-.profile__tab-order .order-tracking .order__actions .btn__action-order {
+.profile__tab-order .order-tracking .order__footer .order__actions .btn__action-order {
   width: -moz-fit-content;
   width: fit-content;
 }
-.profile__tab-order .order-tracking .order__actions .btn-detail__order, .profile__tab-order .order-tracking .order__actions .btn-cancelled__order {
+.profile__tab-order .order-tracking .order__footer .order__actions .btn-detail__order, .profile__tab-order .order-tracking .order__footer .order__actions .btn-cancelled__order {
   font-size: 1.6rem;
   background-color: #fff;
   border: 1px solid #dadada;
   color: black;
   font-weight: 500;
 }
-.profile__tab-order .order-tracking .order__actions .btn-detail__order:hover, .profile__tab-order .order-tracking .order__actions .btn-cancelled__order:hover {
+.profile__tab-order .order-tracking .order__footer .order__actions .btn-detail__order:hover, .profile__tab-order .order-tracking .order__footer .order__actions .btn-cancelled__order:hover {
   background-color: #f5f5f5;
 }
 
@@ -6281,12 +6310,16 @@ html {
   padding: 1rem 0;
 }
 .order__items .order__item {
+  cursor: pointer;
   display: grid;
   grid-template-columns: 80px 1fr 150px;
   gap: 1.5rem;
   align-items: center;
   padding-bottom: 1.5rem;
   border-bottom: 1px solid #e2e8f0;
+}
+.order__items .order__item:hover {
+  background-color: #f8f9fa;
 }
 .order__items .order__item .item__image {
   width: 80px;
@@ -6512,8 +6545,8 @@ html {
   height: 13px;
 }
 .admin-section .admin__form .admin__form-field .product-attributes {
-  margin: 0 0 1rem 0;
-  font-size: 1.5rem;
+  margin-top: 1.5rem;
+  margin-bottom: -1.5rem;
   color: #2c3e50;
   font-weight: 600;
 }
@@ -6642,7 +6675,7 @@ html {
   justify-content: flex-start;
   flex-direction: column;
   flex-wrap: nowrap;
-  margin-top: 1rem;
+  margin: 1rem 0;
   gap: 2rem;
   padding: 2rem;
   border: 1px solid #ddd;
@@ -6695,4 +6728,15 @@ html {
 }
 .review-form .btn.btn__submit-review {
   max-width: 200px;
+}
+.review-form .form-actions__review {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+.review-form .form-actions__review .btn-cancel__review,
+.review-form .form-actions__review .btn-submit__review {
+  line-height: 36px;
 }/*# sourceMappingURL=main.css.map */

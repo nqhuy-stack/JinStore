@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMapMarkerAlt, faArrowLeft, faSpinner, faShoppingBag } from '@fortawesome/free-solid-svg-icons';
 import { useLocation, Link, useSearchParams, useNavigate } from 'react-router-dom';
@@ -22,6 +22,7 @@ const Checkout = () => {
   const [selectedPayment, setSelectedPayment] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const [couponCode, setCouponCode] = useState('');
 
   // Router hooks
   const user = useSelector((state) => state.auth.login.currentUser);
@@ -36,6 +37,7 @@ const Checkout = () => {
 
   // Get cart data from location state or redirect if empty
   const { selectedProducts = [], summary = {} } = location.state || {};
+  console.log('location', location.state);
 
   if (summary.shipping === undefined) {
     summary.shipping = parseInt(30000);
@@ -113,6 +115,8 @@ const Checkout = () => {
       setIsLoading(false);
     }
   };
+
+  const handleApplyCoupon = useCallback(() => {}, []);
 
   return (
     <>
@@ -194,6 +198,18 @@ const Checkout = () => {
           {/* Order Summary Section */}
           <aside className="checkout__summary">
             <h2>Tóm tắt đơn hàng</h2>
+            <div className="checkout__coupon">
+              <div className="coupon-label">Áp dụng mã giảm giá</div>
+              <div className="coupon-input">
+                <input
+                  type="text"
+                  placeholder="Tìm kiếm mã giảm giá ở đây..."
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value)}
+                />
+                <button onClick={handleApplyCoupon}>Áp dụng</button>
+              </div>
+            </div>
             <div className="order__totals">
               <div className="total__row">
                 <span>Thành tiền</span>
@@ -203,12 +219,10 @@ const Checkout = () => {
                 <span>Phí vận chuyển</span>
                 <span>{summary.shipping?.toLocaleString()}đ</span>
               </div>
-              {summary.couponDiscount > 0 && (
-                <div className="total__row coupon">
-                  <span>Mã giảm giá</span>
-                  <span className="discount">-{summary.couponDiscount?.toLocaleString()}đ</span>
-                </div>
-              )}
+              <div className="total__row coupon">
+                <span>Mã giảm giá</span>
+                <span className="discount">-{summary.couponDiscount?.toLocaleString()}đ</span>
+              </div>
               <div className="total__row final">
                 <span>Tổng thanh toán</span>
                 <span>{summary.total?.toLocaleString()}đ</span>

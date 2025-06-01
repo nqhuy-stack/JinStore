@@ -31,8 +31,22 @@ const ProductInfo = ({ product, accessToken, axiosJWT, dispatch }) => {
       productId: product._id,
       quantity: quantity,
     };
-
-    await addItemToCart(formData, dispatch, accessToken, axiosJWT);
+    if (!accessToken || !axiosJWT) {
+      toast.dismiss();
+      toast('Vui lòng đăng nhập', {
+        icon: '⚠️',
+        style: {
+          borderRadius: '10px',
+          background: '#333',
+          color: '#fff',
+        },
+        duration: 2000,
+        position: 'top-center',
+      });
+      navigate('/login');
+    } else {
+      await addItemToCart(formData, dispatch, accessToken, axiosJWT);
+    }
   };
 
   const handleBuyNow = () => {
@@ -41,28 +55,44 @@ const ProductInfo = ({ product, accessToken, axiosJWT, dispatch }) => {
       return;
     }
 
-    const discountPrice = product.discountPrice || product.price;
-    const totalDiscountPrice = discountPrice * quantity;
+    if (!accessToken || !axiosJWT) {
+      toast.dismiss();
+      toast('Vui lòng đăng nhập', {
+        icon: '⚠️',
+        style: {
+          borderRadius: '10px',
+          background: '#333',
+          color: '#fff',
+        },
+        duration: 2000,
+        position: 'top-center',
+      });
+      navigate('/login');
+    } else {
+      const discountPrice = product.discountPrice || product.price;
+      const totalDiscountPrice = discountPrice * quantity;
 
-    const selectedProduct = {
-      _id: product._id,
-      name: product.name,
-      images: product.images || [],
-      discountPrice,
-      quantity,
-      totalDiscountPrice,
-    };
+      const selectedProduct = {
+        _id: product._id,
+        name: product.name,
+        images: product.images || [],
+        discountPrice,
+        quantity,
+        totalDiscountPrice,
+      };
 
-    const subtotal = totalDiscountPrice;
-    const shipping = 30000;
-    const couponDiscount = 0;
-    const total = subtotal + shipping - couponDiscount;
+      const subtotal = totalDiscountPrice;
+      const shipping = 30000;
+      const couponDiscount = 0;
+      const total = subtotal + shipping - couponDiscount;
 
-    const summary = { subtotal, shipping, couponDiscount, total };
+      const summary = { subtotal, shipping, couponDiscount, total };
 
-    navigate('/checkout', {
-      state: { selectedProducts: [selectedProduct], summary },
-    });
+      console.log(selectedProduct);
+      navigate('/checkout', {
+        state: { selectedProducts: [selectedProduct], summary },
+      });
+    }
   };
 
   return (

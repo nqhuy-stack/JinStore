@@ -245,6 +245,8 @@ const Orders = () => {
                             style={{
                               backgroundColor: getStatusColor(order.status),
                               color: getStatusTextColor(order.status),
+                              padding: '5px 10px',
+                              borderRadius: '5px',
                             }}
                           >
                             {STATUS_MAP[order.status]}

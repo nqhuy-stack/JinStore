@@ -1,25 +1,29 @@
 // File: src/pages/admin/ProductReviews.jsx
 import { useState, useEffect } from 'react';
 import Pagination from '@components/common/ui/Pagination';
-import axios from 'axios';
+import { getAllReviews, deleteReview, togglePublish } from '@services/ReviewService';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginSuccess } from '@/redux/authSlice.jsx';
+import { createAxios } from '@utils/createInstance.jsx';
 import { toast } from 'react-toastify';
 
 const ProductReviews = () => {
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.login.currentUser);
+  const accessToken = user?.accessToken;
+  const axiosJWT = createAxios(user, dispatch, loginSuccess);
+
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  useEffect(() => {
-    fetchReviews();
-  }, []);
-
   const fetchReviews = async () => {
     try {
       setLoading(true);
-      const response = await axios.get('http://localhost:1000/api/reviews');
-      setReviews(response.data.data || []);
+      const response = await getAllReviews(accessToken, axiosJWT);
+      setReviews(response.data);
     } catch (error) {
       console.error('Error fetching reviews:', error);
       toast.error('Failed to fetch reviews');
@@ -28,51 +32,29 @@ const ProductReviews = () => {
     }
   };
 
-  const handleTogglePublish = async (reviewId, currentStatus) => {
+  console.log(reviews);
+
+  useEffect(() => {
+    fetchReviews();
+  }, []);
+
+  const handleTogglePublish = async (reviewId) => {
     try {
       setLoading(true);
-      await axios.patch(`http://localhost:1000/api/reviews/${reviewId}`, {
-        status: currentStatus === 'approved' ? 'rejected' : 'approved',
-      });
-      await fetchReviews(); // Refresh the list
-      toast.success('Review status updated successfully');
+      await togglePublish(reviewId, accessToken, axiosJWT);
+      toast.success('Cập nhật thành công!');
+      fetchReviews();
     } catch (error) {
       console.error('Error updating review status:', error);
-      toast.error('Failed to update review status');
+      toast.error('Cập nhật thất bại!');
     } finally {
       setLoading(false);
     }
   };
 
   const handleDeleteReview = async (reviewId) => {
-    if (window.confirm('Are you sure you want to delete this review?')) {
-      try {
-        setLoading(true);
-        await axios.delete(`http://localhost:1000/api/reviews/${reviewId}`);
-        await fetchReviews(); // Refresh the list
-        toast.success('Review deleted successfully');
-      } catch (error) {
-        console.error('Error deleting review:', error);
-        toast.error('Failed to delete review');
-      } finally {
-        setLoading(false);
-      }
-    }
-  };
-
-  const handleViewDetails = (review) => {
-    // You can implement a modal or navigate to a details page
-    console.log('View review details:', review);
-    // For now, we'll just show an alert with the details
-    alert(`
-      Review Details:
-      User: ${review.user?.name || 'Anonymous'}
-      Product: ${review.product?.name || 'Unknown Product'}
-      Rating: ${review.rating}/5
-      Comment: ${review.comment}
-      Status: ${review.status || 'pending'}
-      Created At: ${new Date(review.createdAt).toLocaleString()}
-    `);
+    await deleteReview(reviewId, accessToken, axiosJWT);
+    fetchReviews();
   };
 
   const filteredReviews = reviews.filter(
@@ -80,6 +62,16 @@ const ProductReviews = () => {
       review.user?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       review.product?.name?.toLowerCase().includes(searchTerm.toLowerCase()),
   );
+
+  const statusText = {
+    true: 'black',
+    false: 'white',
+  };
+
+  const statusBackgroundColors = {
+    true: 'yellow',
+    false: 'green',
+  };
 
   // Tính toán dữ liệu hiển thị trên trang hiện tại
   const totalItems = filteredReviews.length;
@@ -135,7 +127,7 @@ const ProductReviews = () => {
                   currentReviews.map((review, index) => (
                     <tr key={review._id}>
                       <td>{String(startIndex + index + 1).padStart(2, '0')}</td>
-                      <td>{review.user?.name || 'Anonymous'}</td>
+                      <td>{review.user?.fullname || 'Anonymous'}</td>
                       <td>{review.product?.name || 'Unknown Product'}</td>
                       <td>
                         <div className="admin__rating">
@@ -149,35 +141,23 @@ const ProductReviews = () => {
                       </td>
                       <td>{review.comment}</td>
                       <td>
-                        <span className={`admin__status-badge admin__status-badge--${review.status || 'pending'}`}>
-                          {review.status || 'pending'}
+                        <span
+                          style={{
+                            backgroundColor: statusBackgroundColors[review.isReport],
+                            color: statusText[review.isReport],
+                            padding: '5px 10px',
+                            borderRadius: '5px',
+                          }}
+                        >
+                          {review.isReport === false ? 'Hợp lệ' : 'Cảnh báo'}
                         </span>
                       </td>
                       <td>
                         <div className="table-actions">
-                          <button onClick={() => handleViewDetails(review)} title="View Details">
+                          <button onClick={() => handleTogglePublish(review._id)} title="View Details">
                             <i className="fas fa-eye"></i>
                           </button>
-                          <button
-                            onClick={() => window.open(`/JinStore/product/${review.product?._id}`, '_blank')}
-                            title="View Product"
-                            disabled={!review.product?._id}
-                          >
-                            <i className="fas fa-shopping-bag"></i>
-                          </button>
-                          <button
-                            className={`admin__publish-btn ${
-                              review.status === 'approved'
-                                ? 'admin__publish-btn--published'
-                                : 'admin__publish-btn--unpublished'
-                            }`}
-                            onClick={() => handleTogglePublish(review._id, review.status)}
-                            disabled={loading}
-                            title={review.status === 'approved' ? 'Reject Review' : 'Approve Review'}
-                          >
-                            <i className={`fas ${review.status === 'approved' ? 'fa-check' : 'fa-times'}`}></i>
-                          </button>
-                          <button onClick={() => handleDeleteReview(review._id)} title="Delete Review">
+                          <button onClick={() => handleDeleteReview(review._id)} title="Xóa đánh giá">
                             <i className="fas fa-trash"></i>
                           </button>
                         </div>
