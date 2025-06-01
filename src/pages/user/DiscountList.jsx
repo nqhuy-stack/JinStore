@@ -10,7 +10,7 @@ import { toast } from 'react-hot-toast';
 
 function DiscountList() {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.auth.login.user);
+  const user = useSelector((state) => state.auth.login.currentUser);
   const accessToken = user?.accessToken;
   const axiosJWT = createAxios(user, dispatch, loginSuccess);
   const [searchTerm, setSearchTerm] = useState('');
@@ -79,7 +79,12 @@ function DiscountList() {
   const fetchDiscounts = async () => {
     try {
       setLoading(true);
-      const data = user ? await getAllDiscountUser(user._id, accessToken, axiosJWT) : await getAllDiscount();
+      let data;
+      if (user) {
+        data = await getAllDiscountUser(user._id,accessToken, axiosJWT);
+      } else {
+        data = await getAllDiscount();
+      }
       setDiscounts(data);
     } catch (error) {
       console.error('Error fetching discounts:', error);

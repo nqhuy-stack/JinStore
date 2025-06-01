@@ -35,13 +35,8 @@ const Checkout = () => {
   const source = searchParams.get('source');
 
   // Get cart data from location state or redirect if empty
-  const { selectedProducts = [], summary = {} } = location.state || {};
+  const { selectedProducts = [], summary = {}, appliedDiscount = {} } = location.state || {};
   console.log('location', location.state);
-
-  if (summary.shipping === undefined) {
-    summary.shipping = parseInt(30000);
-    summary.total = summary.total + summary.shipping;
-  }
 
   // Form validation
   const validateForm = () => {
@@ -70,6 +65,7 @@ const Checkout = () => {
       console.log('shippingAddress', selectedAddress);
       console.log('paymentMethod', selectedPayment);
       console.log('totalAmount', summary.total);
+      console.log('shippingFee', summary.shipping);
       console.log('note', '');
       console.log('source', source);
 
@@ -86,6 +82,7 @@ const Checkout = () => {
           shippingFee: summary.shipping,
           paymentMethod: selectedPayment,
           totalAmount: summary.total,
+          discount: appliedDiscount._id,
           note: '',
           source,
         },

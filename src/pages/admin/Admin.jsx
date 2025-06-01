@@ -21,7 +21,7 @@ const Admin = () => {
 
   // Kiểm tra nếu không có user hoặc không phải admin
   if (!user || !user.isAdmin) {
-    navigate('/login', { state: { message: 'You need to be an Admin to access this page.' } });
+    navigate('/', { state: { message: 'Bạn phải là admin  vào được trang này!.' } });
     return null; // Tránh render giao diện khi không có quyền
   }
 

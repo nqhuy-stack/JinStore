@@ -333,6 +333,28 @@
         }
       }
     }
+
+    .coupon-applied {
+      @include flexbox(flex-start, space-between, row, flex, nowrap);
+      gap: 1rem;
+      padding-top: 2rem;
+      border-top: 1px solid #e2e8f0;
+
+      .coupon-info {
+        @include flexbox(flex-start, center, column, flex, nowrap);
+        gap: 1rem;
+        > span {
+          font-size: 1.4rem;
+          color: #718096;
+        }
+      }
+      .btn {
+        &.btn-cancel__coupon {
+          width: fit-content;
+          line-height: 34px;
+        }
+      }
+    }
   }
 
   &__totals {

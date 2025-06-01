@@ -11,6 +11,8 @@ import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
 import Breadcrumb from '@components/common/ui/Breadcrumb';
 import { getCart, deleteItemInCart, updateItemInCart } from '@services/CartService';
+import { getAllDiscount } from '@services/DiscountService'; // Import thêm getAllDiscount
+import { toast } from 'react-hot-toast'; // Import toast
 
 const Cart = () => {
   const dispatch = useDispatch();
@@ -21,6 +23,10 @@ const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
   const [couponCode, setCouponCode] = useState('');
+
+  // Thêm state cho discount
+  const [appliedDiscount, setAppliedDiscount] = useState(null);
+  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -66,7 +72,7 @@ const Cart = () => {
     async (itemId, change, oldQuantity) => {
       try {
         const newQuantity = oldQuantity + change;
-        if (newQuantity < 1) return; // Không cho phép số lượng nhỏ hơn 1
+        if (newQuantity < 1) return;
 
         const formData = {
           productId: itemId,
@@ -91,7 +97,7 @@ const Cart = () => {
     async (itemId, value) => {
       try {
         const newQuantity = parseInt(value);
-        if (isNaN(newQuantity) || newQuantity < 1) return; // Kiểm tra giá trị hợp lệ
+        if (isNaN(newQuantity) || newQuantity < 1) return;
 
         const formData = {
           productId: itemId,
@@ -168,15 +174,43 @@ const Cart = () => {
     }, 0);
   }, [cartItems, selectedItems]);
 
+  // Cập nhật hàm tính toán giảm giá từ coupon
   const calculateCouponDiscount = useMemo(() => {
-    return 0;
-  }, []);
+    if (!appliedDiscount || calculateSubtotal === 0) return 0;
+
+    const currentDate = new Date();
+    const activationDate = new Date(appliedDiscount.activation);
+    const expirationDate = new Date(appliedDiscount.expiration);
+
+    // Kiểm tra thời hạn của mã giảm giá
+    if (currentDate < activationDate || currentDate > expirationDate) {
+      return 0;
+    }
+
+    // Kiểm tra giá trị đơn hàng tối thiểu
+    if (calculateSubtotal < appliedDiscount.minOrderAmount) {
+      return 0;
+    }
+
+    let discount = 0;
+
+    if (appliedDiscount.type === 'percentage') {
+      discount = (calculateSubtotal * appliedDiscount.maxPercent) / 100;
+    } else if (appliedDiscount.type === 'fixed') {
+      discount = appliedDiscount.value;
+      if (discount > calculateSubtotal) {
+        discount = calculateSubtotal;
+      }
+    }
+
+    return discount;
+  }, [appliedDiscount, calculateSubtotal]);
 
   const calculateTotal = useMemo(() => {
-    return calculateSubtotal - calculateCouponDiscount;
+    const shipping = calculateSubtotal >= 500000 ? 0 : 30000;
+    return calculateSubtotal + shipping - calculateCouponDiscount;
   }, [calculateSubtotal, calculateCouponDiscount]);
 
-  // Tạo mảng chứa thông tin đầy đủ của các sản phẩm đã chọn để chuyển sang checkout
   const getSelectedProductsData = useMemo(() => {
     return cartItems
       .filter((item) => selectedItems.includes(item._id))
@@ -187,7 +221,95 @@ const Cart = () => {
       });
   }, [cartItems, selectedItems]);
 
-  const handleApplyCoupon = useCallback(() => {}, []);
+  // Cập nhật hàm áp dụng mã giảm giá
+  const handleApplyCoupon = useCallback(async () => {
+    if (!couponCode.trim()) {
+      toast.error('Vui lòng nhập mã giảm giá!');
+      return;
+    }
+
+    if (calculateSubtotal === 0) {
+      toast.error('Vui lòng chọn sản phẩm trước khi áp dụng mã giảm giá!');
+      return;
+    }
+
+    try {
+      setIsApplyingCoupon(true);
+
+      // Tìm mã giảm giá theo code trong danh sách tất cả mã
+      const allDiscounts = await getAllDiscount();
+
+      if (!Array.isArray(allDiscounts) || allDiscounts.length === 0) {
+        toast.error('Không thể tải danh sách mã giảm giá!');
+        return;
+      }
+
+      // Tìm mã giảm giá có code khớp
+      const discount = allDiscounts.find((item) => item.code && item.code.toUpperCase() === couponCode.toUpperCase());
+
+      if (!discount) {
+        toast.error('Mã giảm giá không tồn tại!');
+        return;
+      }
+
+      // Kiểm tra trạng thái mã giảm giá
+      if (!discount.isActive) {
+        toast.error('Mã giảm giá đã hết hạn sử dụng!');
+        return;
+      }
+
+      // Kiểm tra thời hạn
+      const currentDate = new Date();
+      const activationDate = new Date(discount.activation);
+      const expirationDate = new Date(discount.expiration);
+
+      if (currentDate < activationDate) {
+        toast.error('Mã giảm giá chưa có hiệu lực!');
+        return;
+      }
+
+      if (currentDate > expirationDate) {
+        toast.error('Mã giảm giá đã hết hạn!');
+        return;
+      }
+
+      // Kiểm tra giá trị đơn hàng tối thiểu
+      if (calculateSubtotal < discount.minOrderAmount) {
+        toast.error(
+          `Đơn hàng phải có giá trị tối thiểu ${discount.minOrderAmount.toLocaleString()}đ để áp dụng mã này!`,
+        );
+        return;
+      }
+
+      // Kiểm tra số lượng sử dụng
+      if (discount.quantityLimit && discount.quantityUsed >= discount.quantityLimit) {
+        toast.error('Mã giảm giá đã hết lượt sử dụng!');
+        return;
+      }
+
+      // Áp dụng mã giảm giá thành công
+      setAppliedDiscount({
+        ...discount,
+        id: discount._id || discount.id, // Lưu ID của mã giảm giá
+      });
+      toast.success(`Áp dụng mã giảm giá "${discount.code}" thành công!`);
+
+      // Log ID mã giảm giá để debug
+      console.log('Applied discount ID:', discount._id || discount.id);
+    } catch (error) {
+      console.error('Error applying coupon:', error);
+      toast.error('Có lỗi xảy ra khi áp dụng mã giảm giá!');
+    } finally {
+      setIsApplyingCoupon(false);
+    }
+  }, [couponCode, calculateSubtotal]);
+
+  // Hàm hủy mã giảm giá
+  const handleRemoveCoupon = useCallback(() => {
+    setAppliedDiscount(null);
+    setCouponCode('');
+    toast.success('Đã hủy mã giảm giá!');
+  }, []);
 
   if (loading) {
     return <PageLoad zIndex={1} />;
@@ -284,36 +406,69 @@ const Cart = () => {
             <h2>Giỏ hàng chi tiết</h2>
             <div className="cart__coupon">
               <div className="coupon-label">Áp dụng mã giảm giá</div>
-              <div className="coupon-input">
-                <input
-                  type="text"
-                  placeholder="Tìm kiếm mã giảm giá ở đây..."
-                  value={couponCode}
-                  onChange={(e) => setCouponCode(e.target.value)}
-                />
-                <button onClick={handleApplyCoupon}>Áp dụng</button>
-              </div>
+              {!appliedDiscount ? (
+                <div className="coupon-input">
+                  <input
+                    type="text"
+                    placeholder="Nhập mã giảm giá..."
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                    disabled={isApplyingCoupon}
+                  />
+                  <button onClick={handleApplyCoupon} disabled={isApplyingCoupon || !couponCode.trim()}>
+                    {isApplyingCoupon ? 'Đang áp dụng...' : 'Áp dụng'}
+                  </button>
+                </div>
+              ) : (
+                <div className="coupon-applied">
+                  <div className="coupon-info">
+                    <span className="coupon-code">Mã: {appliedDiscount.code}</span>
+                    <span className="coupon-discount">
+                      Giảm:{' '}
+                      {appliedDiscount.type === 'percentage'
+                        ? `${appliedDiscount.maxPercent}%`
+                        : `${appliedDiscount.value.toLocaleString()}đ`}
+                    </span>
+                  </div>
+                  <button className="btn btn-cancel__coupon" onClick={handleRemoveCoupon}>
+                    Hủy
+                  </button>
+                </div>
+              )}
             </div>
             <div className="cart__totals">
               <div className="subtotal">
                 <span>Thành tiền</span>
                 <span>{calculateSubtotal.toLocaleString()} đồng</span>
               </div>
-              <div className="coupon-discount">
-                <span>Mã giảm giá</span>
-                <span>{calculateCouponDiscount.toLocaleString()} đồng</span>
+              <div className="subtotal">
+                <span>Phí vận chuyển</span>
+                <span>{(calculateSubtotal >= 500000 ? 0 : 30000).toLocaleString()} đồng</span>
               </div>
+              {calculateCouponDiscount > 0 && (
+                <div className="coupon-discount">
+                  <span>Mã giảm giá</span>
+                  <span className="discount-amount">-{calculateCouponDiscount.toLocaleString()} đồng</span>
+                </div>
+              )}
               <div className="total">
                 <span>Tổng</span>
                 <span className="total-amount">{calculateTotal.toLocaleString()} đồng</span>
               </div>
             </div>
+            <span
+              className="notify__shipping"
+              style={{ paddingBottom: '20px', display: 'block', color: 'red', lineHeight: '26px' }}
+            >
+              * Miễn phí vận chuyển đơn hàng với giá trị trên 500.000đ*
+            </span>
             <Link
               to="/checkout?source=cart"
               state={{
                 selectedProducts: getSelectedProductsData,
+                appliedDiscount: appliedDiscount, // Truyền thông tin mã giảm giá
                 summary: {
-                  shipping: 30000,
+                  shipping: calculateSubtotal >= 500000 ? 0 : 30000,
                   subtotal: calculateSubtotal,
                   couponDiscount: calculateCouponDiscount,
                   total: calculateTotal,

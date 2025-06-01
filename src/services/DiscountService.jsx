@@ -69,18 +69,18 @@ export const getAllDiscount = async () => {
 };
 
 // NOTE: Get discount by user
-export const getAllDiscountUser = async (userId, accessToken, axiosJWT) => {
-  if (!userId || !accessToken || !axiosJWT) {
+export const getAllDiscountUser = async (id, accessToken, axiosJWT) => {
+  if (!accessToken || !axiosJWT) {
     toast.error('Hết phiên đăng nhập!', { duration: 2000 });
     throw new Error('Dữ liệu đầu vào không hợp lệ!');
   }
   try {
-    const res = await axiosJWT.get(`${API_URL}/discounts//user/${userId}/discounts`, {
+    const res = await axiosJWT.get(`${API_URL}/discounts/by-user/${id}`, {
       headers: authHeaders(accessToken),
     });
-    return res.data;
+    return Array.isArray(res.data) ? res.data : res.data.data && Array.isArray(res.data.data) ? res.data.data : [];
   } catch (error) {
-    console.error(`Error fetching discounts for user ${userId}:`, error);
+    console.error(`Error:`, error);
     return [];
   }
 };
