@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMapMarkerAlt, faArrowLeft, faSpinner, faShoppingBag } from '@fortawesome/free-solid-svg-icons';
 import { useLocation, Link, useSearchParams, useNavigate } from 'react-router-dom';
@@ -22,7 +22,6 @@ const Checkout = () => {
   const [selectedPayment, setSelectedPayment] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
-  const [couponCode, setCouponCode] = useState('');
 
   // Router hooks
   const user = useSelector((state) => state.auth.login.currentUser);
@@ -116,8 +115,6 @@ const Checkout = () => {
     }
   };
 
-  const handleApplyCoupon = useCallback(() => {}, []);
-
   return (
     <>
       <Breadcrumb items={[{ text: 'Cart', link: '/cart' }, { text: 'Checkout' }]} />
@@ -198,18 +195,7 @@ const Checkout = () => {
           {/* Order Summary Section */}
           <aside className="checkout__summary">
             <h2>Tóm tắt đơn hàng</h2>
-            <div className="checkout__coupon">
-              <div className="coupon-label">Áp dụng mã giảm giá</div>
-              <div className="coupon-input">
-                <input
-                  type="text"
-                  placeholder="Tìm kiếm mã giảm giá ở đây..."
-                  value={couponCode}
-                  onChange={(e) => setCouponCode(e.target.value)}
-                />
-                <button onClick={handleApplyCoupon}>Áp dụng</button>
-              </div>
-            </div>
+
             <div className="order__totals">
               <div className="total__row">
                 <span>Thành tiền</span>

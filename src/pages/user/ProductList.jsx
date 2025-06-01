@@ -257,7 +257,7 @@ const ProductList = () => {
   const currentProducts = filteredProducts.slice(startIndex, endIndex);
 
   return (
-    <section className="product-list-container">
+    <section>
       <Breadcrumb items={[{ text: 'Products' }]} />
       <div className="product-list">
         <div className="product-list__header">

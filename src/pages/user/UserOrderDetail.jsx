@@ -5,7 +5,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
 import { getOrderDetails } from '@services/orderService';
-import ModalUpdateStatus from '@components/features/orders/ModalUpdateStatus';
 import Breadcrumb from '@components/common/ui/Breadcrumb';
 
 const STATUS_MAP = {
@@ -38,8 +37,6 @@ const UserOrderDetail = () => {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [showStatusModal, setShowStatusModal] = useState(false);
-  const [newStatus, setNewStatus] = useState('');
 
   // Axios instance
   const axiosJWT = user ? createAxios(user, dispatch, loginSuccess) : null;
@@ -351,19 +348,6 @@ const UserOrderDetail = () => {
             </div>
           </div>
         </div>
-        {/* Status Update Modal */}
-        {showStatusModal && (
-          <ModalUpdateStatus
-            order={order}
-            setShowStatusModal={setShowStatusModal}
-            handleStatusChange={handleStatusChange}
-            updating={updating}
-            newStatus={newStatus}
-            setNewStatus={setNewStatus}
-            STATUS_MAP={STATUS_MAP}
-            STATUS_OPTIONS={STATUS_OPTIONS}
-          />
-        )}
       </section>
     </div>
   );

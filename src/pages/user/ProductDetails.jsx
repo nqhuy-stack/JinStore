@@ -7,7 +7,7 @@ import { getProduct } from '@services/ProductService';
 import { useDispatch, useSelector } from 'react-redux';
 import { createAxios } from '@utils/createInstance.jsx';
 import { loginSuccess } from '@/redux/authSlice.jsx';
-import ProductsCategoryList from '@/components/features/products/ProdCateList.jsx';
+import ProductsCategoryList from '@/components/features/user/products/ProdCateList.jsx';
 import ProductImageGallery from '@pages/user/ProductDetails/ProductImageGallery';
 import ProductInfo from '@pages/user/ProductDetails/ProductInfo';
 import ProductTabs from '@pages/user/ProductDetails/ProductTabs';

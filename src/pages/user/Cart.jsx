@@ -20,6 +20,7 @@ const Cart = () => {
 
   const [cartItems, setCartItems] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
+  const [couponCode, setCouponCode] = useState('');
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -186,6 +187,8 @@ const Cart = () => {
       });
   }, [cartItems, selectedItems]);
 
+  const handleApplyCoupon = useCallback(() => {}, []);
+
   if (loading) {
     return <PageLoad zIndex={1} />;
   }
@@ -279,7 +282,18 @@ const Cart = () => {
 
           <div className="cart__summary">
             <h2>Giỏ hàng chi tiết</h2>
-
+            <div className="cart__coupon">
+              <div className="coupon-label">Áp dụng mã giảm giá</div>
+              <div className="coupon-input">
+                <input
+                  type="text"
+                  placeholder="Tìm kiếm mã giảm giá ở đây..."
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value)}
+                />
+                <button onClick={handleApplyCoupon}>Áp dụng</button>
+              </div>
+            </div>
             <div className="cart__totals">
               <div className="subtotal">
                 <span>Thành tiền</span>
@@ -299,6 +313,7 @@ const Cart = () => {
               state={{
                 selectedProducts: getSelectedProductsData,
                 summary: {
+                  shipping: 30000,
                   subtotal: calculateSubtotal,
                   couponDiscount: calculateCouponDiscount,
                   total: calculateTotal,

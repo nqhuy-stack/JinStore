@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
 import { getOrderDetails, updateOrderStatus } from '@services/orderService';
-import ModalUpdateStatus from '@components/features/orders/ModalUpdateStatus';
+import ModalUpdateStatus from '@components/features//admin/orders/ModalUpdateStatus';
 
 const STATUS_MAP = {
   pending: 'Chờ xác nhận',

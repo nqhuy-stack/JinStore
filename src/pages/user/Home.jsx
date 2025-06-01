@@ -4,13 +4,12 @@ import { Link } from 'react-router-dom';
 // import Button from '@components/ui/Button';
 import { getCategoriesAll } from '@/services/CategoryService';
 import ReusableSection from '@components/common/ui/ReusableSection.jsx';
-import CategoryList from '@components/features/category/CateList.jsx';
-import ProductsCategoryList from '@/components/features/products/ProdCateList.jsx';
+import CategoryList from '@components/features/user/category/CateList.jsx';
+import ProductsCategoryList from '@/components/features/user/products/ProdCateList.jsx';
 import BannerMini from '@json/bannerMini';
 
 import fullBanner from '@assets/images/banner/full-banner.png';
 import moveRight from '@assets/icons/icon-move-right.svg';
-import PageLoad from '../PageLoad';
 
 function Home() {
   const [category, setCategory] = useState([]);

@@ -44,9 +44,9 @@ export const addDiscount = async (data, dispatch, accessToken, axiosJWT) => {
       loading: 'Đang thêm mã giảm giá...',
       success: <b>Thêm mã giảm giá thành công!</b>,
       error: (error) => {
-        const errorMessage = error.response?.data?.message || 
-                            (error.response?.data?.err === 'code' ? 'Mã giảm giá đã tồn tại' : 
-                            'Lỗi hệ thống!');
+        const errorMessage =
+          error.response?.data?.message ||
+          (error.response?.data?.err === 'code' ? 'Mã giảm giá đã tồn tại' : 'Lỗi hệ thống!');
         return <b>{errorMessage}</b>;
       },
     },
@@ -64,6 +64,23 @@ export const getAllDiscount = async () => {
     return Array.isArray(res.data) ? res.data : res.data.data && Array.isArray(res.data.data) ? res.data.data : [];
   } catch (error) {
     console.error('Error fetching discounts:', error);
+    return [];
+  }
+};
+
+// NOTE: Get discount by user
+export const getAllDiscountUser = async (userId, accessToken, axiosJWT) => {
+  if (!userId || !accessToken || !axiosJWT) {
+    toast.error('Hết phiên đăng nhập!', { duration: 2000 });
+    throw new Error('Dữ liệu đầu vào không hợp lệ!');
+  }
+  try {
+    const res = await axiosJWT.get(`${API_URL}/discounts//user/${userId}/discounts`, {
+      headers: authHeaders(accessToken),
+    });
+    return res.data;
+  } catch (error) {
+    console.error(`Error fetching discounts for user ${userId}:`, error);
     return [];
   }
 };

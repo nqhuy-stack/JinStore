@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { getProductsByIdCategory } from '@/services/ProductService';
 import { useNavigate } from 'react-router-dom';
-import ProductCard from '@components/features/products/ProductCard';
+import ProductCard from '@components/features/user/products/ProductCard';
 import { useDispatch, useSelector } from 'react-redux';
 import { createAxios } from '@utils/createInstance.jsx';
 import { loginSuccess } from '@/redux/authSlice.jsx';
