@@ -1,6 +1,6 @@
 import Breadcrumb from '@components/common/ui/Breadcrumb';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faPlus, faTag, faCalendarAlt, faPercent } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faTag, faCalendarAlt, faPercent } from '@fortawesome/free-solid-svg-icons';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createAxios } from '@utils/createInstance.jsx';
@@ -81,7 +81,7 @@ function DiscountList() {
       setLoading(true);
       let data;
       if (user) {
-        data = await getAllDiscountUser(user._id,accessToken, axiosJWT);
+        data = await getAllDiscountUser(user._id, accessToken, axiosJWT);
       } else {
         data = await getAllDiscount();
       }
@@ -164,12 +164,6 @@ function DiscountList() {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
             </div>
-            {user && (
-              <button className="btn-add-discount">
-                <FontAwesomeIcon icon={faPlus} />
-                Thêm mã giảm giá
-              </button>
-            )}
           </div>
         </div>
 
