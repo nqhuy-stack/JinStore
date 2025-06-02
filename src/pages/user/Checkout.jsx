@@ -81,10 +81,7 @@ const Checkout = () => {
           shippingFee: summary.shipping,
           paymentMethod: selectedPayment,
           totalAmount: summary.total,
-          discount:
-            appliedDiscount && (appliedDiscount.id || appliedDiscount._id)
-              ? appliedDiscount.id || appliedDiscount._id
-              : null,
+          discount: appliedDiscount ? appliedDiscount._id : null,
           note: '',
           source,
         },
