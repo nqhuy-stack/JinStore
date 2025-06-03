@@ -25,8 +25,17 @@
   display: flex;
   gap: 2px;
 
-  &--filled {
-    color: #ffc107;
+  svg {
+    color: #e5e7eb;
+    transition: color 0.2s ease;
+
+    &.filled {
+      color: #fbbf24;
+    }
+
+    &.empty {
+      color: #e5e7eb;
+    }
   }
 }
 
