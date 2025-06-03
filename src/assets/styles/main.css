@@ -1,6 +1,6 @@
 @charset "UTF-8";
 * {
-  font-family: "Poppins", sans-serif;
+  font-family: "Inter", sans-serif;
 }
 
 a {
@@ -18,7 +18,9 @@ img {
 }
 
 body {
-  font-family: "Poppins", sans-serif;
+  font-family: "Inter", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
   line-height: 1;
   color: #000000;
   font-size: 1.6rem;
@@ -27,7 +29,7 @@ body {
 input,
 button {
   outline: none;
-  font-family: "Poppins", sans-serif;
+  font-family: "Inter", sans-serif;
   line-height: 1;
 }
 
@@ -45,7 +47,7 @@ html {
 }
 
 .text {
-  font-family: "Poppins", sans-serif;
+  font-family: "Inter", sans-serif;
   font-size: 1.5rem;
   font-style: italic;
   color: #000000;
@@ -155,7 +157,7 @@ html {
 }
 
 :root {
-  font-family: "Poppins", sans-serif;
+  font-family: "Inter", sans-serif;
   line-height: 1.6;
   font-weight: 400;
   color: #000000;

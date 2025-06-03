@@ -6,6 +6,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
 import { toast } from 'react-toastify';
+import { faStar, faStarHalfAlt } from '@fortawesome/free-regular-svg-icons';
+import { faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const ProductReviews = () => {
   const dispatch = useDispatch();
@@ -55,6 +58,34 @@ const ProductReviews = () => {
   const handleDeleteReview = async (reviewId) => {
     await deleteReview(reviewId, accessToken, axiosJWT);
     fetchReviews();
+  };
+
+  // Hàm render sao với hỗ trợ nửa sao
+  const renderStars = (rating, starSize = '2rem') => {
+    const stars = [];
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 >= 0.5;
+
+    // Sao đầy
+    for (let i = 0; i < fullStars; i++) {
+      stars.push(
+        <FontAwesomeIcon key={`full-${i}`} icon={faStarSolid} className="filled" style={{ fontSize: starSize }} />,
+      );
+    }
+
+    // Nửa sao
+    if (hasHalfStar && fullStars < 5) {
+      stars.push(<FontAwesomeIcon key="half" icon={faStarHalfAlt} className="filled" style={{ fontSize: starSize }} />);
+    }
+
+    // Sao rỗng
+    const totalFilledStars = fullStars + (hasHalfStar ? 1 : 0);
+    const emptyStars = 5 - totalFilledStars;
+    for (let i = 0; i < emptyStars; i++) {
+      stars.push(<FontAwesomeIcon key={`empty-${i}`} icon={faStar} className="empty" style={{ fontSize: starSize }} />);
+    }
+
+    return stars;
   };
 
   const filteredReviews = reviews.filter(
@@ -130,14 +161,7 @@ const ProductReviews = () => {
                       <td>{review.user?.fullname || 'Anonymous'}</td>
                       <td>{review.product?.name || 'Unknown Product'}</td>
                       <td>
-                        <div className="admin__rating">
-                          {[...Array(5)].map((_, i) => (
-                            <i
-                              key={i}
-                              className={`fas fa-star ${i < review.rating ? 'admin__rating--filled' : ''}`}
-                            ></i>
-                          ))}
-                        </div>
+                        <div className="admin__rating">{renderStars(review.rating)}</div>
                       </td>
                       <td>{review.comment}</td>
                       <td>
