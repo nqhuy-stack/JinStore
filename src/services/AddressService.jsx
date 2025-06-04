@@ -1,4 +1,4 @@
-import { addStart, addSuccess, addFailed, resetAddState } from '@/redux/itemSlice.jsx';
+import { addStart, addSuccess, addFailed } from '@/redux/itemSlice.jsx';
 import { toast } from 'react-hot-toast';
 
 const API_URL = import.meta.env.VITE_API_URL_V1 ?? import.meta.env.VITE_API_URL_V2;
@@ -8,12 +8,6 @@ const defaultHeaders = {
   Accept: 'application/json',
   'Content-Type': 'application/json',
 };
-
-// Cấu hình header cho form-data
-const formDataHeaders = (accessToken) => ({
-  token: `Bearer ${accessToken}`,
-  'Content-Type': 'multipart/form-data',
-});
 
 // Cấu hình header cho yêu cầu có token
 const authHeaders = (accessToken) => ({

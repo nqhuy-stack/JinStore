@@ -11,6 +11,7 @@ import { createAxios } from '@utils/createInstance.jsx';
 import { getCart } from '@services/CartService';
 import PageLoad from '@pages/PageLoad';
 
+import socket from '@/socket';
 import logoFull from '@assets/images/logo/logo-full.svg';
 import iconLocation from '@assets/icons/iconlocation.svg';
 import iconSearch from '@assets/icons/iconsearch.svg';
@@ -36,11 +37,7 @@ const Header = () => {
       if (user && accessToken && axiosJWT_V1) {
         const res = await getCart(accessToken, axiosJWT_V1);
         const count = res?.itemCount || 0;
-        sessionStorage.setItem('itemCount', count.toString());
         setLengthItems(count);
-      } else {
-        const storedCount = parseInt(sessionStorage.getItem('itemCount') || '0', 10);
-        setLengthItems(storedCount);
       }
     } catch (err) {
       console.error('Lỗi khi lấy giỏ hàng:', err);
@@ -48,36 +45,28 @@ const Header = () => {
     }
   }, [user, accessToken, axiosJWT_V1]);
 
+  // ✅ Lần đầu load lấy giỏ hàng
   useEffect(() => {
-    fetchCartItems(); // chạy 1 lần khi load Header
+    fetchCartItems();
   }, [fetchCartItems]);
 
-  // ✅ Khi mount, lắng nghe sự kiện itemCountChanged và window focus
+  // ✅ Realtime socket.io - join room và lắng nghe cartUpdated
   useEffect(() => {
-    // Khi window focus (tab trở lại), cập nhật lại cart
-    const handleFocus = () => {
-      const storedCount = parseInt(sessionStorage.getItem('itemCount') || '0', 10);
-      setLengthItems(storedCount);
-    };
+    if (!user || !id) return;
 
-    // Khi có sự kiện itemCountChanged được phát ra (từ add/delete/update)
-    const handleItemCountChanged = (e) => {
-      setLengthItems(e.detail); // e.detail là số lượng mới
-    };
+    if (user && user._id) {
+      socket.emit('joinUser', user._id);
+    }
 
-    // Lần đầu mount
-    handleFocus();
-
-    // Đăng ký sự kiện
-    window.addEventListener('focus', handleFocus);
-    window.addEventListener('itemCountChanged', handleItemCountChanged);
+    socket.on('cartUpdated', (data) => {
+      console.log(data.message);
+      setLengthItems(data.itemCount);
+    });
 
     return () => {
-      // Hủy đăng ký sự kiện
-      window.removeEventListener('focus', handleFocus);
-      window.removeEventListener('itemCountChanged', handleItemCountChanged);
+      socket.off('cartUpdated');
     };
-  }, []);
+  }, [user, id]);
 
   const handleLogout = useCallback(async () => {
     setLoading(true);
@@ -88,9 +77,8 @@ const Header = () => {
     } finally {
       setLoading(false);
     }
-    sessionStorage.removeItem('itemCount');
-    window.dispatchEvent(new CustomEvent('itemCountChanged', { detail: 0 }));
-    setLengthItems(0);
+
+    setLengthItems(0); // Reset UI
   }, [dispatch, id, navigate, accessToken, axiosJWT_V2]);
 
   const handleNoLogin = useCallback(() => {
@@ -153,7 +141,7 @@ const Header = () => {
             </div>
             <div className="header__search">
               <input type="text" placeholder="Search for products, categories or brands..." />
-              <Button /* onClick={} */ className="header__search-button">
+              <Button className="header__search-button">
                 <img src={iconSearch} alt="Search Button" />
               </Button>
             </div>

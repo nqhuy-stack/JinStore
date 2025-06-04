@@ -42,32 +42,6 @@ const Orders = () => {
   // Axios instance
   const axiosJWT = user ? createAxios(user, dispatch, loginSuccess) : null;
 
-  // Navigation handlers
-  const handleViewOrder = (id) => navigate(`/admin/orders/${id}`);
-
-  // Delete order handlers
-  const handleDeleteOrder = (order) => {
-    setOrderToDelete(order);
-    setIsDeleteModalOpen(true);
-  };
-
-  const handleUpdateOrderStatus = async (order) => {
-    try {
-      // Xác định trạng thái tiếp theo
-      const nextStatus = getNextStatus(order.status);
-      if (!nextStatus) {
-        console.warn('Không thể cập nhật trạng thái từ:', order.status);
-        return;
-      }
-
-      await updateOrderStatus(order._id, nextStatus, user.accessToken, axiosJWT);
-      fetchOrders(activeTab);
-    } catch (error) {
-      console.error('Error updating order status:', error);
-      throw error;
-    }
-  };
-
   // Hàm helper để xác định trạng thái tiếp theo
   const getNextStatus = (currentStatus) => {
     const statusFlow = {
@@ -80,6 +54,36 @@ const Orders = () => {
       cancelled: 'cancelled',
     };
     return statusFlow[currentStatus];
+  };
+
+  // Navigation handlers
+  const handleViewOrder = (id) => navigate(`/admin/orders/${id}`);
+
+  // Delete order handlers
+  const handleDeleteOrder = (order) => {
+    setOrderToDelete(order);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleUpdateOrderStatus = async (order) => {
+    try {
+      const nextStatus = getNextStatus(order.status);
+      if (!nextStatus || nextStatus === order.status) {
+        console.warn('Không thể cập nhật trạng thái từ:', order.status);
+        return;
+      }
+
+      // ✅ Cập nhật UI ngay lập tức (optimistic update)
+      setOrders((prev) => prev.map((o) => (o._id === order._id ? { ...o, status: nextStatus } : o)));
+
+      // Gọi API
+      await updateOrderStatus(order._id, nextStatus, user.accessToken, axiosJWT);
+    } catch (error) {
+      console.error('Error updating order status:', error);
+
+      // ✅ Rollback về trạng thái cũ nếu API thất bại
+      setOrders((prev) => prev.map((o) => (o._id === order._id ? { ...o, status: order.status } : o)));
+    }
   };
 
   const confirmDeleteOrder = async () => {

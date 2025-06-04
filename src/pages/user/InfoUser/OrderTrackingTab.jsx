@@ -6,6 +6,7 @@ import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
 import OrderItem from './OrderTrackingTab/OrderItem';
 import HeaderStatusOrder from '../../../components/common/ui/HeaderStatusOrder';
+import socket from '@/socket';
 
 import cartEmpty from '@assets/icons/cart-empty.svg';
 
@@ -127,6 +128,21 @@ const OrderTrackingTab = () => {
       }
     };
   }, [fetchOrdersStatus, activeTab]);
+
+  // Lắng nghe sự kiện cập nhật trạng thái đơn hàng
+  useEffect(() => {
+    const handleStatusChanged = (data) => {
+      const { orderId, status } = data;
+
+      setOrders((prev) => prev.map((order) => (order._id === orderId ? { ...order, status } : order)));
+    };
+
+    socket.on('orderStatusChanged', handleStatusChanged);
+
+    return () => {
+      socket.off('orderStatusChanged', handleStatusChanged);
+    };
+  }, []);
 
   return (
     <div className="profile__tab profile__tab-order">
