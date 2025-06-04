@@ -339,7 +339,7 @@ const UserOrderDetail = () => {
             {order.discount && (
               <div className="admin__order-summary-item">
                 <span>Giảm giá:</span>
-                <span className="discount-amount">-{formatCurrency(order.discount)}</span>
+                <span className="discount-amount">-{formatCurrency(isNaN(order.discount) ? 0 : order.discount)}</span>
               </div>
             )}
             <div className="admin__order-summary-item admin__order-summary-item--total">
