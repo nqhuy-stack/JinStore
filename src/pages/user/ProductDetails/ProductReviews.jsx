@@ -89,18 +89,61 @@ const ProductReviews = ({ product }) => {
     });
   };
 
-  // Hàm tính thời gian relative
+  // Hàm tính thời gian relative được cải thiện
   const getRelativeTime = (dateString) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
+    // Kiểm tra tính hợp lệ của input
+    if (!dateString) return 'Không xác định';
 
+    const inputDate = new Date(dateString);
+    const now = new Date();
+
+    // Kiểm tra ngày hợp lệ
+    if (isNaN(inputDate.getTime())) return 'Ngày không hợp lệ';
+
+    // Chuẩn hóa về đầu ngày để so sánh chính xác
+    const normalizedInput = new Date(inputDate.getFullYear(), inputDate.getMonth(), inputDate.getDate());
+    const normalizedNow = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    const diffInMs = normalizedNow.getTime() - normalizedInput.getTime();
+    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+
+    // Xử lý trường hợp ngày trong tương lai
+    if (diffInDays < 0) {
+      const futureDays = Math.abs(diffInDays);
+      if (futureDays === 1) return 'Ngày mai';
+      if (futureDays < 7) return `${futureDays} ngày nữa`;
+      return `Trong tương lai`;
+    }
+
+    // Hôm nay và hôm qua
     if (diffInDays === 0) return 'Hôm nay';
     if (diffInDays === 1) return 'Hôm qua';
+
+    // Trong vòng 1 tuần
     if (diffInDays < 7) return `${diffInDays} ngày trước`;
-    if (diffInDays < 30) return `${Math.floor(diffInDays / 7)} tuần trước`;
-    if (diffInDays < 365) return `${Math.floor(diffInDays / 30)} tháng trước`;
-    return `${Math.floor(diffInDays / 365)} năm trước`;
+
+    // Tính chênh lệch tháng chính xác
+    const yearDiff = now.getFullYear() - inputDate.getFullYear();
+    const monthDiff = now.getMonth() - inputDate.getMonth();
+    const totalMonthDiff = yearDiff * 12 + monthDiff;
+
+    // Điều chỉnh nếu ngày trong tháng chưa đến
+    const adjustedMonthDiff = now.getDate() < inputDate.getDate() ? totalMonthDiff - 1 : totalMonthDiff;
+
+    // Trong vòng 1 tháng (4-5 tuần)
+    if (adjustedMonthDiff === 0) {
+      const weeks = Math.floor(diffInDays / 7);
+      return `${weeks} tuần trước`;
+    }
+
+    // Trong vòng 1 năm
+    if (adjustedMonthDiff < 12) {
+      return adjustedMonthDiff === 1 ? '1 tháng trước' : `${adjustedMonthDiff} tháng trước`;
+    }
+
+    // Từ 1 năm trở lên
+    const years = Math.floor(adjustedMonthDiff / 12);
+    return years === 1 ? '1 năm trước' : `${years} năm trước`;
   };
 
   // Hàm sửa đánh giá
