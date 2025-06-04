@@ -117,7 +117,7 @@ export const updateOrderStatus = async (id, status, accessToken, axiosJWT) => {
     throw new Error('Dữ liệu đầu vào không hợp lệ!');
   }
   try {
-    const res = await axiosJWT.patch(
+    const res = await axiosJWT.put(
       `${API_URL}/orders/update-status/${id}`,
       { status },
       {
