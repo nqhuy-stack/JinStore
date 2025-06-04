@@ -126,10 +126,6 @@ const WriteReviewForm = ({ idReview = null, product, setShowReviewForm, fetchRev
       fetchReviews();
     } catch (error) {
       console.error('Error submitting review:', error);
-      toast.error(isEditing ? 'Không thể cập nhật đánh giá' : 'Không thể gửi đánh giá', {
-        position: 'top-center',
-        duration: 2000,
-      });
     } finally {
       setLoading(false);
     }

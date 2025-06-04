@@ -301,6 +301,16 @@ html {
   margin: auto;
 }
 
+.custom-select {
+  position: relative;
+  width: 100%;
+  padding: 10px 15px;
+  border: 2px solid rgb(233, 236, 239);
+  border-radius: 25px;
+  font-size: 14px;
+  transition: border-color 0.2s;
+}
+
 .loading-state {
   display: flex;
   flex-direction: column;
