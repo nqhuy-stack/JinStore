@@ -145,21 +145,24 @@ const InfoUser = () => {
         </div>
 
         <nav className="info-user__menu">
-          {menuItems.map((item) => (
-            <button
-              key={item.id}
-              className={`menu-item ${activeTab === item.id ? 'active' : ''}`}
-              onClick={() => {
-                setActiveTab(item.id);
-                navigate(`/info-user${item.id === 'profile' ? '' : `?tab=${item.id}`}`);
-              }}
-              aria-label={item.label}
-              disabled={user.isAdmin && item.id === 'password' ? true : false}
-            >
-              {item.icon}
-              <span>{item.label}</span>
-            </button>
-          ))}
+          {menuItems.map((item) =>
+            user.isAdmin && item.id === 'password' ? (
+              <></>
+            ) : (
+              <button
+                key={item.id}
+                className={`menu-item ${activeTab === item.id ? 'active' : ''}`}
+                onClick={() => {
+                  setActiveTab(item.id);
+                  navigate(`/info-user${item.id === 'profile' ? '' : `?tab=${item.id}`}`);
+                }}
+                aria-label={item.label}
+              >
+                {item.icon}
+                <span>{item.label}</span>
+              </button>
+            ),
+          )}
         </nav>
       </div>
 
