@@ -11,11 +11,11 @@ const OrderItem = ({ item, onNavigate, fetchOrders, activeTab }) => {
     orderDate,
     statusText,
     paymentText,
-    reviewButtonText,
-    refundButtonText,
+    receivedButtonText,
+    /*     refundButtonText,
     showRefundButton,
     handleBuyAgain,
-    handleRefundClick,
+    handleRefundClick, */
     handleDetailClick,
   } = useOrderItem({ item, onNavigate });
 
@@ -130,23 +130,17 @@ const OrderItem = ({ item, onNavigate, fetchOrders, activeTab }) => {
         <div className="order__actions">
           <button
             className="btn btn__action-order btn-review__order"
-            onClick={
-              item.status === 'delivered'
-                ? handleUpdateOrderStatus
-                : item.status === 'received'
-                  ? handleBuyAgain
-                  : handleUpdateOrderStatus
-            }
-            disabled={item.status !== 'delivered' && item.status !== 'received'}
+            onClick={handleUpdateOrderStatus}
+            disabled={item.status !== 'delivered'}
           >
-            {reviewButtonText}
+            {receivedButtonText}
           </button>
-
+          {/* 
           {showRefundButton && (
             <button className="btn btn__action-order btn-cancelled__order" onClick={handleRefundClick}>
               {refundButtonText}
             </button>
-          )}
+          )} */}
 
           <button className="btn btn__action-order btn-detail__order" onClick={handleDetailClick}>
             Chi tiết

@@ -357,8 +357,8 @@ const ProductList = () => {
           <div className="product-list__main">
             <div className="product-list__toolbar">
               <p className="products-count">
-                Showing {totalItems > 0 ? `${startIndex + 1}-${Math.min(endIndex, totalItems)} of ${totalItems}` : '0'}{' '}
-                products
+                Hiển thị {totalItems > 0 ? `${startIndex + 1}-${Math.min(endIndex, totalItems)} của ${totalItems}` : '0'}{' '}
+                sản phẩm
               </p>
               <div className="products-sort">
                 <label htmlFor="sort-select">Sắp xếp theo:</label>

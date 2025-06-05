@@ -6,7 +6,7 @@ import Register from '@pages/user/Register.jsx';
 import ResetPassword from '@pages/user/ResetPassword.jsx';
 import SocialCallback from '@pages/user/SocialCallback';
 import About from '@pages/user/About.jsx';
-import Contact from '@pages/user/Contact.jsx';
+// import Contact from '@pages/user/Contact.jsx';
 import NotFound from '@pages/user/NotFound.jsx';
 
 // import Shop from '@pages/user/Shop';
@@ -78,10 +78,10 @@ const routes = [
     path: '/about',
     page: About,
   },
-  {
+  /*   {
     path: '/contact',
     page: Contact,
-  },
+  }, */
   {
     path: '*', // Bắt tất cả các đường dẫn không khớp
     page: NotFound,

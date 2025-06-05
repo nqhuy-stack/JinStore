@@ -154,6 +154,7 @@ const InfoUser = () => {
                 navigate(`/info-user${item.id === 'profile' ? '' : `?tab=${item.id}`}`);
               }}
               aria-label={item.label}
+              disabled={user.isAdmin && item.id === 'password' ? true : false}
             >
               {item.icon}
               <span>{item.label}</span>

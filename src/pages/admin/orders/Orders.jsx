@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
 import { getAllOrders, updateOrderStatus, deleteOrder } from '../../../services/orderService';
+import socket from '@/socket';
 
 const STATUS_MAP = {
   all: 'Tất cả',
@@ -73,9 +74,6 @@ const Orders = () => {
         return;
       }
 
-      // ✅ Cập nhật UI ngay lập tức (optimistic update)
-      setOrders((prev) => prev.map((o) => (o._id === order._id ? { ...o, status: nextStatus } : o)));
-
       // Gọi API
       await updateOrderStatus(order._id, nextStatus, user.accessToken, axiosJWT);
     } catch (error) {
@@ -85,6 +83,50 @@ const Orders = () => {
       setOrders((prev) => prev.map((o) => (o._id === order._id ? { ...o, status: order.status } : o)));
     }
   };
+
+  useEffect(() => {
+    if (!user || !user?._id) return;
+
+    if (user && user?._id) {
+      if (user.isAdmin) {
+        // ✅ Admin join admin room
+        socket.emit('joinAdmin', user._id);
+      } else {
+        // User thông thường join user room
+        socket.emit('joinUser', user._id);
+      }
+    }
+
+    const handleStatusChanged = (data) => {
+      const { orderId, status } = data;
+
+      setOrders((prev) => {
+        const updatedOrders = prev.map((order) => {
+          if (order._id === orderId) {
+            return { ...order, status };
+          }
+          return order;
+        });
+
+        if (activeTab === 'all') {
+          return updatedOrders;
+        } else {
+          return updatedOrders.filter((order) => {
+            if (order._id === orderId) {
+              return order.status === activeTab;
+            }
+            return true;
+          });
+        }
+      });
+    };
+
+    socket.on('orderStatusChanged', handleStatusChanged);
+
+    return () => {
+      socket.off('orderStatusChanged', handleStatusChanged);
+    };
+  }, [user, activeTab]);
 
   const confirmDeleteOrder = async () => {
     if (!orderToDelete) return;
