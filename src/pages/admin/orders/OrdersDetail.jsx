@@ -90,9 +90,6 @@ const OrderDetail = () => {
         setOrder({ ...order, status: newStatus });
         setShowStatusModal(false);
         // Show success message
-        alert('Cập nhật trạng thái đơn hàng thành công!');
-      } else {
-        alert('Có lỗi xảy ra khi cập nhật trạng thái đơn hàng');
       }
     } catch (err) {
       console.error('Error updating order status:', err);

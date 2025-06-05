@@ -12,9 +12,8 @@ const STATUS_MAP = {
 };
 
 function useOrderItem({ item, onNavigate }) {
-  console.log('useOrderItem', item);
   //FIXME: Tinh năng cần phát triển
-  const handleBuyAgain = useCallback(() => {
+  /*   const handleBuyAgain = useCallback(() => {
     const selectedProducts =
       item?.products?.map((product) => {
         // Tính discountPrice từ price và discount
@@ -54,12 +53,12 @@ function useOrderItem({ item, onNavigate }) {
     onNavigate('/checkout', {
       state: stateData,
     });
-  }, [item, onNavigate]);
+  }, [item, onNavigate]); */
 
   //FIXME: Tinh năng cần phát triển
-  const handleRefundClick = useCallback(() => {
+  /*   const handleRefundClick = useCallback(() => {
     onNavigate(`/info-user?tab=orders&id=${item._id || item.id}`);
-  }, [item._id, item.id, onNavigate]);
+  }, [item._id, item.id, onNavigate]); */
 
   const handleDetailClick = useCallback(() => {
     onNavigate(`/order/details/${item._id || item.id}`);
@@ -81,27 +80,27 @@ function useOrderItem({ item, onNavigate }) {
     return item.isPaid === false ? 'Chưa thanh toán' : 'Đã thanh toán';
   }, [item.paymentMethod, item.isPaid]);
 
-  const reviewButtonText = useMemo(() => {
-    return item.status === 'delivered' ? 'Đã nhận hàng' : item.status === 'received' ? 'Mua lại' : 'Đã nhận hàng';
-  }, [item.status]);
+  const receivedButtonText = useMemo(() => {
+    return 'Đã nhận hàng';
+  }, []);
 
-  const refundButtonText = useMemo(() => {
+  /*   const refundButtonText = useMemo(() => {
     return item.isPaid && item.status === 'paid' ? 'Yêu cầu hoàn tiền' : 'Yêu cầu hoàn tiền/ trả hàng';
-  }, [item.isPaid, item.status]);
+  }, [item.isPaid, item.status]); */
 
-  const showRefundButton = useMemo(() => {
+  /*   const showRefundButton = useMemo(() => {
     return (item.isPaid && item.status === 'paid') || item.status === 'received';
-  }, [item.isPaid, item.status]);
+  }, [item.isPaid, item.status]); */
 
   return {
     orderDate,
     statusText,
     paymentText,
-    reviewButtonText,
-    refundButtonText,
+    receivedButtonText,
+    /*     refundButtonText,
     showRefundButton,
     handleBuyAgain,
-    handleRefundClick,
+    handleRefundClick, */
     handleDetailClick,
   };
 }
