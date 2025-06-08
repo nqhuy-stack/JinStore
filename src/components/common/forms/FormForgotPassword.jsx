@@ -198,7 +198,7 @@ const FormForgotPassword = () => {
       )}
 
       {step === 3 && (
-        <form className="block-form" onSubmit={handleResetPassword}>
+        <form className="block__form" onSubmit={handleResetPassword}>
           <div className="form__field">
             <label>Mật khẩu *</label>
             <div className="form__field-input">
