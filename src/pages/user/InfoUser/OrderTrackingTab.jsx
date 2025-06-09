@@ -1,6 +1,6 @@
 import { memo, useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
-import { getOrdersStatus, getOrdersByUserStatus } from '../../../services/orderService';
+import { getOrdersStatus, getOrdersByUserStatus } from '../../../services/OrderService';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
