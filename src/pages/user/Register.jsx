@@ -9,9 +9,7 @@ function Register() {
   return (
     <Fragment>
       <section className="account-container">
-        <FormDescribe>
-          Hãy đăng ký để khám phá thế giới của chúng tôi và cùng nhau xây dựng một tương lai bền vững.
-        </FormDescribe>
+        <FormDescribe />
         <div className="account-main">
           <h1 className="account-heading">Đăng ký</h1>
           <p className="account-subtext">Vui lòng nhập thông tin đăng ký của bạn</p>

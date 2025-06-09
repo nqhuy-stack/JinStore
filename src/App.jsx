@@ -63,6 +63,7 @@ const App = () => {
   const location = useLocation();
   const isPublicPage =
     location.pathname === '/login' ||
+    location.pathname === '/admin/login' ||
     location.pathname === '/register' ||
     location.pathname === '/resetPassword' ||
     location.pathname === '/login-google/success';

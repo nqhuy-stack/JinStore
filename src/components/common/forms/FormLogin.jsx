@@ -1,5 +1,5 @@
 import { Fragment, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { login } from '@services/AuthService.jsx';
 import { useDispatch } from 'react-redux';
 import { LuEye, LuEyeClosed } from 'react-icons/lu';
@@ -13,6 +13,7 @@ function FormLogin() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -23,13 +24,19 @@ function FormLogin() {
   const user = {
     usernameOrEmail: usernameOrEmail,
     password: password,
+    pathname: location.pathname,
   };
 
   const handleSubmit = async (e) => {
     setIsLoading(true);
     e.preventDefault();
     try {
-      await login(user, dispatch, navigate);
+      const res = await login(user, dispatch);
+      if (location.pathname === '/login' && res.success) {
+        navigate('/');
+      } else {
+        navigate('/admin');
+      }
     } catch (error) {
       console.log(error);
     } finally {
@@ -70,9 +77,11 @@ function FormLogin() {
               </Button>
             </div>
           </div>
-          <span className="link-resetPassword">
-            <Link to="/resetPassword">Quên mật khẩu ?</Link>
-          </span>
+          {location.pathname === '/login' && (
+            <span className="link-resetPassword">
+              <Link to="/resetPassword">Quên mật khẩu ?</Link>
+            </span>
+          )}
           <Button type="submit" className="btn btn__submit-account" loading={isLoading}>
             Login
           </Button>

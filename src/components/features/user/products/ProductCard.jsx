@@ -7,7 +7,8 @@ const ProductCard = ({ products, handleAddToCart, handleProductClick }) => {
       {products.length > 0 ? (
         products
           .slice(0, 6)
-          .sort((a, b) => a.name.localeCompare(b.name))
+          .filter((p) => p._idCategory.status === 'active')
+          .sort((a, b) => b.averageRating - a.averageRating)
           .map((product) => (
             <div key={product._id}>
               {product._idCategory.status === 'active' && (
