@@ -11,7 +11,7 @@ import paymentMethods from '@json/paymentMethod';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
 
-import { createOrder } from '@services/orderService';
+import { createOrder } from '@services/OrderService';
 import { paymentService } from '@services/PaymentService';
 import { useDispatch, useSelector } from 'react-redux';
 
