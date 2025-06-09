@@ -19,7 +19,7 @@ import ProductDetails from '@pages/user/ProductDetails';
 import UserOrderDetails from '@pages/user/UserOrderDetail';
 
 import Admin from '@pages/admin/Admin';
-import AdminLogin from '@pages/Admin/Login.jsx';
+import AdminLogin from '@pages/admin/Login.jsx';
 import Users from '@pages/admin/users/Users';
 import ViewUser from '@pages/admin/users/ViewUser';
 import EditUser from '@pages/admin/users/EditUser';
