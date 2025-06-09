@@ -1,4 +1,4 @@
-import logoFull from '@assets/images/logo/logo-full.svg';
+import logoFull from '@assets/images/logo/logoFull.svg';
 import { FaHome } from 'react-icons/fa';
 import { Link, useLocation } from 'react-router-dom';
 

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-import moveRightDark from '@assets/icons/icon-move-right-dark.svg';
+import moveRightDark from '@assets/icons/iconMoveRightDark.svg';
 
 function ReusableSection({ title, key = '_id', linkTo, children }) {
   return (

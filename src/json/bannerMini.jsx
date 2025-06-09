@@ -7,10 +7,10 @@ import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
 
 // Import ảnh thủ công từ thư mục src (bắt buộc khi không dùng public)
-import img1 from '@assets/images/banner/mini/mini-banner_1.jpg';
-import img2 from '@assets/images/banner/mini/mini-banner_2.png';
-import img3 from '@assets/images/banner/mini/mini-banner_3.jpg';
-import img4 from '@assets/images/banner/mini/mini-banner_4.png';
+import img1 from '@assets/images/banner/mini/miniBanner1.jpg';
+import img2 from '@assets/images/banner/mini/miniBanner2.png';
+import img3 from '@assets/images/banner/mini/miniBanner3.jpg';
+import img4 from '@assets/images/banner/mini/miniBanner4.png';
 
 // Danh sách ảnh
 const imageList = [img1, img2, img3, img4];

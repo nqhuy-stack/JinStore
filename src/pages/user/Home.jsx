@@ -8,8 +8,8 @@ import CategoryList from '@components/features/user/category/CateList.jsx';
 import ProductsCategoryList from '@/components/features/user/products/ProdCateList.jsx';
 import BannerMini from '@json/bannerMini';
 
-import fullBanner from '@assets/images/banner/full-banner.png';
-import moveRight from '@assets/icons/icon-move-right.svg';
+import fullBanner from '@assets/images/banner/fullBanner.png';
+import moveRight from '@assets/icons/iconMoveRight.svg';
 
 function Home() {
   const [category, setCategory] = useState([]);
