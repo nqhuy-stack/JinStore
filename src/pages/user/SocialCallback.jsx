@@ -1,4 +1,4 @@
-import { loginGoogle } from '@services/SocialService.jsx';
+import { loginGoogle } from '@services/SocialService';
 import PageLoad from '@pages/PageLoad';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
