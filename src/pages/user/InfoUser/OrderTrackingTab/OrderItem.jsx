@@ -1,6 +1,6 @@
 import { memo, useMemo } from 'react';
 import useOrderItem from '@hooks/user/useOrderItem';
-import { updateOrderStatus } from '../../../../services/orderService';
+import { updateOrderStatus } from '../../../../services/OrderService';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';

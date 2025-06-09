@@ -1,6 +1,6 @@
 // src/hooks/useOrders.js
 import { useState, useCallback } from 'react';
-import { getAllOrders, updateOrderStatus } from '@/services/orderService';
+import { getAllOrders, updateOrderStatus } from '@/services/OrderService';
 
 export const useOrders = (user, axiosJWT) => {
   const [orders, setOrders] = useState([]);

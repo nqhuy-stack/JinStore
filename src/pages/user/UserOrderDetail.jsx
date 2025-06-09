@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
-import { getOrderDetails } from '@services/orderService';
+import { getOrderDetails } from '@services/OrderService';
 import Breadcrumb from '@components/common/ui/Breadcrumb';
 
 const STATUS_MAP = {

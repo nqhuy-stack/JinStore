@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
-import { getOrderDetails, updateOrderStatus } from '@services/orderService';
+import { getOrderDetails, updateOrderStatus } from '@services/OrderService';
 import ModalUpdateStatus from '@components/features//admin/orders/ModalUpdateStatus';
 
 const STATUS_MAP = {
