@@ -26,23 +26,19 @@ const authHeaders = (accessToken) => ({
 });
 
 //NOTE: Đăng nhập
-export const login = async (user, dispatch, navigate) => {
+export const login = async (user, dispatch) => {
   dispatch(loginStart());
   try {
     const res = await axios.post(`${API_URL}/auth/login`, user, { withCredentials: true });
 
-    dispatch(loginSuccess(res.data));
+    dispatch(loginSuccess(res.data.data));
 
     toast.dismiss();
-    toast.success('Đăng nhập thành công!', {
+    toast.success(res.data.message, {
       autoClose: 1,
       position: 'top-center',
     });
-    if (res.data.isAdmin) {
-      navigate('/admin');
-    } else {
-      navigate('/');
-    }
+    return res.data;
   } catch (error) {
     dispatch(loginFailed());
     toast.dismiss();

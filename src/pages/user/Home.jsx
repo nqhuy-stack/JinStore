@@ -40,12 +40,12 @@ function Home() {
         <div className="home__banner">
           <img className="img-banner" src={fullBanner} alt="Banner" />
           <div className="banner__content">
-            <h5 className="discount">Weekend Discount</h5>
-            <h2 className="title">Get the best quality products at the lowest prices</h2>
-            <p className="describe">We have prepared special discounts for you on organic breakfast products</p>
+            <h5 className="discount">Giảm giá trong tuần</h5>
+            <h2 className="title">Nhận các sản phẩm chất lượng tốt nhất với giá thấp nhất</h2>
+            <p className="describe">Chúng tôi đã chuẩn bị giảm giá đặc biệt cho bạn về các sản phẩm ăn sáng hữu cơ</p>
 
             <Link to={'/product'} className="btn btn-shop">
-              <p>Shop Now</p>
+              <p>Xem ngay</p>
               <img src={moveRight} alt="Move Right" />
             </Link>
           </div>
