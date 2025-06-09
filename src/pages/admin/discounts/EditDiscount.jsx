@@ -5,7 +5,7 @@ import { editDiscount, getDiscountById } from '@services/DiscountService';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
-import PageLoad from '@pages/pageLoad';
+import PageLoad from '@pages/PageLoad';
 import toast from 'react-hot-toast';
 import moment from 'moment/moment';
 

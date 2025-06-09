@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { LuEye, LuEyeClosed } from 'react-icons/lu';
 
 import Button from '@components/common/utils/Button';
-import PageLoad from '@pages/pageLoad';
+import PageLoad from '@pages/PageLoad';
 
 function FormLogin() {
   const [usernameOrEmail, setUsernameOrEmail] = useState('');

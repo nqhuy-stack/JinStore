@@ -7,7 +7,7 @@ import slugify from 'slugify';
 import { getCategories, addCategories, editCategory } from '@services/CategoryService.jsx';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
-import PageLoad from '@pages/pageLoad';
+import PageLoad from '@pages/PageLoad';
 
 const CategoryForm = () => {
   const navigate = useNavigate();

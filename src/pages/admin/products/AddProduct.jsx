@@ -6,7 +6,7 @@ import { addProducts } from '@services/ProductService';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
-import PageLoad from '@pages/pageLoad';
+import PageLoad from '@pages/PageLoad';
 import toast from 'react-hot-toast';
 
 const AddProduct = () => {

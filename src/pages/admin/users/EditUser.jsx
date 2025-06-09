@@ -5,7 +5,7 @@ import { getInfoUserById, updateUserById } from '@services/UserService';
 import { useDispatch, useSelector } from 'react-redux';
 import { createAxios } from '@utils/createInstance.jsx';
 import { loginSuccess } from '@/redux/authSlice.jsx';
-import PageLoad from '@pages/pageLoad';
+import PageLoad from '@pages/PageLoad';
 
 const EditUser = () => {
   const navigate = useNavigate();
