@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logOut } from '@services/AuthService';
 import { logoutSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
-import logoFull from '@assets/images/logo/logo-full.svg';
+import logoFull from '@assets/images/logo/logoFull.svg';
 import { useState, useMemo } from 'react';
 import Breadcrumb from '@components/common/ui/Breadcrumb';
 

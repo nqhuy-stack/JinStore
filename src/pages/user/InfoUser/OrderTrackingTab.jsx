@@ -8,7 +8,7 @@ import OrderItem from './OrderTrackingTab/OrderItem';
 import HeaderStatusOrder from '../../../components/common/ui/HeaderStatusOrder';
 import socket from '@/socket';
 
-import cartEmpty from '@assets/icons/cart-empty.svg';
+import cartEmpty from '@assets/icons/cartEmpty.svg';
 
 const STATUS_MAP = {
   all: 'Tất cả',

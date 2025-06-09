@@ -6,7 +6,7 @@ import { faMinus, faPlus, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 
 import NotFound from './NotFound';
 import PageLoad from '../PageLoad';
-import cartEmpty from '@assets/icons/cart-empty.svg';
+import cartEmpty from '@assets/icons/cartEmpty.svg';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
 import Breadcrumb from '@components/common/ui/Breadcrumb';

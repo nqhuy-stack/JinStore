@@ -12,7 +12,7 @@ import { getCart } from '@services/CartService';
 import PageLoad from '@pages/PageLoad';
 
 import socket from '@/socket';
-import logoFull from '@assets/images/logo/logo-full.svg';
+import logoFull from '@assets/images/logo/logoFull.svg';
 import iconLocation from '@assets/icons/iconlocation.svg';
 import iconSearch from '@assets/icons/iconsearch.svg';
 import iconCart from '@assets/icons/iconcart.svg';

@@ -4,22 +4,22 @@ import { useEffect, useState } from 'react';
 import { getCategoriesAll } from '@/services/CategoryService';
 import jsonNavbar from '@json/navbar.jsx';
 
-import appStore from '@assets/images/logo/button-appstore.svg';
-import appGoogle from '@assets/images/logo/button-google.svg';
+import appStore from '@assets/images/logo/buttonAppstore.svg';
+import appGoogle from '@assets/images/logo/buttonGoogle.svg';
 
 import iconEmail from '@assets/icons/iconemail.svg';
 import iconTelephone from '@assets/icons/icontelephone.svg';
 import iconFacebook from '@assets/icons/iconfacebook.svg';
 import iconInstagram from '@assets/icons/iconinstagram.svg';
 import iconLinkedIn from '@assets/icons/iconLinkedIn.svg';
-import iconX from '@assets/icons/icon-X.svg';
-import logoFull from '@assets/images/logo/logo-full.svg';
+import iconX from '@assets/icons/iconX.svg';
+import logoFull from '@assets/images/logo/logoFull.svg';
 
-import moneyKlarna from '@assets/images/payment/money-klarna.svg';
-import moneyPaypal from '@assets/images/payment/money-PayPal.svg';
-import moneyVISA from '@assets/images/payment/money-VISA.svg';
-import moneyMaster from '@assets/images/payment/money-Master.svg';
-import moneySkrill from '@assets/images/payment/money-Skrill.svg';
+import moneyKlarna from '@assets/images/payment/moneyKlarna.svg';
+import moneyPaypal from '@assets/images/payment/moneyPayPal.svg';
+import moneyVISA from '@assets/images/payment/moneyVISA.svg';
+import moneyMaster from '@assets/images/payment/moneyMaster.svg';
+import moneySkrill from '@assets/images/payment/moneySkrill.svg';
 // import { useState } from 'react';
 
 const Footer = () => {
