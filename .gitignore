@@ -12,10 +12,6 @@ node_modules
 # Ignore Vite cache folder
 .vite/
 
-# Ignore build output folders
-/dist
-dist-ssr
-
 # Ignore local environment files
 *.local
 
