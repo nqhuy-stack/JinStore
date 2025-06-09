@@ -7,7 +7,7 @@ import HeaderStatusOrder from '../../../components/common/ui/HeaderStatusOrder';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess } from '@/redux/authSlice.jsx';
 import { createAxios } from '@utils/createInstance.jsx';
-import { getAllOrders, updateOrderStatus, deleteOrder } from '../../../services/orderService';
+import { getAllOrders, updateOrderStatus, deleteOrder } from '../../../services/OrderService';
 import socket from '@/socket';
 
 const STATUS_MAP = {
