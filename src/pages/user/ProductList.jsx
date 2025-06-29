@@ -52,8 +52,8 @@ const ProductList = () => {
         setLoading(true);
         const [categoriesData, productsData] = await Promise.all([getCategoriesAll(), getProductsAll()]);
         setCategories(categoriesData || []);
-        setProducts(productsData || []);
-        setOriginalProducts(productsData || []);
+        setProducts(productsData.data || []);
+        setOriginalProducts(productsData.data || []);
       } catch (error) {
         console.error('Lỗi khi lấy dữ liệu:', error);
       } finally {
@@ -357,8 +357,9 @@ const ProductList = () => {
           <div className="product-list__main">
             <div className="product-list__toolbar">
               <p className="products-count">
-                Hiển thị {totalItems > 0 ? `${startIndex + 1}-${Math.min(endIndex, totalItems)} của ${totalItems}` : '0'}{' '}
-                sản phẩm
+                Hiển thị{' '}
+                {totalItems > 0 ? `${startIndex + 1}-${Math.min(endIndex, totalItems)} của ${totalItems}` : '0'} sản
+                phẩm
               </p>
               <div className="products-sort">
                 <label htmlFor="sort-select">Sắp xếp theo:</label>

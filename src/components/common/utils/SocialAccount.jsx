@@ -1,6 +1,6 @@
 import iconGoogleLogin from '@assets/icons/icongooglelogin.svg';
 
-const API_URL = import.meta.env.VITE_API_URL_V1 || import.meta.env.VITE_API_URL_V2;
+const API_URL = import.meta.env.VITE_API_URL_V1;
 
 const GOOGLE_LOGIN_URL = `${API_URL}/auth/google`;
 

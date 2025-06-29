@@ -70,11 +70,11 @@ const Products = () => {
       setLoading(true);
       setError(null);
 
-      const data = await getProductsAll();
-      setOriginalProducts(data);
+      const res = await getProductsAll();
+      setOriginalProducts(res.data);
 
-      if (data && Array.isArray(data)) {
-        setProducts(data);
+      if (res.data && Array.isArray(res.data)) {
+        setProducts(res.data);
       } else {
         setError('Dữ liệu danh mục không hợp lệ');
       }

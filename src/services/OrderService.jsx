@@ -1,7 +1,7 @@
 import { addStart, addSuccess, addFailed, resetAddState } from '@/redux/itemSlice.jsx';
 import { toast } from 'react-hot-toast';
 
-const API_URL = import.meta.env.VITE_API_URL_V1 ?? import.meta.env.VITE_API_URL_V2;
+const API_URL = import.meta.env.VITE_API_URL_V1;
 
 const defaultHeaders = {
   Accept: 'application/json',
