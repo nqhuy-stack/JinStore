@@ -7,16 +7,14 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default defineConfig(({ command, mode }) => {
-  const isProd = command === 'build';
-
   return {
-    base: isProd ? '/JinStore/' : '/',
+    base: '/',
     plugins: [react()],
     optimizeDeps: {
       include: ['react-toastify'],
     },
     server: {
-      open: isProd ? '/JinStore/' : '/',
+      open: '/',
     },
     resolve: {
       extensions: ['.js', '.jsx'],
