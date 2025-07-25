@@ -3,7 +3,6 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://nqhit.github.io/JinStore",
   "scripts": {
     "dev": "vite --open",
     "build": "vite build",
